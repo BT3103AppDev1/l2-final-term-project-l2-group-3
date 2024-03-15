@@ -1,9 +1,14 @@
-import Dashboard from '../components/views/Dashboard.vue'
+import Dashboard from '@/components/views/Dashboard.vue'
 import Settings from '../components/views/Settings.vue'
 import Resume from '../components/views/Resume.vue'
 import Calendar from '../components/views/Calendar.vue'
 import Performance from '../components/views/Performance.vue'
+import Login from '@/components/views/Login.vue'
+import Register from '@/components/views/Register.vue'
+import PasswordReset from '@/components/views/PasswordReset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+
 
 const router = createRouter( {
     history: createWebHistory(),
@@ -31,10 +36,46 @@ const router = createRouter( {
         {
             path: "/performance",
             component: Performance
-        }
+        },
 
+        {
+            path:"/register",
+            component: Register
+        },
 
+        {
+            path:"/forgotPassword",
+            component: PasswordReset
+        },
+
+        {
+            path:"/login",
+            component: Login
+        },
     ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+    const auth = getAuth();
+    let isAuthenticatedChecked = false;
+
+    onAuthStateChanged(auth, (user) => {
+        if (!isAuthenticatedChecked) {
+            isAuthenticatedChecked = true;
+            if (to.path === '/login' || to.path === '/register' || to.path === '/forgotPassword' || user) {
+                next();
+            } else {
+                next('/login');
+            }
+        }
+    });
+
+    setTimeout(() => {
+        if (!isAuthenticatedChecked) {
+            isAuthenticatedChecked = true;
+            next();
+        }
+    }, 1000);
+});
 
 export default router

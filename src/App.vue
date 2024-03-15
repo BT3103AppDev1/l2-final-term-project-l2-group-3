@@ -1,33 +1,31 @@
 <template>
-  <Template />
-
+  <div id = "app"> 
+    <Template v-if = "isLoggedIn"/>
+    <router-view v-else/>
+  </div>
 </template>
 
 <script>
-import Template from '@/components/Template.vue'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import Template from './components/Template.vue';
+import { useRouter } from 'vue-router';
 
+export default {
+  components: {
+    Template
+  },
+  data() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  created() {
+    const router = useRouter();
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      this.isLoggedIn = !!user; 
+    });
+  },
+}
 </script>
 
-<style>
-
-
-
-.route-enter-from {
-  opacity: 0;
-  transform: translateX(100px);
-}
-
-.route-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.route-leave-to {
-  opacity: 0;
-  transform: translateX(-100px);
-}
-
-.route-leave-active {
-  transition: all 0.3s ease-in;
-}
-
-</style>

@@ -13,7 +13,7 @@
                 <v-container fluid>
                     <br>
                     <v-row>
-                    <v-text> <b>Industries</b> </v-text>
+                    <span> <b>Industries</b> </span>
                     <v-col cols="12">
                         <v-combobox
                         clearable
@@ -26,7 +26,7 @@
                     </v-row>
 
                     <v-row>
-                    <v-text><b>Job types</b></v-text>
+                    <span><b>Job types</b></span>
                     <v-col cols="12">
                         <v-combobox
                         clearable
@@ -71,7 +71,7 @@ import JobCards from "@/components/JobCards.vue";
 export default {
     data() {
         return {
-            dialog: false,
+            dialog: true, //setting it to true for now
             select: ['Vuetify', 'Programming'],
             items: [
                 'Financial Services',
@@ -97,12 +97,12 @@ export default {
     methods: {
         closedialog() {
             this.dialog = false;
-            localStorage.setItem('showndialog', 'true');
+            localStorage.setItem('shown', 'true');
         }
     },
     mounted() {
-        let showndialog = localStorage.getItem('showndialog');
-        if (showndialog !== 'true') {
+        let shown = localStorage.getItem('shown');
+        if (shown !== 'true') {
             this.dialog = true;
         }
     },

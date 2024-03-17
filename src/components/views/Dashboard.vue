@@ -99,6 +99,7 @@ import SaveJob from "@/components/SaveJob.vue";
 export default {
     data() {
         return {
+            showSaveJobForm: false,
             jobs: null,
             title: "",
             dialog: true, //setting it to true for now (to test the dialog)
@@ -124,6 +125,7 @@ export default {
     },
 
        components: {
+        SaveJob,
         JobCards,
         Progress
     },

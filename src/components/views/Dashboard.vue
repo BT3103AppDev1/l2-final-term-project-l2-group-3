@@ -60,25 +60,8 @@
         
     </div>
 
-    <div id="jobcards">
-        <v-btn color="primary" @click="showSaveJob = true">Save a Job</v-btn>
-        <v-dialog v-model="showSaveJob" persistent max-width="600px">
-            <v-card>
-                <v-card-title class="text-h5">Save a New Job</v-card-title>
-                <v-card-text>
-                    <SaveJob @job-saved="showSaveJob = false" />
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="showSaveJob = false">Close</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <JobCards />
-    </div>
-
     
-    <v-row style="padding: 50px;">
+    <v-row style="margin-left: 30px;">
 
         <v-col cols="8">
             <JobCards :jobs = "jobs" />
@@ -89,16 +72,20 @@
         </v-col>
         
     </v-row>
+
+    
 </template>
 
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import SaveJob from "@/components/SaveJob.vue";
+import {RetrieveJobs} from '@/linkedin.js';
+import SaveJob from "@/components/SaveJob.vue"
 
 export default {
     data() {
         return {
+
             jobs: null,
             title: "",
             dialog: true, //setting it to true for now (to test the dialog)
@@ -123,9 +110,10 @@ export default {
         };
     },
 
-       components: {
+    components: {
         JobCards,
-        Progress
+        Progress,
+        SaveJob
     },
 
     methods: {
@@ -157,15 +145,12 @@ h3 {
 }
 
 #jobcards {
-    width: 50%;
-    float: left;
     padding: 10px;
     margin-left: 50px;
     margin-top: 0px;
 }
 
 #progressreminders {
-    float: left;
     width: max-content;
 }
 
@@ -175,4 +160,6 @@ h3 {
     font-weight: 350;
 
 }
+
+
 </style>

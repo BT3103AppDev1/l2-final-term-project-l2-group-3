@@ -10,6 +10,12 @@
             >
             <v-card-text class="font-weight-light">
                 New member here? Fill up and indicate some details below to have your own personalised dashboard!
+                 <v-row>
+                    <span> <b>Job Title</b> </span>
+                    <v-col cols="12">
+                        <v-text-field v-model="title" label="Enter job title you are looking for, or any keywords"></v-text-field>
+                    </v-col>
+                 </v-row>
                 <v-container fluid>
                     <br>
                     <v-row>

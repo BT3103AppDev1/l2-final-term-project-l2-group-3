@@ -1,4 +1,4 @@
-    <template>
+<template>
         <div class="save-job-form">
         <v-text-field label="Job Title" v-model="job.title"></v-text-field>
         <v-text-field label="Company Name" v-model="job.company"></v-text-field>
@@ -10,40 +10,46 @@
         </div>
     </template>
     
-    <script>
-    import { db } from '@/firebase.js'; // Import your Firebase config
-    
-    export default {
-        data() {
-        return {
-            job: {
-            title: '',
-            company: '',
-            location: '',
-            link: ''
-            }
-        };
-        },
-        methods: {
-        async saveJob() {
-            try {
-            await db.collection('savedJobs').add(this.job);
-            this.$emit('job-saved');
-            this.job = { title: '', company: '', location: '', link: '' }; // Reset form
-            alert('Job saved successfully!');
-            } catch (error) {
-            console.error("Error saving job: ", error);
-            }
+  <script>
+  import { db } from '@/firebase.js'; // Import your Firebase config
+  
+  export default {
+    data() {
+      return {
+        job: {
+          title: '',
+          company: '',
+          location: '',
+          link: ''
         }
+      };
+    },
+    methods: {
+      async saveJob() {
+        try {
+          await db.collection('savedJobs').add(this.job);
+          this.$emit('job-saved');
+          this.job = { title: '', company: '', location: '', link: '' }; // Reset form
+          alert('Job saved successfully!');
+        } catch (error) {
+          console.error("Error saving job: ", error);
         }
-    };
-    </script>
-    
-    <style scoped>
-    .save-job-form {
-        max-width: 500px;
-        margin: 10px auto;
-        display: flex;
-        flex-direction: column;
+      }
     }
-    </style>
+  };
+  </script>
+  
+  <style scoped>
+  .save-job-form {
+    max-width: 500px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+  }
+  </style>
+
+
+
+
+
+

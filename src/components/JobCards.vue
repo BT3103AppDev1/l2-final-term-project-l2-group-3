@@ -51,7 +51,9 @@
             </v-card>
 
         </v-layout> 
-	@@ -56,36 +31,6 @@
+    
+    </div>
+	
 
 </template>
 
@@ -84,3 +86,6 @@ export default {
 <style scoped>
 .subheading{
     color:rgb(180, 176, 176);
+}
+
+</style>

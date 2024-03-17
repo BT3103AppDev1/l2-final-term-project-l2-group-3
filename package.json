@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "firebase": "^10.8.1",
     "linkedin-jobs-api": "^1.0.1",
     "node-cron": "^3.0.3",

@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Define the URL and parameters
 const url = "https://api.scrapingdog.com/linkedinjobs/";
 
 export async function RetrieveJobs(title) {
@@ -25,7 +24,7 @@ export async function RetrieveJobs(title) {
             })
             console.log(dic)
             return dic;
-            
+
         } else {
             console.log("Request failed with status code:", response.status);
         }
@@ -34,19 +33,3 @@ export async function RetrieveJobs(title) {
         console.error("An error occurred:", error);
     }
 }
-
-RetrieveJobs("data")
-
-
-// Send a GET request with the parameters
-
-
-
-
-/*
-data.forEach(element => {
-    let counter = 1;
-    dict[counter++] = element[0];
-});
-
-console.log(dict)*/

@@ -1,7 +1,7 @@
 <template>
     <h2 class="subheading">Dashboard</h2>
     <div class="d-flex flex-wrap ga-5 lr-1">
-        
+
         <v-layout row class="d-flex ga-5">
             <v-card color="#F4F7FF" class="pa-3" width="50%" height="500px">
                 <v-card-title style="text-align: center;">Find Jobs</v-card-title>
@@ -27,10 +27,10 @@
                                 </v-card>
                             </v-dialog>
                         </v-card>
-                        
+
                     </main>
                 </v-infinite-scroll>
-                
+
             </v-card>
 
             <v-card color="#F4F7FF" class="pa-3" width="50%" height="500px">
@@ -51,9 +51,8 @@
             </v-card>
 
         </v-layout> 
+	@@ -56,36 +31,6 @@
 
-    </div>
-    
 </template>
 
 <script>
@@ -64,21 +63,17 @@ export default {
             currentviewedjob: null
         }
     },
-
     props: {
         jobs: Object
     },
-
     methods : {
         print() {
             console.log(Object.values(this.jobs)[1])
         },
-
         load ({ done }) {
             setTimeout(() => {
                 console.log(typeof(this.jobs));
             this.jobs.push(...Array.from({ length: 10 }, (k, v) => v + this.jobs.at(-1) + 1))
-
             done('ok')
             }, 1000)
         },
@@ -89,15 +84,3 @@ export default {
 <style scoped>
 .subheading{
     color:rgb(180, 176, 176);
-    padding: 20px;
-    font-weight: 350;
-
-}
-
-.pa-3 {
-    border-radius: 30px;
-    box-shadow: none;
-}
-
-
-</style>

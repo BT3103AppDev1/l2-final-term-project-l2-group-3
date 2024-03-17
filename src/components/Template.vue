@@ -17,7 +17,7 @@
             subtitle="sandra_a88@gmailcom"
             title="Sandra Adams"
             >
-              <v-btn text="Log out" @click="logout" variant="text"></v-btn>
+            <v-btn text="Log out" @click="logout" variant="text"></v-btn>
             </v-list-item>
         </v-list>
 

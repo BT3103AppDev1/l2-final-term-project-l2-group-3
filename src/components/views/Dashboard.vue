@@ -60,6 +60,23 @@
         
     </div>
 
+    <div id="jobcards">
+        <v-btn color="primary" @click="showSaveJob = true">Save a Job</v-btn>
+        <v-dialog v-model="showSaveJob" persistent max-width="600px">
+            <v-card>
+                <v-card-title class="text-h5">Save a New Job</v-card-title>
+                <v-card-text>
+                    <SaveJob @job-saved="showSaveJob = false" />
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="showSaveJob = false">Close</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <JobCards />
+    </div>
+
     
     <v-row style="padding: 50px;">
 
@@ -72,14 +89,12 @@
         </v-col>
         
     </v-row>
-
-    
 </template>
 
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import {RetrieveJobs} from '@/linkedin.js';
+import SaveJob from "@/components/SaveJob.vue";
 
 export default {
     data() {
@@ -108,7 +123,7 @@ export default {
         };
     },
 
-    components: {
+       components: {
         JobCards,
         Progress
     },

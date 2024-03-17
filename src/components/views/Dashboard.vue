@@ -79,11 +79,6 @@
 
     
     <v-row style="padding: 50px;">
-
-        <v-col cols="8">
-            <JobCards :jobs = "jobs" />
-        </v-col>
-
         <v-col cols="4">
             <Progress/>
         </v-col>
@@ -99,10 +94,11 @@ import SaveJob from "@/components/SaveJob.vue";
 export default {
     data() {
         return {
-            showSaveJobForm: false,
+            showSaveJob: false,
             jobs: null,
             title: "",
-            dialog: true, //setting it to true for now (to test the dialog)
+            dialog: true, //setting it to true for now
+            select: ['Vuetify', 'Programming'],
             items: [
                 'Financial Services',
                 'IT Services and IT Consulting',
@@ -124,12 +120,6 @@ export default {
         };
     },
 
-       components: {
-        SaveJob,
-        JobCards,
-        Progress
-    },
-
     methods: {
         async closedialog() {
             this.dialog = false;
@@ -139,7 +129,6 @@ export default {
             console.log("this is the job object")
             console.log(this.jobs);
             //console.log(typeof(this.jobs))
-            
         }
     },
     mounted() {
@@ -147,7 +136,12 @@ export default {
         if (shown !== 'true') {
             this.dialog = true;
         }
-    }
+    },
+    
+    components: { 
+        Progress,
+        SaveJob,
+        JobCards }
 }
 </script>
 
@@ -159,22 +153,14 @@ h3 {
 }
 
 #jobcards {
-    width: 50%;
+    width: 2000px;
     float: left;
-    padding: 10px;
+    padding: 20px;
     margin-left: 50px;
     margin-top: 0px;
 }
 
 #progressreminders {
     float: left;
-    width: max-content;
-}
-
-.subheading{
-    color:rgb(180, 176, 176);
-    padding: 20px;
-    font-weight: 350;
-
 }
 </style>

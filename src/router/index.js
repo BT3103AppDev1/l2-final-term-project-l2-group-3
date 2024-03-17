@@ -8,6 +8,7 @@ import Register from '@/components/views/Register.vue'
 import PasswordReset from '@/components/views/PasswordReset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import Reset from '@/components/views/Reset.vue'
 
 
 const router = createRouter( {
@@ -52,6 +53,11 @@ const router = createRouter( {
             path:"/login",
             component: Login
         },
+
+        {
+            path:"/reset",
+            component: Reset
+        }
     ]
 });
 
@@ -62,7 +68,7 @@ router.beforeEach((to, from, next) => {
     onAuthStateChanged(auth, (user) => {
         if (!isAuthenticatedChecked) {
             isAuthenticatedChecked = true;
-            if (to.path === '/login' || to.path === '/register' || to.path === '/forgotPassword' || user) {
+            if (to.path === '/login' || to.path === '/register' || to.path === '/forgotPassword' || to.path== '/reset' ||user) {
                 next();
             } else {
                 next('/login');

@@ -1,5 +1,6 @@
 <template>
-    <div class="text-center">
+    <div class="text-center pa-4">
+
         <v-dialog v-model="dialog" width="auto">
             <v-card
                 width="800px"
@@ -11,13 +12,6 @@
                 New member here? Fill up and indicate some details below to have your own personalised dashboard!
                 <v-container fluid>
                     <br>
-                    <v-row>
-                    <span> <b>Job Title</b> </span>
-                    <v-col cols="12">
-                        <v-text-field v-model="title" label="Enter job title you are looking for, or any keywords"></v-text-field>
-                    </v-col>
-                    </v-row>
-
                     <v-row>
                     <span> <b>Industries</b> </span>
                     <v-col cols="12">
@@ -60,33 +54,25 @@
         
     </div>
 
-    
-    <v-row style="padding: 50px;">
+    <div id="jobcards">
+        <JobCards />
+    </div>
 
-        <v-col cols="8">
-            <JobCards :jobs = "jobs" />
-        </v-col>
-
-        <v-col cols="4">
-            <Progress/>
-        </v-col>
-        
-    </v-row>
+    <div id="progressreminders">
+        <h1>progress and reminder</h1>
+    </div>
 
     
 </template>
 
 <script>
 import JobCards from "@/components/JobCards.vue";
-import Progress from "@/components/Progress.vue";
-import {RetrieveJobs} from '@/linkedin.js';
 
 export default {
     data() {
         return {
-            jobs: null,
-            title: "",
-            dialog: true, //setting it to true for now (to test the dialog)
+            dialog: true, //setting it to true for now
+            select: ['Vuetify', 'Programming'],
             items: [
                 'Financial Services',
                 'IT Services and IT Consulting',
@@ -108,21 +94,10 @@ export default {
         };
     },
 
-    components: {
-        JobCards,
-        Progress
-    },
-
     methods: {
-        async closedialog() {
+        closedialog() {
             this.dialog = false;
             localStorage.setItem('shown', 'true');
-            console.log(this.title);
-            this.jobs = await RetrieveJobs(this.title);
-            console.log("this is the job object")
-            console.log(this.jobs);
-            //console.log(typeof(this.jobs))
-            
         }
     },
     mounted() {
@@ -130,7 +105,9 @@ export default {
         if (shown !== 'true') {
             this.dialog = true;
         }
-    }
+    },
+    
+    components: { JobCards }
 }
 </script>
 
@@ -142,22 +119,14 @@ h3 {
 }
 
 #jobcards {
-    width: 50%;
+    width: 2000px;
     float: left;
-    padding: 10px;
+    padding: 20px;
     margin-left: 50px;
     margin-top: 0px;
 }
 
 #progressreminders {
     float: left;
-    width: max-content;
-}
-
-.subheading{
-    color:rgb(180, 176, 176);
-    padding: 20px;
-    font-weight: 350;
-
 }
 </style>

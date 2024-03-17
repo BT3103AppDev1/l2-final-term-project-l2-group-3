@@ -12,31 +12,33 @@
         rounded="lg"
       >
       <div class="rp">Reset Password</div>
-      <div class="desc">Please enter the email address you'll like your password reset link sent to</div> <br>
-  
+      <div class="desc">Password should contain at least 8 characters, one uppercase and one special case</div> <br>
+
+
+      <div>New Password</div>
         <v-text-field
         dense
-        placeholder="Email address"
-        prepend-inner-icon="mdi-email-outline"
+        placeholder="**********"
         variant="outlined"
         ></v-text-field>
 
-        <router-link to="/reset"><v-btn
+      <div>Confirm Password</div>
+        <v-text-field
+        dense
+        placeholder="**********"
+        variant="outlined"
+        ></v-text-field>
+
+        <router-link to="/login"><v-btn
           class="mb-8"
           color="blue"
           size="large"
           variant="tonal"
           block
         >
-          Send Email
+          Reset Password
         </v-btn>
-    </router-link>
-
-
-
-
-
-    
+    </router-link>    
     </v-card>
 
 

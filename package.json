@@ -13,7 +13,7 @@
     "firebase": "^10.8.1",
     "linkedin-jobs-api": "^1.0.1",
     "node-cron": "^3.0.3",
-    "node-telegram-bot-api": "^0.64.0",
+    "node-telegram-bot-api": "^0.65.1",
     "roboto-fontface": "*",
     "router": "^1.3.8",
     "sass": "^1.71.1",

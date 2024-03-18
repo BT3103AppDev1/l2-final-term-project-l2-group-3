@@ -94,7 +94,7 @@
           </v-card>
         </v-dialog>
 
-        <v-row>
+        <v-row style="margin-top: 20px;">
           <v-col>
             <h2>Sync Job Listings From</h2>
           </v-col>

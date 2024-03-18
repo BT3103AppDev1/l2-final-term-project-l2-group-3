@@ -61,7 +61,7 @@
     </div>
 
     
-    <v-row style="margin-left: 30px;">
+    <v-row class="view" style="margin-left: 30px;">
 
         <v-col cols="8">
             <JobCards :jobs = "jobs" />
@@ -139,15 +139,17 @@ export default {
 
 <style scope>
 
+.view {
+    background-color: #54739a;
+}
+
 h3 {
     color: rgb(132, 131, 131);
     font-weight: 400;
 }
 
 #jobcards {
-    padding: 10px;
     margin-left: 50px;
-    margin-top: 0px;
 }
 
 #progressreminders {
@@ -160,6 +162,5 @@ h3 {
     font-weight: 350;
 
 }
-
 
 </style>

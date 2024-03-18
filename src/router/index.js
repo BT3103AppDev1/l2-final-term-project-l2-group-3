@@ -6,6 +6,7 @@ import Performance from '../components/views/Performance.vue'
 import Login from '@/components/views/Login.vue'
 import Register from '@/components/views/Register.vue'
 import PasswordReset from '@/components/views/PasswordReset.vue'
+import Reset from '@/components/views/Reset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
@@ -52,6 +53,11 @@ const router = createRouter( {
             path:"/login",
             component: Login
         },
+
+        {
+            path:"/reset",
+            component: Reset
+        }
     ]
 });
 

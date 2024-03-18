@@ -32,7 +32,7 @@
         </v-list>
         </v-navigation-drawer>
 
-        <v-main style="height:1200px;" >
+        <v-main class = "view" style="height:100%;" >
             <router-view/>
         </v-main>
     </v-row>
@@ -76,6 +76,7 @@
 </script>
 
 <style scoped>
+
 
 .route-enter-from {
   opacity: 0;

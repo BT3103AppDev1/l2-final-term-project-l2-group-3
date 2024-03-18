@@ -6,7 +6,7 @@
             <span v-if="hover" class="button-text">Save a new job</span>
         </v-btn>
         <v-dialog v-model="showSaveJob" max-width="700px">
-            <v-card color="#729CBD" title="Save a new job">
+            <v-card color="#54739a" title="Save a new job">
                 <v-card-text class="font-weight-light">
                 Enter the following details and the application will appear under Saved Jobs!
                 </v-card-text>
@@ -26,23 +26,24 @@
     <v-container>
         <v-row class="ga-5">
             <v-col>
-                <v-card color="#95adc5" class="pa-3" height="500px">
+                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
                     <v-card-title style="text-align: center;">Find Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the list of jobs according to your preference!</v-card-subtitle>
                     <v-infinite-scroll
                         height="400"
                         mode="manual"
                         @load="load"
+                        empty-text="There are no job postings that fit your descriptions!"
                     >
-                        <main v-for="(job) in jobs" style="margin-top: 10px" >
-                            <v-card variant="elevated" style="border-radius: 10px;" @click="dialog = true; currentviewedjob = job"> <!--just an example, will probably add a for loop to create these v-cards once jobs are extracted from api -->
+                        <main v-for="(job) in jobs" style="margin-top: 10px; border-radius: 20px;" >
+                            <v-card variant="flat" hover style="border-radius: 10px;" @click="dialog = true; currentviewedjob = job" opacity=0.9 color="#e9f5f9"> <!--just an example, will probably add a for loop to create these v-cards once jobs are extracted from api -->
                                 <v-card-item class="custom-card-item" prepend-icon="mdi-bank">
                                     <v-card-title style="text-align: left; font-weight: 500; color: rgb(37, 89, 168);"> {{ job["job_position"] }}</v-card-title>
                                     <v-card-subtitle>{{ job["company_name"] }}</v-card-subtitle>
                                     <v-card-subtitle>Source: LinkedIn</v-card-subtitle>
                                 </v-card-item>
 
-                                <v-dialog v-model="dialog" scrollable max-width="80%">
+                                <v-dialog v-model="dialog" width="600px" opacity=0.1>
                                     <v-card>
                                         <v-card-title>{{ currentviewedjob["company_name"] }}</v-card-title>
                                         <v-divider></v-divider>
@@ -58,7 +59,7 @@
             </v-col>
 
             <v-col>
-                <v-card color="#95adc5" class="pa-3" height="500px">
+                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
                     <v-card-title style="text-align: center;">Applied Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have applied on KiasuCareers</v-card-subtitle>
                 </v-card>
@@ -67,14 +68,14 @@
 
         <v-row class="d-flex ga-5">
             <v-col>
-                <v-card color="#95adc5" class="pa-3" height="500px">
+                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
                     <v-card-title style="text-align: center;">Saved Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have saved on KiasuCareers</v-card-subtitle>
                 </v-card>
             </v-col>
 
             <v-col>
-                <v-card color="#95adc5" class="pa-3" height="500px">
+                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
                     <v-card-title style="text-align: center;">Interviewed</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have interviewed with!</v-card-subtitle>
                 </v-card>
@@ -120,13 +121,13 @@ export default {
 
 <style scoped>
 .subheading{
-    color:rgb(180, 176, 176);
+    color:rgb(255, 253, 253);
     font-weight: 500;
 
 }
 
 .pa-3 {
-    border-radius: 30px;
+    border-radius: 20px;
     box-shadow: none;
 }
 

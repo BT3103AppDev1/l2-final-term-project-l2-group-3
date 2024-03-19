@@ -26,7 +26,7 @@
     <v-container>
         <v-row class="ga-5">
             <v-col>
-                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
                     <v-card-title style="text-align: center;">Find Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the list of jobs according to your preference!</v-card-subtitle>
                     <v-infinite-scroll
@@ -59,7 +59,7 @@
             </v-col>
 
             <v-col>
-                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
                     <v-card-title style="text-align: center;">Applied Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have applied on KiasuCareers</v-card-subtitle>
                 </v-card>
@@ -68,14 +68,14 @@
 
         <v-row class="d-flex ga-5">
             <v-col>
-                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
                     <v-card-title style="text-align: center;">Saved Jobs</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have saved on KiasuCareers</v-card-subtitle>
                 </v-card>
             </v-col>
 
             <v-col>
-                <v-card :style="{ opacity: '0.8' }" color="#95adc5" class="pa-3" height="500px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
                     <v-card-title style="text-align: center;">Interviewed</v-card-title>
                     <v-card-subtitle style="text-align: center;">Here are the jobs you have interviewed with!</v-card-subtitle>
                 </v-card>
@@ -121,7 +121,7 @@ export default {
 
 <style scoped>
 .subheading{
-    color:rgb(255, 253, 253);
+    color:#1e2242;
     font-weight: 500;
 
 }
@@ -136,8 +136,6 @@ export default {
     width: 50px; /* Initial width */
     overflow: hidden;
     margin-top: 20px;
-
-
 /* Center items horizontally */
 }
 
@@ -149,6 +147,10 @@ export default {
 .button-text {
   margin-left: 8px; /* Adjust spacing between icon and text */
   white-space: nowrap; /* Ensure the text does not wrap */
+}
+
+.btn {
+    text-transform: none;
 }
 
 

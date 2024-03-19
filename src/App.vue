@@ -29,3 +29,12 @@ export default {
 }
 </script>
 
+<style> 
+#app {
+  font-family: "Mulish", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+</style>
+

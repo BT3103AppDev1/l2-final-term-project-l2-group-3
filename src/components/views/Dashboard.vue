@@ -5,7 +5,7 @@
                 width="800px"
                 prepend-icon="mdi-account-edit"
                 title="Welcome to KiasuCareers!"
-                color="#729CBD"
+                color="#54739a"
             >
             <v-card-text class="font-weight-light">
                 New member here? Fill up and indicate some details below to have your own personalised dashboard!
@@ -49,9 +49,9 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                     <v-btn
+                        class="text-none"
                         variant="tonal"
-                        class="ms-auto"
-                        text="save"
+                        text="Save"
                         @click="closedialog"
                     ></v-btn>
                 </v-card-actions>
@@ -61,13 +61,13 @@
     </div>
 
     
-    <v-row class="view" style="margin-left: 30px;">
+    <v-row class="view" style="margin-left: 50px; height: 100%;">
 
         <v-col cols="8">
             <JobCards :jobs = "jobs" />
         </v-col>
 
-        <v-col cols="4">
+        <v-col cols="3">
             <Progress/>
         </v-col>
         
@@ -140,7 +140,7 @@ export default {
 <style scope>
 
 .view {
-    background-color: #54739a;
+    background-color: #eff1f7;
 }
 
 h3 {
@@ -148,13 +148,6 @@ h3 {
     font-weight: 400;
 }
 
-#jobcards {
-    margin-left: 50px;
-}
-
-#progressreminders {
-    width: max-content;
-}
 
 .subheading{
     color:rgb(180, 176, 176);

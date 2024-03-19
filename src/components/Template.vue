@@ -1,12 +1,12 @@
 <template>
     <v-app class="custom-bg">
     <v-row class="rounded rounded-md">
-        <v-app-bar app clipped-left :elevation="2" color= "#729CBD">
-            <v-app-bar-title>KiasuCareers</v-app-bar-title>
+        <v-app-bar app clipped-left :elevation="2" color= "#244d7b">
+            <v-app-bar-title>Kiasu<strong><i>Careers</i></strong></v-app-bar-title>
         </v-app-bar>
 
         <v-navigation-drawer
-        color="#729CBD"
+        color="#244d7b"
         expand-on-hover
         rail
         permanent
@@ -34,7 +34,16 @@
 
         <v-main class = "view" style="height:100%;" >
             <router-view/>
+            <v-footer color="#244d7b">
+              <v-row justify="center" no-gutters>
+                <v-col class="text-center mt-1" cols="2">
+                  {{ new Date().getFullYear() }} — <strong>KiasuCareers</strong>
+                </v-col>
+              </v-row>
+            </v-footer>
         </v-main>
+
+        
     </v-row>
         
 
@@ -48,6 +57,11 @@
     export default {
       data() {
         return {
+          links: [
+            'Home',
+            'About Us',
+            'Contact Us',
+          ],
           menu_pressed:false
         }
       },

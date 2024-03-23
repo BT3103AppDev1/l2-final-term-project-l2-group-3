@@ -35,4 +35,4 @@ export async function RetrieveJobsFromLinkedIn(title) {
     }
 }
 
-RetrieveJobs("data")
+RetrieveJobsFromLinkedIn("data")

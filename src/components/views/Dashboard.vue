@@ -1,78 +1,64 @@
 <template>
-    <div class="text-center">
-        <v-dialog v-model="dialog" width="auto">
-            <v-card
-                width="800px"
-                prepend-icon="mdi-account-edit"
-                title="Welcome to KiasuCareers!"
-                color="#54739a"
-            >
-            <v-card-text class="font-weight-light">
-                New member here? Fill up and indicate some details below to have your own personalised dashboard!
-                <v-container fluid>
-                    <br>
-                    <v-row>
-                    <span> <b>Job Title</b> </span>
-                    <v-col cols="12">
-                        <v-text-field v-model="title" label="Enter job title you are looking for, or any keywords"></v-text-field>
-                    </v-col>
-                    </v-row>
-
-                    <v-row>
-                    <span> <b>Industries</b> </span>
-                    <v-col cols="12">
-                        <v-combobox
-                        clearable
-                        chips
-                        :items="items"
-                        label="Select the industries you are interested in"
-                        multiple
-                        ></v-combobox>
-                    </v-col>
-                    </v-row>
-
-                    <v-row>
-                    <span><b>Job types</b></span>
-                    <v-col cols="12">
-                        <v-combobox
-                        clearable
-                        chips
-                        :items="jtypes"
-                        label="Select job types"
-                        multiple
-                        ></v-combobox>
-                    </v-col>
-                    </v-row>
-
-                </v-container>
-            </v-card-text>
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                    <v-btn
-                        class="text-none"
-                        variant="tonal"
-                        text="Save"
-                        @click="closedialog"
-                    ></v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+    <v-app class="custom-bg">
+        <v-row class="rounded rounded-md">
+            <Header />
+            <SideBar />
+        </v-row>
         
-    </div>
+        <div class="text-center">
+            <v-dialog v-model="dialog" width="auto">
+                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers!" color="#54739a">
+                    <v-card-text class="font-weight-light">
+                        New member here? Fill up and indicate some details below to have your own personalised dashboard!
+                        <v-container fluid> <br>
+                            <v-row>
+                                <span> <b>Job Title</b> </span>
+                                <v-col cols="12">
+                                    <v-text-field v-model="title" label="Enter job title you are looking for, or any keywords"></v-text-field>
+                                </v-col>
+                            </v-row>
 
-    
-    <v-row class="view" style="margin-left: 50px; height: 100%;">
+                            <v-row>
+                                <span> <b>Industries</b> </span>
+                                <v-col cols="12"> 
+                                    <v-combobox clearable chips :items="items" label="Select the industries you are interested in" multiple> </v-combobox>
+                                </v-col>
+                            </v-row>
 
-        <v-col cols="8">
-            <JobCards :jobs = "jobs" />
-        </v-col>
+                            <v-row>
+                                <span><b>Job types</b></span>
+                                <v-col cols="12">
+                                    <v-combobox clearable chips :items="jtypes" label="Select job types" multiple></v-combobox>
+                                </v-col>
+                            </v-row>
 
-        <v-col cols="3">
-            <Progress/>
-        </v-col>
-        
-    </v-row>
+                        </v-container>
+                    </v-card-text>
 
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                            <v-btn class="text-none" variant="tonal" text="Save" @click="closedialog"></v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>        
+        </div>
+
+            
+        <v-row class="view" style="margin-left: 55px; height: 100%; margin-top: 70px;">
+
+            <v-col cols="8">
+                <JobCards :jobs = "jobs" />
+            </v-col>
+
+            <v-col cols="3">
+                <Progress/>
+            </v-col>
+                
+        </v-row>
+            
+        <Footer />
+
+    </v-app>
     
 </template>
 
@@ -81,6 +67,9 @@ import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
 import {RetrieveJobs} from '@/linkedin.js';
 import SaveJob from "@/components/SaveJob.vue"
+import Header from "@/components/Header.vue"
+import SideBar from "@/components/SideBar.vue"
+import Footer from "@/components/Footer.vue"
 
 export default {
     data() {

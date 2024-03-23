@@ -88,21 +88,39 @@
         kiasulogo: kiasulogo,
         email: '',
         password: '',
-        visible: false
+        visible: false,
+        colors: [
+          'indigo',
+          'warning',
+          'pink darken-2',
+          'red lighten-1',
+          'deep-purple accent-4',
+        ],
+        slides: [
+          'First',
+          'Second',
+          'Third',
+          'Fourth',
+          'Fifth',
+        ],
       };
     },
     methods: {
       signIn() {
         const auth = getAuth();
+        const user = auth.currentUser
         signInWithEmailAndPassword(auth, this.email, this.password)
           .then((result) => {
             console.log('Successfully logged in!', result.user);
-            this.$router.push('/');
+            this.$router.push('/dashboard');
           })
           .catch(error => {
             console.error(error.code, error.message);
             alert(error.message);
           });
+        if (user){
+          console.log(user.email)
+        }
       },
   
       googleSignIn(){
@@ -110,7 +128,7 @@
         const auth = getAuth();
         signInWithPopup(auth, provider).then((result) => {
           console.log('Successfully logged in!', result.user);
-          this.$router.push('/');
+          this.$router.push('/dashboard');
         }).catch(err => {
           console.log(err)
         });

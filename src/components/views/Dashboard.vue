@@ -79,7 +79,9 @@
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import {RetrieveJobs} from '@/linkedin.js';
+import {RetrieveJobsFromLinkedIn} from '@/linkedin.js';
+//import {RetrieveJobsFromIndeed} from '@/indeed.js';
+//import {RetrieveJobsFromGlassdoor} from '@/glassdoor.js';
 import SaveJob from "@/components/SaveJob.vue"
 
 export default {
@@ -121,7 +123,7 @@ export default {
             this.dialog = false;
             localStorage.setItem('shown', 'true');
             console.log(this.title);
-            this.jobs = await RetrieveJobs(this.title);
+            this.jobs = await RetrieveJobsFromLinkedIn(this.title);
             console.log("this is the job object")
             console.log(this.jobs);
             //console.log(typeof(this.jobs))

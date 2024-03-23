@@ -60,41 +60,40 @@
         
     </div>
 
-    <div id="jobcards">
-        <v-btn color="primary" @click="showSaveJob = true">Save a Job</v-btn>
-        <v-dialog v-model="showSaveJob" persistent max-width="600px">
-            <v-card>
-                <v-card-title class="text-h5">Save a New Job</v-card-title>
-                <v-card-text>
-                    <SaveJob @job-saved="showSaveJob = false" />
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="green darken-1" text @click="showSaveJob = false">Close</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <JobCards />
-    </div>
-
     
+<<<<<<< HEAD
     <v-row style="padding: 50px;">
+=======
+    <v-row style="margin-left: 30px;">
+
+        <v-col cols="8">
+            <JobCards :jobs = "jobs" />
+        </v-col>
+
+>>>>>>> aeb17a5 (fixing bugs)
         <v-col cols="4">
             <Progress/>
         </v-col>
         
     </v-row>
+
+    
 </template>
 
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import SaveJob from "@/components/SaveJob.vue";
+import {RetrieveJobs} from '@/linkedin.js';
+import SaveJob from "@/components/SaveJob.vue"
 
 export default {
     data() {
         return {
+<<<<<<< HEAD
             showSaveJob: false,
+=======
+
+>>>>>>> aeb17a5 (fixing bugs)
             jobs: null,
             title: "",
             dialog: true, //setting it to true for now
@@ -120,6 +119,15 @@ export default {
         };
     },
 
+<<<<<<< HEAD
+=======
+    components: {
+        JobCards,
+        Progress,
+        SaveJob
+    },
+
+>>>>>>> aeb17a5 (fixing bugs)
     methods: {
         async closedialog() {
             this.dialog = false;
@@ -153,14 +161,31 @@ h3 {
 }
 
 #jobcards {
+<<<<<<< HEAD
     width: 2000px;
     float: left;
     padding: 20px;
+=======
+    padding: 10px;
+>>>>>>> aeb17a5 (fixing bugs)
     margin-left: 50px;
     margin-top: 0px;
 }
 
 #progressreminders {
+<<<<<<< HEAD
     float: left;
+=======
+    width: max-content;
 }
+
+.subheading{
+    color:rgb(180, 176, 176);
+    padding: 20px;
+    font-weight: 350;
+
+>>>>>>> aeb17a5 (fixing bugs)
+}
+
+
 </style>

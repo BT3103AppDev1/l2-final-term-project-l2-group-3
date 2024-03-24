@@ -3,9 +3,10 @@ import axios from 'axios';
 // Define the URL and parameters
 const url = "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://www.glassdoor.sg/Job/index.htm&dynamic=false";
 
-export async function RetrieveJobs(title) {
+export async function RetrieveJobsFromGlassdoor(title) {
     const params = {
-        api_key: "65fef29c3452ba2128e9b0a5"
+        api_key: "65fef29c3452ba2128e9b0a5",
+        url: "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://www.glassdoor.sg/Job/index.htm&dynamic=false"
     };
 
     try {
@@ -15,6 +16,7 @@ export async function RetrieveJobs(title) {
         if (response.status === 200) {
             // Access the response data
             const data = response.data;
+            //console.log("Data Type is ", typeof(data));
 
             let counter = 1;
             data.forEach(element => {                
@@ -32,4 +34,4 @@ export async function RetrieveJobs(title) {
     }
 }
 
-RetrieveJobs("data")
+RetrieveJobsFromGlassdoor("data")

@@ -1,11 +1,12 @@
 import axios from 'axios';
 
 // Define the URL and parameters
-const url = "http://api.scrapingdog.com/indeed";
-//const url = "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://sg.indeed.com/?r=us&dynamic=false";
-export async function RetrieveJobs(title) {
+//const url = "http://api.scrapingdog.com/indeed";
+const url = "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://sg.indeed.com/?r=us&dynamic=false";
+export async function RetrieveJobsFromIndeed(title) {
     const params = {
-        api_key: "65fef29c3452ba2128e9b0a5"
+        api_key: "65fef29c3452ba2128e9b0a5",
+        url: "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://sg.indeed.com/?r=us&dynamic=false"
     };
 
     try {
@@ -32,4 +33,4 @@ export async function RetrieveJobs(title) {
     }
 }
 
-RetrieveJobs("data")
+RetrieveJobsFromIndeed("data")

@@ -3,7 +3,7 @@ import axios from 'axios';
 // Define the URL and parameters
 const url = "https://api.scrapingdog.com/linkedinjobs/";
 
-export async function RetrieveJobs(title) {
+export async function RetrieveJobsFromLinkedIn(title) {
     const params = {
         api_key: "65ee9b9b17a1b774efc6602a",
         field: title,
@@ -35,4 +35,4 @@ export async function RetrieveJobs(title) {
     }
 }
 
-RetrieveJobs("data")
+RetrieveJobsFromLinkedIn("data")

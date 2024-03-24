@@ -37,7 +37,8 @@
                     <v-row align="start" justify="start" style="margin-left: 15px;margin-top: 40px;">
                       <v-col xl="1" lg="2" md="3">
                           <v-avatar color="surface-variant" size="120">
-                              <v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>    
+                              <!--<v-img src="https://randomuser.me/api/portraits/women/85.jpg"></v-img>-->
+                              <v-img :src="profileImageUrl"></v-img>     
                           </v-avatar>
                       </v-col>
 
@@ -126,8 +127,8 @@
 
                             <v-card-actions>
                               <v-spacer></v-spacer>
-                              <v-btn color="green darken-1" text @click="validatePasswordChange">Change</v-btn>
                               <v-btn color="green darken-1" text @click="showEditPasswordModal = false">Cancel</v-btn>
+                              <v-btn color="green darken-1" text @click="validatePasswordChange">Change</v-btn>
                             </v-card-actions>
                           </v-card>
                         </v-dialog>
@@ -145,14 +146,28 @@
                       <h3 style="color: rgb(122, 120, 120); font-weight: 400; padding: 20px;">You can permanently delete your account. This action is irreversible.</h3>
                     </v-col>
                     <v-col cols=12 class="d-flex justify-center align-center" style="margin-bottom: 20px; margin-top: -10px">
-                      <v-btn  text="Delete Account" class="text-none" style="width: 300px; color: red" variant="tonal"></v-btn>
+
+                      <v-btn  @click="showDeleteConfirmation = true" text="Delete Account" class="text-none" style="width: 300px; color: red" variant="tonal"></v-btn>
+                      <v-dialog v-model="showDeleteConfirmation" persistent max-width="400px">
+                      <v-card>
+                        <v-card-title class="text-h6">Confirm Account Deletion</v-card-title>
+                        <v-card-text>Are you sure you want to permanently delete your account? This action cannot be undone.</v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="green darken-1" text @click="showDeleteConfirmation = false">Cancel</v-btn>
+                          <v-btn color="red darken-1" text @click="deleteUserAccount">Delete</v-btn>
+                        </v-card-actions>
+                      </v-card>
+                      </v-dialog>
+
+
+
                     </v-col>
                     </v-row>
                 </v-card>
 
 
               </v-row>
-
             </v-col>
             </v-row>
           </v-container>
@@ -160,19 +175,23 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; " color="#B0BECA" height="300px" >
+                <v-card style="border-radius: 30px; " color="#ffffff" height="300px" >
                   <v-row>
                       <v-col>
-                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-left: 10px;">Sync Job Listings From</h2>
+                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
+                        <h3 style="padding: 10px; color: rgb(80, 77, 77); font-weight: 400; margin-left: 10px;"> Enable to automatically import job listings from each platform </h3>
                         <hr>
                       </v-col>
                   </v-row>
                   
 
-                <v-row class="mt-n0 mb-n10"> <!-- Add bottom margin for spacing -->
-                    <v-col cols="6" class="d-flex align-self-center justify-start"> <!-- Place text on the end(right) for LTR languages -->
-                      <h3 class="switch-label" style="margin-left: 20px;"><b>Linkedin</b></h3>
+                  <v-row align="center" class="mt-n0 mb-n10">
+
+                    <v-col cols="6" class="d-flex align-self-center justify-start">
+                      <v-icon style="margin-left: 20px;" color=rgb(10,102,194)>mdi-linkedin</v-icon>
+                      <h3 class="switch-label" style="margin-left: 5px;"><b>Linkedin</b></h3>
                     </v-col>
+
                     <v-col cols="6" class="d-flex align-self-center justify-end">
                       <v-switch inset color="success" value="success" v-model="syncLinkedin" style="margin-right: 20px;"></v-switch> <!-- properly define vmodel for switch to be toggled -->
                     </v-col>
@@ -180,7 +199,10 @@
 
                   <v-row class="mt-n0 mb-n10">
                     <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <h3 class="switch-label" style="margin-left: 20px;"><b>Indeed</b></h3>
+                      <v-list-item-icon style="margin-left: 20px;">
+                        <indeed-logo />
+                      </v-list-item-icon>
+                      <h3 class="switch-label" style="margin-left: 5px;"><b>Indeed</b></h3>
                     </v-col>
                   
                     <v-col cols="6" class="d-flex align-self-center justify-end">
@@ -189,46 +211,67 @@
                   </v-row>
                 </v-card><br>
 
-                <v-card style="border-radius: 30px; " color="#B0BECA" height="150px" >
+                <v-card style="border-radius: 30px; " color="ffffff" height="165px" >
                   <v-row>
                       <v-col>
-                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-left: 10px;">Progress</h2>
+                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Progress</h2>
+                        <h3 style="padding: 10px; color: rgb(80, 77, 77); font-weight: 400; margin-left: 10px;"> Set your daily application goal to track your progress  </h3>
                         <hr>
                       </v-col>
                   </v-row>
                   
-                  <v-row>
-                    <v-col class="my-2">
+                  <v-row class="my-2" justify="space-between">
+                    <v-col cols="auto">
                       <h3 class="switch-label" style="margin-left: 20px;"><b>Daily Application Goal</b></h3>
                     </v-col>
+                    
                   
-                    <v-col>
-                      <v-radio-group v-model="dailyGoal" row class="radio-group" inline>
+                    <v-col cols="auto"> 
+                      <v-radio-group v-model="dailyGoal" @change="handleRadioChange" row class="radio-group" inline color="indigo-darken-3">
                         <v-radio label="5" value="5"></v-radio>
                         <v-radio label="10" value="10"></v-radio>
                         <v-radio label="20" value="20"></v-radio>
-                        <v-radio label="Custom" value="radio-4"></v-radio>
+                        <v-radio :label="customLabel" value="custom"></v-radio>
                       </v-radio-group>
                     </v-col>
                   </v-row>
+
+                  <!-- Dialog for custom goal input -->
+                  <v-dialog v-model="showCustomDialog" persistent max-width="290">
+                    <v-card>
+                      <v-card-title>Enter Custom Goal</v-card-title>
+                        <v-card-text>
+                          <v-text-field v-model="inputCustomGoal" label="Custom Goal" type="number"></v-text-field>
+                        </v-card-text>
+                        <v-card-actions>
+                          <v-btn color="blue darken-1" text @click="closeCustomDialog">Cancel</v-btn>
+                          <v-btn color="blue darken-1" text @click="submitCustomGoal">Ok</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+
                 </v-card><br>
               </v-container>
             </v-window-item>
 
             <v-window-item value="three">
               <v-container>
-                <v-card style="border-radius: 30px; " color="#B0BECA" height="250px" >
+                <v-card style="border-radius: 30px; " color="ffffff" height="260px" >
 
                   <v-row>
                       <v-col>
-                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-left: 10px;">Reminders</h2>
+                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Reminders</h2>
+                        <h3 style="padding: 10px; color: rgb(80, 77, 77); font-weight: 400; margin-left: 10px;"> Set notification preferences for reminders </h3>
                         <hr>
                       </v-col>
                   </v-row>
 
                   <v-row class="mt-n0 mb-n10">
                     <v-col cols="12" sm="3" class="d-flex align-center justify-start">
-                      <h3 class="switch-label" style="margin-left: 20px;"><b>Microsoft Outlook</b></h3>
+                      <v-list-item-icon style="margin-left: 20px; margin-bottom: 10px;">
+                        <outlook-logo />
+                      </v-list-item-icon>
+                      <h3 class="switch-label" style="margin-left: 10px;"><b>Microsoft Outlook</b></h3>
                     </v-col>
                     
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
@@ -238,7 +281,10 @@
 
                   <v-row class="mt-n0 mb-n10">
                     <v-col cols="12" sm="3" class="d-flex align-center justify-start">
-                      <h3 class="switch-label" style="margin-left: 20px;"><b>Telegram</b></h3>
+                      <v-list-item-icon style="margin-left: 20px; margin-bottom: 10px;">
+                        <telegram-logo />
+                      </v-list-item-icon>
+                      <h3 class="switch-label" style="margin-left: 10px;"><b>Telegram</b></h3>
                     </v-col>
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
                       <v-switch inset color="success" value="success" v-model="remindTelegram" style="margin-right: 20px;"></v-switch>
@@ -255,13 +301,22 @@
 </template>
 
 <script>
+import IndeedLogo from "@/components/IndeedLogo.vue";
+import TelegramLogo from "@/components/TelegramLogo.vue";
+import OutlookLogo from "@/components/OutlookLogo.vue";
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser } from 'firebase/auth';
+
+
 export default {
   data: () => ({
     tab: null,
     userEmail: 'user@example.com',
-    syncLinkedin: false,
+    syncLinkedin: true,
     syncIndeed: false,
-    dailyGoal: '10',
+    dailyGoal: '20',
+    showCustomDialog: false,
+    customGoal: '',
+    inputCustomGoal: '',
     remindOutlook: false,
     remindTelegram: false,
     showEditPasswordModal: false,
@@ -269,10 +324,20 @@ export default {
     oldPassword: '',
     newPassword: '',
     confirmNewPassword: '',
-    showPassword: false
+    showPassword: false,
+    showDeleteConfirmation: false,
+    profileImageUrl: "https://randomuser.me/api/portraits/women/85.jpg", // Placeholder image
   }),
+
+  computed: {
+    customLabel() {
+      console.log(this.dailyGoal);
+      return this.customGoal ? `Custom: ${this.customGoal}` : "Custom: N/A";
+    }
+  },
+
   methods: {
-    validatePasswordChange() {
+    async validatePasswordChange() {
       if (!this.$refs.form.validate()) {
         return;
       }
@@ -282,54 +347,120 @@ export default {
         alert("New passwords must match.");
         return;
       }
-      // Process password change logic here
-      // For example, send a request to your API to change the password
-      this.showEditPasswordModal = false;
-  }
+
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        alert("No user is currently signed in.");
+        return;
+      }
+
+      //re-authenticate the user
+      const credential = EmailAuthProvider.credential(user.email, this.oldPassword);
+
+      try {
+        await reauthenticateWithCredential(user, credential);
+        //user re-authenticated, proceed with password change
+        await updatePassword(user, this.newPassword);
+        alert("Password changed successfully!");
+        this.showEditPasswordModal = false;
+      } catch (error) {
+        console.error("Error changing password:", error);
+        if (error.code === 'auth/invalid-credential') {
+          alert("Incorrect current password. Please try again.");
+        } else {
+          //requires recent login
+          alert("Failed to change password. Please log out and sign in again.")
+        }
+      }
+    },
+    
+    async deleteUserAccount() {
+      this.showDeleteConfirmation = false;
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) {
+        alert("No user is currently signed in.")
+        return;
+      }
+
+      try {
+        await deleteUser(user);
+        alert("Account deleted successfully!");
+        console.log("Account deleted.");
+        this.$router.push('/');
+      } catch (error) {
+        //requires recent login
+        console.error("Error deleting user account", error);
+        alert("Failed to delete user account. Please log out and sign in again.")
+      }
+    },
+    
+    //methods for custom option under Daily Application Goal
+    handleRadioChange(value) {
+      console.log("Radio value changed:", this.dailyGoal);
+      if (this.dailyGoal == 'custom' && !this.showCustomDialog) {
+        console.log("Custom option selected, showing dialog...");
+        this.showCustomDialog = true;
+      }
+    }, 
+
+    closeCustomDialog() {
+      this.showCustomDialog = false;
+    }, 
+
+    submitCustomGoal() {
+      //console.log("Submitting custom goal:", this.customGoal);
+      if (this.inputCustomGoal && !isNaN(this.inputCustomGoal)) {
+        this.customGoal = this.inputCustomGoal; //updates the stored custom value
+        this.dailyGoal = 'custom'; //keeps the custom radio button selected
+        console.log("Daily goal updated to custom value:", this.dailyGoal)
+      }
+      this.closeCustomDialog();
+    },
+
+    
+    //logic not done yet
+    async handleSyncLinkedin() { 
+      console.log('syncLinkedIn changed:', this.syncLinkedin);
+    },
+
+    async handleSyncIndeed() {
+      console.log('syncIndeed changed:', this.syncIndeed);
+    },
+
+    async handleRemindOutlook() {
+      console.log('remindOutlook changed:', this.remindOutlook);
+    },
+
+    async handleRemindTelegram() {
+      console.log('remindTelegram changed:', this.remindTelegram);
+    },
  }
 }
 </script>
 
 
 <style>
-.dashboardpage {
-  align-self: flex-start !important;
-  max-width: none !important;
-  width: 100%;
-  height: 100%;
-  
+
+.mt-n0.mb-n10 .switch-label {
+  align-items: center;
+  margin-bottom: 15px;
+  color: #646666;
 }
 
-.dashboardpage .title {
-    text-align: left !important;
+.my-2 .switch-label {
+  color: #646666;
+  margin-top: 10px;
 }
 
-.custom-email-field, .passwordfield {
-  margin-top: 20px;
-  border-radius: 4px; /* Rounded corners */
-  max-width: 250px;
-  height: 20px;
+hr {
+  border-color: white;
+  opacity: 40%;
 }
 
-.dashboardpage .label {
-    display: flex;
-    align-items: center;
+.radio-group {
+  margin-right: 20px;
 }
-
-
-.dashboardpage .radio-group {
-    margin-left: 300px;
-}
-
-.dashboardpage .edit-password-btn {
-  background: none !important; /* Removes background */
-  border: none !important; /* Removes border */
-  box-shadow: none !important; /* Removes shadow if any */
-  margin-top: 0px;
-  margin-bottom: 0px;
-  background-color: pink;
-  padding-top: 0;
-}
-
 
 </style>

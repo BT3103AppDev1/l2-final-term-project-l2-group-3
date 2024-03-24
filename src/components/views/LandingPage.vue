@@ -168,6 +168,7 @@
         font-style: normal;
         min-height: 100vh;        
         background-color: #244d7b;
+    }
         
     p {
         font-family: "Mulish", sans-serif;

@@ -1,36 +1,22 @@
-import axios from 'axios';
+import axios from 'axios'
 
-// Define the URL and parameters
-//const url = "http://api.scrapingdog.com/indeed";
-const url = "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://sg.indeed.com/?r=us&dynamic=false";
-export async function RetrieveJobsFromIndeed(title) {
-    const params = {
-        api_key: "65fef29c3452ba2128e9b0a5",
-        url: "https://api.scrapingdog.com/scrape?api_key=65fef29c3452ba2128e9b0a5&url=https://sg.indeed.com/?r=us&dynamic=false"
-    };
-
-    try {
-        let dic = {}
-        const response = await axios.get(url, { params })
-
-        if (response.status === 200) {
-            // Access the response data
-            const data = response.data;
-
-            let counter = 1;
-            data.forEach(element => {                
-                dic[counter++] = element
-            })
-            console.log(dic)
-            return dic;
-            
-        } else {
-            console.log("Request failed with status code:", response.status);
-        }
+const options = {
+    method: 'GET',
+    url: 'https://jsearch.p.rapidapi.com/search',
+    params: {
+        query: 'Data analyst in Singapore',
+        page: '1',
+        num_pages: '1'
+    },
+    headers: {
+        'X-RapidAPI-Key': '2fe0ed2490mshb0f9443b9aff94dp1e2bb5jsn412671b0c982',
+        'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
     }
-    catch (error){
-        console.error("An error occurred:", error);
-    }
+};
+
+try {
+	const response = await axios.request(options);
+	console.log(response.data);
+} catch (error) {
+	console.error(error);
 }
-
-RetrieveJobsFromIndeed("Data")

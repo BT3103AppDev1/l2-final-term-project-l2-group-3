@@ -175,8 +175,8 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; " color="#ffffff" height="300px" >
-                  <v-row>
+                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="300px" >
+                  <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
                         <h3 style="padding: 10px; color: rgb(80, 77, 77); font-weight: 400; margin-left: 10px;"> Enable to automatically import job listings from each platform </h3>
@@ -254,9 +254,11 @@
               </v-container>
             </v-window-item>
 
+            <!-- window 3-->
+
             <v-window-item value="three">
               <v-container>
-                <v-card style="border-radius: 30px; " color="ffffff" height="260px" >
+                <v-card style="border-radius: 30px; width: 1000px; " color="ffffff" height="260px" >
 
                   <v-row>
                       <v-col>

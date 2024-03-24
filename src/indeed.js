@@ -33,4 +33,4 @@ export async function RetrieveJobsFromIndeed(title) {
     }
 }
 
-RetrieveJobsFromIndeed("data")
+RetrieveJobsFromIndeed("Data")

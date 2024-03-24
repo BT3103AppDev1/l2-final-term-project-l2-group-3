@@ -76,7 +76,6 @@ import Footer from "@/components/Footer.vue"
 export default {
     data() {
         return {
-
             jobs: null,
             title: "",
             dialog: true, //setting it to true for now (to test the dialog)
@@ -112,11 +111,11 @@ export default {
             this.dialog = false;
             localStorage.setItem('shown', 'true');
             console.log(this.title);
-            const linkedinJobs = await RetrieveJobsFromLinkedIn(title);
-            const indeedJobs = await RetrieveJobsFromIndeed(title);
-            const glassdoorJobs = await RetrieveJobsFromGlassdoor(title);
-            this.jobs = [...linkedinJobs, ...indeedJobs, ...glassdoorJobs]; 
-            //this.jobs = await RetrieveJobs(this.title);
+            const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
+            //const indeedJobs = await RetrieveJobsFromIndeed(title);
+            //const glassdoorJobs = await RetrieveJobsFromGlassdoor(title);
+            //this.jobs = [...linkedinJobs, ...indeedJobs, ...glassdoorJobs]; 
+            this.jobs = await RetrieveJobsFromLinkedIn(this.title);
             console.log("this is the job object")
             console.log(this.jobs);
             //console.log(typeof(this.jobs))

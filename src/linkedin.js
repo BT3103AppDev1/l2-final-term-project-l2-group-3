@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // Define the URL and parameters
-const url = "https://api.scrapingdog.com/linkedinjobs/";
+
 
 export async function RetrieveJobsFromLinkedIn(title) {
+    const url = "https://api.scrapingdog.com/linkedinjobs/";
     const params = {
         api_key: "65ee9b9b17a1b774efc6602a",
         field: title,
@@ -23,7 +24,7 @@ export async function RetrieveJobsFromLinkedIn(title) {
             data.forEach(element => {                
                 dic[counter++] = element
             })
-            console.log(dic)
+            //console.log(dic)
             return dic;
             
         } else {
@@ -35,4 +36,4 @@ export async function RetrieveJobsFromLinkedIn(title) {
     }
 }
 
-RetrieveJobsFromLinkedIn("data")
+//RetrieveJobsFromLinkedIn("data")

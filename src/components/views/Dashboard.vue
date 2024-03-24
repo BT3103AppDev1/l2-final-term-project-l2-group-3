@@ -65,7 +65,9 @@
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import {RetrieveJobs} from '@/linkedin.js';
+import {RetrieveJobsFromLinkedIn} from '@/linkedin.js';
+import {RetrieveJobsFromGlassdoor} from '@/glassdoor.js';
+import {RetrieveJobsFromIndeed} from '@/indeed.js';
 import SaveJob from "@/components/SaveJob.vue"
 import Header from "@/components/Header.vue"
 import SideBar from "@/components/SideBar.vue"
@@ -74,7 +76,6 @@ import Footer from "@/components/Footer.vue"
 export default {
     data() {
         return {
-
             jobs: null,
             title: "",
             dialog: true, //setting it to true for now (to test the dialog)
@@ -110,7 +111,11 @@ export default {
             this.dialog = false;
             localStorage.setItem('shown', 'true');
             console.log(this.title);
-            this.jobs = await RetrieveJobs(this.title);
+            const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
+            //const indeedJobs = await RetrieveJobsFromIndeed(title);
+            //const glassdoorJobs = await RetrieveJobsFromGlassdoor(title);
+            //this.jobs = [...linkedinJobs, ...indeedJobs, ...glassdoorJobs]; 
+            this.jobs = await RetrieveJobsFromLinkedIn(this.title);
             console.log("this is the job object")
             console.log(this.jobs);
             //console.log(typeof(this.jobs))

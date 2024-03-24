@@ -11,4 +11,3 @@ const app = createApp(App)
 
 
 app.use(Vuetify).use(MotionPlugin).use(router).mount('#app')
-

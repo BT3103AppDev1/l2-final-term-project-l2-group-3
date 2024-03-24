@@ -5,7 +5,6 @@ import Resume from '../components/views/Resume.vue'
 import Calendar from '../components/views/Calendar.vue'
 import Performance from '../components/views/Performance.vue'
 import Login from '@/components/views/Login.vue'
-import Register from '@/components/views/Register.vue'
 import PasswordReset from '@/components/views/PasswordReset.vue'
 import Reset from '@/components/views/Reset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -43,11 +42,6 @@ const router = createRouter( {
         {
             path: "/performance",
             component: Performance
-        },
-
-        {
-            path:"/register",
-            component: Register
         },
 
         {

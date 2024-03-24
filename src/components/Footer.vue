@@ -6,5 +6,4 @@
             </v-col>
         </v-row>
     </v-footer>
-
 </template>

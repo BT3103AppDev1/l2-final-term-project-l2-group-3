@@ -6,7 +6,6 @@
 
 <script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-
 import { useRouter } from 'vue-router';
 
 export default {

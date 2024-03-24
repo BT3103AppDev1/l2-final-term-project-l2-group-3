@@ -15,7 +15,6 @@
                 </v-col>
                 
                 <v-col cols=1></v-col>
-                
                 <v-col cols=4>
                     <img class="image" src="@/assets/resume.png" alt="">
                     <div class="home_shadow"></div>
@@ -71,7 +70,7 @@
             </div>  
 
         </v-main>
-        
+       
     </v-app>
 
 </template>
@@ -99,12 +98,15 @@
         },
 
         mounted() {
-
             gsap.fromTo('.logo', 
                 { opacity: 0, y: 10 },
                 { opacity: 1, y: 0, duration: 1, delay: 2 }
             );
 
+            gsap.fromTo('.navbar .nav_item',
+                {opacity: 0, y: 30},
+                {opacity: 1, duration: 1, delay: 2.1, stagger: 0.4}
+            );
             gsap.fromTo('.title', 
                 { opacity: 0, y: 30 },
                 { opacity: 1, y: 0, duration: 1, delay: 1.6 }
@@ -160,6 +162,13 @@
         margin-top: 50px;
     }
 
+    .container{
+        font-family: "Mulish", sans-serif;
+        font-weight: 800;
+        font-style: normal;
+        min-height: 100vh;        
+        background-color: #244d7b;
+        
     p {
         font-family: "Mulish", sans-serif;
         font-weight: 300;
@@ -276,5 +285,5 @@
             transform: translateY(40px);
         }
     }
-
 </style>
+

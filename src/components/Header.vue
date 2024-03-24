@@ -3,3 +3,4 @@
         <v-app-bar-title class="logo">Kiasu<strong><i>Careers</i></strong></v-app-bar-title>
     </v-app-bar>
 </template>
+

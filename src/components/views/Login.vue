@@ -1,114 +1,249 @@
 <template>
-    <div class="login-container">
-      <v-img
-        class="mx-auto my-6"
-        max-width="520"
-        :src="kiasulogo"
-      ></v-img>
-  
-      <v-card
-        class="mx-auto pa-16 pb-16"
-        elevation="8"
-        max-width="600"
-        rounded="lg"
-      >
-        <div class="text-subtitle-1 text-medium-emphasis">Account</div>
-  
-        <v-text-field
-          v-model="email"
-          dense
-          placeholder="Email address"
-          prepend-inner-icon="mdi-email-outline"
-          variant="outlined"
-        ></v-text-field>
-  
-        <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-          Password
-  
-          <router-link
-            to="/forgotPassword"
-            class="text-caption text-decoration-none text-blue"
-          >
-            Forgot login password?
-          </router-link>
-        </div>
-  
-        <v-text-field
-          v-model="password"
-          :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-          :type="visible ? 'text' : 'password'"
-          dense
-          placeholder="Enter your password"
-          prepend-inner-icon="mdi-lock-outline"
-          variant="outlined"
-          @click:append-inner="visible = !visible"
-        ></v-text-field>
-  
-        <v-btn
-          class="mb-8"
-          color="blue"
-          size="large"
-          variant="tonal"
-          block
-          @click="signIn"
-        >
-          Log In
-        </v-btn>
-  
-        <v-btn
-          class="mb-8"
-          color="blue"
-          size="large"
-          variant="tonal"
-          block
-          @click="googleSignIn"
-        >
-          Sign in with Google
-        </v-btn>
-  
-        <router-link
-          to="/register"
-          class="text-blue text-decoration-none"
-        >
-          Sign up now
-          <v-icon>mdi-chevron-right</v-icon>
-        </router-link>
-      </v-card>
-  
-    </div>
-  </template>
-  
-  <script>
-  import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, signInWithPopup } from 'firebase/auth';
-  import kiasulogo from '@/assets/kiasulogo.png';
+  <v-row align="center" justify="center" class="full-height">
+    <v-col cols="12" sm="12">
+      <v-window v-model="step">
+        <v-window-item :value="1">
+          <v-row justify="center" align="center" class="full-height">
+            <v-col cols="12" md="6" class="d-flex align-center justify-center">
+              <v-card flat max-width="700">
+                <h2 class="text-center">KiasuCareers Login</h2>
+                <br />
+                <div class="text-subtitle-1 text-medium-emphasis">Account</div>
+                <v-text-field
+                  v-model="email"
+                  dense
+                  placeholder="Email address"
+                  prepend-inner-icon="mdi-email-outline"
+                  variant="underlined"
+                ></v-text-field>
+                <div
+                  class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+                >
+                  Password
+                  <router-link
+                    to="/forgotPassword"
+                    class="text-caption text-decoration-none text-blue"
+                  >
+                    Forgot password?
+                  </router-link>
+                </div>
+                <v-text-field
+                  v-model="password"
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  dense
+                  placeholder="Enter your password"
+                  prepend-inner-icon="mdi-lock-outline"
+                  variant="underlined"
+                  @click:append-inner="visible = !visible"
+                ></v-text-field>
+                <v-btn
+                  class="mb-8"
+                  color="blue"
+                  size="large"
+                  variant="tonal"
+                  block
+                  @click="signIn"
+                >
+                  Log In
+                </v-btn>
+                <h4 class="text-center style --text mt-4 mb-3">
+                  Or sign in with one of the following services
+                </h4>
+                <br />
+                <div
+                  class="d-flex justify-space-between align-center mx-10 mb-16"
+                >
+                  <v-btn depressed outlined color="white" @click="googleSignIn">
+                    <v-icon class="fab fa-google" color="red"></v-icon>
+                  </v-btn>
+                  <v-btn depressed outlined color="white">
+                    <v-icon class="fab fa-facebook-f" color="blue"></v-icon>
+                  </v-btn>
+                  <v-btn depressed outlined color="white">
+                    <v-icon
+                      class="fab fa-twitter"
+                      color="light-blue lighten-3"
+                    ></v-icon>
+                  </v-btn>
+                </div>
+              </v-card>
+            </v-col>
 
-  export default {
-    data() {
-      return {
-        kiasulogo: kiasulogo,
-        email: '',
-        password: '',
-        visible: false,
-        colors: [
-          'indigo',
-          'warning',
-          'pink darken-2',
-          'red lighten-1',
-          'deep-purple accent-4',
-        ],
-        slides: [
-          'First',
-          'Second',
-          'Third',
-          'Fourth',
-          'Fifth',
-        ],
-      };
-    },
-    methods: {
-      signIn() {
+            <v-col
+              class="rounded-bl-xl d-flex align-center justify-center"
+              cols="12"
+              md="6"
+            >
+              <div style="text-align: center; padding: 120px 0 180px">
+                <v-img
+                  class="mx-auto my-6 img-max-width"
+                  :src="coverimage"
+                ></v-img>
+                <h2 style="color: white">Don't Have an Account Yet?</h2>
+                <h3 style="color: white">Let's get you all set up.</h3>
+                <br />
+                <v-btn
+                  tile
+                  color="white"
+                  variant="tonal"
+                  text-color="white"
+                  outlined
+                  dark
+                  @click="step++"
+                  >SIGN UP</v-btn
+                >
+              </div>
+            </v-col>
+          </v-row>
+        </v-window-item>
+        <v-window-item :value="2">
+          <v-row align="center" justify="center" class="full-height">
+            <v-col
+              cols="12"
+              md="6"
+              class="rounded-br-xl d-flex align-center justify-center"
+            >
+              <div style="text-align: center; padding: 120px 0 180px">
+                <v-img
+                  class="mx-auto my-6 img-max-width"
+                  :src="coverimage"
+                ></v-img>
+                <h2 style="color: white">Already Signed up?</h2>
+                <h3 style="color: white">Log in to your account.</h3>
+                <br />
+                <v-btn
+                  tile
+                  color="white"
+                  variant="tonal"
+                  text-color="white"
+                  outlined
+                  dark
+                  @click="step--"
+                  >Log in</v-btn
+                >
+              </div>
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-card flat max-width="700">
+                <h2 class="text-center">Create an Account</h2>
+                <br />
+                <v-row align="center" justify="center">
+                  <v-col cols="12" sm="8">
+                    <v-row>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="firstname"
+                          color="primary"
+                          label="First name"
+                          variant="underlined"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="lastname"
+                          color="primary"
+                          label="Last name"
+                          variant="underlined"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-text-field
+                      v-model="email"
+                      dense
+                      label="Email address"
+                      prepend-inner-icon="mdi-email-outline"
+                      variant="underlined"
+                    ></v-text-field>
+
+                    <v-text-field
+                      v-model="password"
+                      :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                      :type="visible ? 'text' : 'password'"
+                      dense
+                      label="Enter your password"
+                      prepend-inner-icon="mdi-lock-outline"
+                      variant="underlined"
+                      @click:append-inner="visible = !visible"
+                    ></v-text-field>
+
+                    <v-btn
+                      color="blue"
+                      variant="tonal"
+                      block
+                      @click="registerUser"
+                      >Sign up</v-btn
+                    >
+                    <br />
+                    <h4 class="text-center style --text mt-4 mb-3">
+                      Or sign in with one of the following services
+                    </h4>
+                    <br />
+                    <div
+                      class="d-flex justify-space-between align-center mx-10 mb-16"
+                    >
+                      <v-btn
+                        depressed
+                        outlined
+                        color="white"
+                        @click="googleSignIn"
+                      >
+                        <v-icon class="fab fa-google" color="red"></v-icon>
+                      </v-btn>
+                      <v-btn depressed outlined color="white">
+                        <v-icon class="fab fa-facebook-f" color="blue"></v-icon>
+                      </v-btn>
+                      <v-btn depressed outlined color="white">
+                        <v-icon
+                          class="fab fa-twitter"
+                          color="light-blue lighten-3"
+                        ></v-icon>
+                      </v-btn>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-window-item>
+      </v-window>
+    </v-col>
+  </v-row>
+</template>
+
+<script>
+import {
+  getAuth,
+  sendSignInLinkToEmail,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  sendEmailVerification,
+} from "firebase/auth";
+import coverimage from "@/assets/coverimage.png";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import firebaseApp from "@/firebase";
+
+export default {
+  data() {
+    return {
+      coverimage: coverimage,
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      visible: false,
+      step: 1,
+    };
+  },
+  props: {
+    source: String,
+  },
+
+  methods: {
+    signIn() {
         const auth = getAuth();
-        const user = auth.currentUser
         signInWithEmailAndPassword(auth, this.email, this.password)
           .then((result) => {
             console.log('Successfully logged in!', result.user);
@@ -118,101 +253,77 @@
             console.error(error.code, error.message);
             alert(error.message);
           });
-        if (user){
-          console.log(user.email)
-        }
-      },
-  
-      googleSignIn(){
-        const provider = new GoogleAuthProvider();
-        const auth = getAuth();
-        signInWithPopup(auth, provider).then((result) => {
-          console.log('Successfully logged in!', result.user);
-          this.$router.push('/dashboard');
-        }).catch(err => {
-          console.log(err)
+        },
+
+        async saveUserData() {
+          try {
+            const db = getFirestore(firebaseApp);
+            const auth = getAuth();
+            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.uid)), {
+              firstName: this.firstname,
+              lastName: this.lastname
+            });
+            console.log('User data saved.');
+          } catch (error) {
+            console.error('Error saving user data:', error);
+          }
+        },
+
+
+        async registerUser() {
+          let errorMessage = '';
+          try {
+            const auth = getAuth();
+            const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+            const userData = await this.saveUserData(); 
+            console.log('Successfully registered!', userCredential);
+            this.$router.push('/dashboard'); 
+          } catch (error) {
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                errorMessage = 'Your email is already in use at KiasuCareers.';
+                break;
+              case 'auth/weak-password':
+                errorMessage = 'Password should be at least 6 characters.';
+                break;
+              default:
+                errorMessage = error.message;
+            }
+            console.error(error.code, error.message);
+            alert(errorMessage);
+          }
+        },
+
+    googleSignIn() {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          console.log("Successfully logged in!", result.user);
+          this.$router.push("/dashboard");
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
-    }
-  }
-  </script>
-  
-  <style>
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f2f2f2;
-  }
-  
-  .mx-auto {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .my-6 {
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
-  
-  .pa-16 {
-    padding: 48px;
-  }
-  
-  .pb-16 {
-    padding-bottom: 32px;
-  }
-  
-  .text-subtitle-1 {
-    font-size: 1.25rem;
-    font-weight: 400;
-    line-height: 1.6;
-    letter-spacing: 0.0075em;
-  }
-  
-  .text-medium-emphasis {
-    color: rgba(0, 0, 0, 0.87);
-  }
-  
-  .text-caption {
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.6;
-    letter-spacing: 0.03333em;
-  }
-  
-  .text-blue {
-    color: #007bff;
-  }
-  
-  .text-decoration-none {
-    text-decoration: none;
-  }
-  
-  .text-center {
-    text-align: center;
-  }
-  
-  .mb-12 {
-    margin-bottom: 48px;
-  }
-  
-  .mb-8 {
-    margin-bottom: 32px;
-  }
-  
-  .max-width {
-    max-width: 100%;
-  }
-  
-  .surface-variant {
-    background-color: #ffffff;
-  }
-  
-  .variant-tonal {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-  }
-  
-  </style>
+    },
+  },
+};
+</script>
+
+<style scoped>
+.full-height {
+  height: 100vh;
+}
+
+.rounded-bl-xl {
+  background-color: #244d7b;
+  color: white;
+  border-bottom-left-radius: 400px;
+}
+
+.rounded-br-xl {
+  background-color: #244d7b;
+  color: whitesmoke;
+  border-bottom-right-radius: 400px;
+}
+</style>

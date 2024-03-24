@@ -64,7 +64,7 @@ const router = createRouter( {
 router.beforeEach((to, from, next) => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
-        const requiresAuth = !['/', '/login', '/register', '/forgotPassword', '/reset'].includes(to.path);
+        const requiresAuth = !['/', '/login', '/forgotPassword', '/reset'].includes(to.path);
         if (requiresAuth && !user) {
             next('/'); // If the route requires auth and there's no user, redirect to home
         } else {

@@ -222,6 +222,8 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import coverimage from "@/assets/coverimage.png";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import firebaseApp from "@/firebase";
 
 export default {
   data() {
@@ -253,18 +255,44 @@ export default {
           });
         },
 
-    registerUser() {
-      const auth = getAuth();
-        createUserWithEmailAndPassword(auth, this.email, this.password)
-          .then((userCredential) => {
+        async saveUserData() {
+          try {
+            const db = getFirestore(firebaseApp);
+            const auth = getAuth();
+            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.uid)), {
+              firstName: this.firstname,
+              lastName: this.lastname
+            });
+            console.log('User data saved.');
+          } catch (error) {
+            console.error('Error saving user data:', error);
+          }
+        },
+
+
+        async registerUser() {
+          let errorMessage = '';
+          try {
+            const auth = getAuth();
+            const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
+            const userData = await this.saveUserData(); 
             console.log('Successfully registered!', userCredential);
             this.$router.push('/dashboard'); 
-          })
-          .catch(error => {
+          } catch (error) {
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                errorMessage = 'Your email is already in use at KiasuCareers.';
+                break;
+              case 'auth/weak-password':
+                errorMessage = 'Password should be at least 6 characters.';
+                break;
+              default:
+                errorMessage = error.message;
+            }
             console.error(error.code, error.message);
-            alert(error.message);
-          });
-    },
+            alert(errorMessage);
+          }
+        },
 
     googleSignIn() {
       const provider = new GoogleAuthProvider();
@@ -272,7 +300,7 @@ export default {
       signInWithPopup(auth, provider)
         .then((result) => {
           console.log("Successfully logged in!", result.user);
-          this.$router.push("/");
+          this.$router.push("/dashboard");
         })
         .catch((err) => {
           console.log(err);

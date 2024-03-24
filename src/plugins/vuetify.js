@@ -5,6 +5,7 @@
  */
 
 // Styles
+import '@fortawesome/fontawesome-free/css/all.css'
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
@@ -16,4 +17,7 @@ export default createVuetify({
   theme: {
     defaultTheme: 'light',
   },
+  icons: {
+    iconfont: 'fa' || 'md'
+  }
 })

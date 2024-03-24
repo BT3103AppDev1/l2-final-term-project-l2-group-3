@@ -1,10 +1,10 @@
+import Home from '@/components/views/LandingPage.vue'
 import Dashboard from '@/components/views/Dashboard.vue'
 import Settings from '../components/views/Settings.vue'
 import Resume from '../components/views/Resume.vue'
 import Calendar from '../components/views/Calendar.vue'
 import Performance from '../components/views/Performance.vue'
 import Login from '@/components/views/Login.vue'
-import Register from '@/components/views/Register.vue'
 import PasswordReset from '@/components/views/PasswordReset.vue'
 import Reset from '@/components/views/Reset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
@@ -16,6 +16,11 @@ const router = createRouter( {
     routes: [
         {
             path: "/",
+            component: Home
+        },
+
+        {
+            path: "/dashboard",
             component: Dashboard
         },
 
@@ -40,11 +45,6 @@ const router = createRouter( {
         },
 
         {
-            path:"/register",
-            component: Register
-        },
-
-        {
             path:"/forgotPassword",
             component: PasswordReset
         },
@@ -63,25 +63,15 @@ const router = createRouter( {
 
 router.beforeEach((to, from, next) => {
     const auth = getAuth();
-    let isAuthenticatedChecked = false;
-
     onAuthStateChanged(auth, (user) => {
-        if (!isAuthenticatedChecked) {
-            isAuthenticatedChecked = true;
-            if (to.path === '/login' || to.path === '/register' || to.path === '/forgotPassword' || to.path== '/reset' || user) {
-                next();
-            } else {
-                next('/login');
-            }
+        const requiresAuth = !['/', '/login', '/register', '/forgotPassword', '/reset'].includes(to.path);
+        if (requiresAuth && !user) {
+            next('/'); // If the route requires auth and there's no user, redirect to home
+        } else {
+            next(); // Otherwise, proceed as normal
         }
     });
 
-    setTimeout(() => {
-        if (!isAuthenticatedChecked) {
-            isAuthenticatedChecked = true;
-            next();
-        }
-    }, 1000);
 });
 
 export default router

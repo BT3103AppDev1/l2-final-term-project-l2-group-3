@@ -75,9 +75,9 @@
               cols="12"
               md="6"
             >
-              <div style="text-align: center; padding: 120px 0 180px">
+              <div style="text-align: center; justify-items: center; padding: 100px; margin-top: 60px;">
                 <v-img
-                  class="mx-auto my-6 img-max-width"
+                  
                   :src="coverimage"
                 ></v-img>
                 <h2 style="color: white">Don't Have an Account Yet?</h2>
@@ -97,19 +97,20 @@
             </v-col>
           </v-row>
         </v-window-item>
+
         <v-window-item :value="2">
           <v-row align="center" justify="center" class="full-height">
             <v-col
+              class="rounded-br-xl d-flex align-center justify-center"
               cols="12"
               md="6"
-              class="rounded-br-xl d-flex align-center justify-center"
             >
-              <div style="text-align: center; padding: 120px 0 180px">
+              <div style="text-align: center; justify-items: center; padding: 100px; margin-top: 60px;">
                 <v-img
-                  class="mx-auto my-6 img-max-width"
+                  
                   :src="coverimage"
                 ></v-img>
-                <h2 style="color: white">Already Signed up?</h2>
+                <h2 style="color: white">Already signed up?</h2>
                 <h3 style="color: white">Log in to your account.</h3>
                 <br />
                 <v-btn
@@ -120,10 +121,11 @@
                   outlined
                   dark
                   @click="step--"
-                  >Log in</v-btn
+                  >SIGN UP</v-btn
                 >
               </div>
             </v-col>
+
             <v-col cols="12" md="6">
               <v-card flat max-width="700">
                 <h2 class="text-center">Create an Account</h2>
@@ -206,6 +208,7 @@
             </v-col>
           </v-row>
         </v-window-item>
+
       </v-window>
     </v-col>
   </v-row>
@@ -325,5 +328,15 @@ export default {
   background-color: #244d7b;
   color: whitesmoke;
   border-bottom-right-radius: 400px;
+}
+
+h2 {
+  width: 320px;
+  height: 40px;
+}
+
+h3 {
+  width: 320px;
+  height: 30px;
 }
 </style>

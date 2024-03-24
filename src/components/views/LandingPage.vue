@@ -103,10 +103,6 @@
                 { opacity: 1, y: 0, duration: 1, delay: 2 }
             );
 
-            gsap.fromTo('.navbar .nav_item',
-                {opacity: 0, y: 30},
-                {opacity: 1, duration: 1, delay: 2.1, stagger: 0.4}
-            );
             gsap.fromTo('.title', 
                 { opacity: 0, y: 30 },
                 { opacity: 1, y: 0, duration: 1, delay: 1.6 }

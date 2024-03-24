@@ -66,8 +66,8 @@
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
 import {RetrieveJobsFromLinkedIn} from '@/linkedin.js';
-import {RetrieveJobsFromGlassdoor} from '@/glassdoor.js';
-import {RetrieveJobsFromIndeed} from '@/indeed.js';
+//import {RetrieveJobsFromGlassdoor} from '@/glassdoor.js';
+// import {RetrieveJobsFromIndeed} from '@/indeed.js';
 import SaveJob from "@/components/SaveJob.vue"
 import Header from "@/components/Header.vue"
 import SideBar from "@/components/SideBar.vue"

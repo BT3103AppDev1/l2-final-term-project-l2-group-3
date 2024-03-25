@@ -64,7 +64,7 @@
                 <v-col cols="9">
                     <v-row id="firstfeature">
                         <v-col cols="6"> 
-                            <img src="@/assets/resume_template.jpg" style="width: 100%; height: 100%; border-radius: 30px;">
+                            <img src="@/assets/resume_template.jpg" style="width: 110%; height: 110%; border-radius: 30px;">
                         </v-col>
 
                         <v-col cols="6" class="d-flex justify-center align-center">
@@ -83,19 +83,19 @@
                             </v-card>
                         </v-col>
                         <v-col cols="6"> 
-                            <img src="@/assets/calendar.jpg" style="width: 100%; height: 100%; border-radius: 30px;">
+                            <img src="@/assets/calendar.jpg" style="width: 110%; height: 110%; border-radius: 30px;">
                         </v-col>
                     </v-row>
 
                     <v-row id="thirdfeature">
                         <v-col cols="6"> 
-                            <img src="@/assets/performance.jpg" style="width: 100%; height: 100%; border-radius: 30px;">
+                            <img src="@/assets/performance.jpg" style="width: 110%; height: 110%; border-radius: 30px;">
                         </v-col>
 
                         <v-col cols="6" class="d-flex justify-center align-center">
                             <v-card variant="blank" style="width: 75%;">
-                                <h1 class = "feature_title"> Resume Crafting</h1>
-                                <h2 class="feature_description"> Prepare for your applications and interviews using our ATS-optimised templates and interview preparation module which offers resources, mock interviews, and industry-specific tips. </h2> 
+                                <h1 class = "feature_title">Performance Analytics</h1>
+                                <h2 class="feature_description"> Discover key performance metrics such as job offer rates and interview rates to track your job application performance.</h2> 
                             </v-card>
                         </v-col>
                     </v-row>

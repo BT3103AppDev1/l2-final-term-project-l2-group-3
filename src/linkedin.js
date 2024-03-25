@@ -6,7 +6,7 @@ import axios from 'axios';
 export async function RetrieveJobsFromLinkedIn(title) {
     const url = "https://api.scrapingdog.com/linkedinjobs/";
     const params = {
-        api_key: "65ee9b9b17a1b774efc6602a",
+        api_key: "65fef29c3452ba2128e9b0a5",
         field: title,
         geoid: "102454443",
         page: 1

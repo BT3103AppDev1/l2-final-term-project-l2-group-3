@@ -72,6 +72,9 @@ import SaveJob from "@/components/SaveJob.vue"
 import Header from "@/components/Header.vue"
 import SideBar from "@/components/SideBar.vue"
 import Footer from "@/components/Footer.vue"
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import firebaseApp from "@/firebase";
+import {getAuth} from 'firebase/auth';
 
 export default {
     data() {
@@ -109,7 +112,6 @@ export default {
     methods: {
         async closedialog() {
             this.dialog = false;
-            localStorage.setItem('shown', 'true');
             console.log(this.title);
             const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
             //const indeedJobs = await RetrieveJobsFromIndeed(title);
@@ -118,16 +120,23 @@ export default {
             this.jobs = await RetrieveJobsFromLinkedIn(this.title);
             console.log("this is the job object")
             console.log(this.jobs);
+            this.GetUserData();
             //console.log(typeof(this.jobs))
             
-        }
+        },
+
+        async GetUserData() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.uid)))
+                console.log(docRef.data())
+            } catch (error) {
+                console.error('Error reading user data:', error);
+            }
+        },
     },
-    mounted() {
-        let shown = localStorage.getItem('shown');
-        if (shown !== 'true') {
-            this.dialog = true;
-        }
-    }
+
 }
 </script>
 

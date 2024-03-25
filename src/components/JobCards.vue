@@ -36,7 +36,7 @@
                         empty-text="There are no job postings that fit your descriptions!"
                     >
                         <main v-for="(job) in jobs" style="margin-top: 10px; border-radius: 20px;" >
-                            <v-card variant="flat" hover style="border-radius: 10px;" @click="dialog = true; currentviewedjob = job" opacity=0.9 color="#e9f5f9"> <!--just an example, will probably add a for loop to create these v-cards once jobs are extracted from api -->
+                            <v-card variant="flat" hover style="border-radius: 10px;" @click="dialog = true; currentviewedjob = job" opacity=0.9 color="#e9f5f9"> 
                                 <v-card-item class="custom-card-item" prepend-icon="mdi-bank">
                                     <v-card-title style="text-align: left; font-weight: 500; color: rgb(37, 89, 168);"> {{ job["job_position"] }}</v-card-title>
                                     <v-card-subtitle>{{ job["company_name"] }}</v-card-subtitle>

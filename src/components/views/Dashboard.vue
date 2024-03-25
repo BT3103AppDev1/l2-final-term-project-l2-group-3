@@ -7,7 +7,7 @@
         
         <div class="text-center">
             <v-dialog v-model="dialog" width="auto">
-                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers!" color="#54739a">
+                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers!" color="#244d7b">
                     <v-card-text class="font-weight-light">
                         New member here? Fill up and indicate some details below to have your own personalised dashboard!
                         <v-container fluid> <br>
@@ -50,7 +50,7 @@
                 <JobCards :jobs = "jobs" />
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="4">
                 <Progress/>
             </v-col>
                 

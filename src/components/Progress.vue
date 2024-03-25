@@ -6,7 +6,6 @@
             <v-col cols="12">
                 <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
                     <v-card-title style="text-align: center;">Daily target</v-card-title>
-                    <v-card-subtitle style="text-align: center;">Here are the list of jobs according to your preference!</v-card-subtitle>
                 </v-card>
             </v-col>
         </v-row>    

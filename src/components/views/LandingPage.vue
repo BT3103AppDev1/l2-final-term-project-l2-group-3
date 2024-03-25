@@ -1,12 +1,12 @@
 <template>
     <v-app>
-        <v-app-bar app clipped-left :elevation="0" color= "#244d7b">
+        <v-app-bar app clipped-left :elevation="0" color= "#19375a">
             <v-app-bar-title class="logo" style="font-size: x-large;">Kiasu<strong><i>Careers</i></strong></v-app-bar-title>
             <v-btn variant="tonal" @click="gotologin" style="margin-right: 50px; margin-top: 10px;">Log in</v-btn>
         </v-app-bar>
 
         <v-main class="container">
-            <v-row id="main" align-content="center" justify="center">
+            <v-row id="main" align-content="center" justify="center" style="height: max-content; margin-bottom: 50px;">
                 
                 <v-col cols="8" align-self="center">
                     <div style="margin-left: 150px;">
@@ -22,11 +22,11 @@
                 </v-col>
             </v-row>
 
-            <v-row class="d-flex justify-space-evenly" id="secondcontainer" align-content="center" style= "padding: 50px; margin-top: 50px;">
+            <v-row class="d-flex justify-space-evenly" id="secondcontainer" align-content="center" style= "padding: 50px; margin-top: -50px;">
                 <v-col cols="8">
-                    <h1 style="color: #fff;">Integrated Job Listings</h1>
-                    <p>Indicate your job preferences such as job title, industry, experience level, and view filtered job listings from different job portals.</p>
-                    <v-card class="stagger" v-motion-slide-visible-top variant="elevated" style="background-color: #58719e; border-radius: 40px;">
+                    <h1 class="heading" style="color: #fff;">Integrated Job Listings</h1>
+                    <p class="heading">Indicate your job preferences such as job title, industry, experience level, and view filtered job listings from different job portals.</p>
+                    <v-card class="stagger" v-motion-slide-visible-top variant="elevated" style="background-color: #516b9b; border-radius: 40px;">
                         <v-row>
                             <v-col style="padding: 50px;" class="brand">
                                 <v-card class="d-flex justify-center align-center flex-column" variant="tonal" style="border-radius: 40px; height: fit-content;">
@@ -109,6 +109,8 @@
 
         </v-main>
 
+        <Footer />
+
     </v-app>
 
 </template>
@@ -117,6 +119,7 @@
     import gsap from 'gsap'
     import ScrollTrigger from "gsap/ScrollTrigger";
     import Lenis from '@studio-freight/lenis'
+    import Footer from "@/components/Footer.vue"
 
     export default {
         data() {
@@ -157,19 +160,33 @@
 
             let t1 = gsap.timeline({
                 scrollTrigger : {
-                    trigger: '.stagger .brand',
-                    start: '-40% center',
-                    end: '60% center',
+                    trigger: '.heading',
+                    start:'top center',
+                    end: 'bottom center',
                     scrub: true,
                     markers: false,
                 }
             })
 
+            t1.fromTo('.heading', {opacity:0, y: -100}, {opacity:1, y:0})
+
+            let t = gsap.timeline({
+                scrollTrigger : {
+                    trigger: '.heading',
+                    start:'top 50%',
+                    end: 'bottom 20%',
+                    scrub: true,
+                    markers: false,
+                }
+            })
+            t.fromTo('.stagger', {opacity:0, y: -100}, {opacity:1, y:0})
+            t.fromTo('.brand', {opacity:0, y: -100}, {opacity:1, y:0, stagger: 0.5})
+
             let t2 = gsap.timeline( {
                 scrollTrigger : {
                     trigger: '#firstfeature',
                     start: '-20% center',
-                    end: '80% center',
+                    end: 'bottom center',
                     scrub: true,
                     markers: false,
                 }
@@ -231,26 +248,13 @@
                 { opacity: 1, y: 0, duration: 1, delay: 2.6 }
             );
 
-            t1.fromTo('#secondcontainer', {opacity:0, y: 100}, {opacity: 1, y: 0, duration: 1.5})
-            t1.to('.stagger', {opacity: 1, duration: 1.5})
-            t1.from('.stagger .brand', {opacity:0, x: 80, stagger: 0.5})
+            
         }
     }
 
 </script>
 
 <style scoped>
-    .target {
-        width: 70%;
-        height: 100%;
-        margin: 300px auto 500px auto;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #43b883;
-        border-radius: 10px;
-        font-weight: bold;
-    }
     #main {
         margin-top: 50px;
     }
@@ -260,9 +264,7 @@
         font-weight: 800;
         font-style: normal;
         min-height: 100vh;        
-        background-color: #244d7b;
-        margin-bottom: 50px;
-        
+        background-color: #19375a;
     }
         
     p {
@@ -273,13 +275,6 @@
         color: #fff;
         margin-bottom: 20px;
 
-    }
-
-    .container{
-        font-family: "Mulish", sans-serif;
-        font-weight: 800;
-        font-style: normal;       
-        background-color: #244d7b;
     }
 
     .secondcontainer{

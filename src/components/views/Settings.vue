@@ -7,7 +7,7 @@
 
     <v-row class="view" style="margin-left: 50px; height: 100%; margin-top: 50px;">
       <v-card height="100%" style="margin-top: 12px; margin-left: 12px; background-color: #eff1f7;" variant="flat">
-        <h1 style="color:rgb(39, 37, 37); font-weight: 500; padding: 25px;"> Account Settings</h1>
+        <h1 style="color:rgb(39, 37, 37); font-weight: 500; padding: 50px; margin-left: -20px;"> Account Settings</h1>
         <v-tabs
           style="margin-left: 25px; opacity: 0.8;"
           v-model="tab"

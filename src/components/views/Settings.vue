@@ -24,7 +24,7 @@
             <v-window-item value="one">
               <v-container>
               <br><br>
-              <v-row>
+              <v-row style="margin-top: -50px;">
                 <v-col xl="8" lg="8" md="8">
                     <v-card style="border-radius: 15px; " color="#ffffff" height="max-content" max-width="1900px" >
                       <v-row>

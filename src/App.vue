@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    <router-view />
+    <transition name="fade">
+      <router-view :key="$route.path"></router-view>
+    </transition>
+
   </div>
 </template>
 
@@ -30,6 +33,15 @@ export default {
   font-weight: 100;
   font-style: normal;
 }
+
+/* Fade Transition */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
 
 </style>
 

@@ -83,16 +83,35 @@
                 <h2 style="color: white">Don't Have an Account Yet?</h2>
                 <h3 style="color: white">Let's get you all set up.</h3>
                 <br />
-                <v-btn
-                  tile
-                  color="white"
-                  variant="tonal"
-                  text-color="white"
-                  outlined
-                  dark
-                  @click="step++"
-                  >SIGN UP</v-btn
-                >
+                <v-row>
+                  <v-col>
+                    <v-btn
+                      tile
+                      color="white"
+                      variant="tonal"
+                      text-color="white"
+                      outlined
+                      dark
+                      @click="step++"
+                      >SIGN UP</v-btn
+                    >
+                  </v-col>
+
+                  <v-col>
+
+                    <v-btn 
+                      tile
+                      color="white"
+                      variant="tonal"
+                      text-color="white"
+                      outlined
+                      dark
+                      @click="gotohome"
+                      > Go Back to Home </v-btn>
+                  </v-col>
+
+                </v-row>
+
               </div>
             </v-col>
           </v-row>
@@ -113,16 +132,36 @@
                 <h2 style="color: white">Already signed up?</h2>
                 <h3 style="color: white">Log in to your account.</h3>
                 <br />
-                <v-btn
-                  tile
-                  color="white"
-                  variant="tonal"
-                  text-color="white"
-                  outlined
-                  dark
-                  @click="step--"
-                  >SIGN UP</v-btn
-                >
+
+                <v-row>
+                  <v-col>
+                    <v-btn
+                      tile
+                      color="white"
+                      variant="tonal"
+                      text-color="white"
+                      outlined
+                      dark
+                      @click="step--"
+                      >LOG IN</v-btn
+                    >
+                  </v-col>
+
+                  <v-col>
+
+                    <v-btn 
+                      tile
+                      color="white"
+                      variant="tonal"
+                      text-color="white"
+                      outlined
+                      dark
+                      @click="gotohome"
+                      > Go Back to Home </v-btn>
+                  </v-col>
+
+                </v-row>
+ 
               </div>
             </v-col>
 
@@ -245,6 +284,10 @@ export default {
   },
 
   methods: {
+    gotohome() {
+      this.$router.push("/")
+    },
+
     signIn() {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, this.email, this.password)

@@ -58,7 +58,12 @@ const router = createRouter( {
             path:"/reset",
             component: Reset
         }
-    ]
+    ],
+
+    scrollBehavior(to, from, savedPosition) {
+        // Always scroll to top on route change
+        return { top: 0 };
+    },
 });
 
 router.beforeEach((to, from, next) => {

@@ -2,7 +2,7 @@
   <v-row align="center" justify="center" class="full-height">
     <v-col cols="12" sm="12">
       <v-window v-model="step">
-        <v-window-item :value="1">
+        <v-window-item :value="1" style="height: 1000px;">
           <v-row justify="center" align="center" class="full-height">
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
               <v-card flat max-width="700">
@@ -14,7 +14,7 @@
                   dense
                   placeholder="Email address"
                   prepend-inner-icon="mdi-email-outline"
-                  variant="underlined"
+                  variant="outlined"
                 ></v-text-field>
                 <div
                   class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
@@ -34,7 +34,7 @@
                   dense
                   placeholder="Enter your password"
                   prepend-inner-icon="mdi-lock-outline"
-                  variant="underlined"
+                  variant="outlined"
                   @click:append-inner="visible = !visible"
                 ></v-text-field>
                 <v-btn
@@ -47,7 +47,7 @@
                 >
                   Log In
                 </v-btn>
-                <h4 class="text-center style --text mt-4 mb-3">
+                <h4 class="text-center style --text mt-4 mb-3" style="color: rgb(137, 136, 136)">
                   Or sign in with one of the following services
                 </h4>
                 <br />
@@ -75,17 +75,15 @@
               cols="12"
               md="6"
             >
-              <div style="text-align: center; justify-items: center; padding: 100px; margin-top: 60px;">
-                <v-img
-                  
-                  :src="coverimage"
-                ></v-img>
-                <h2 style="color: white">Don't Have an Account Yet?</h2>
+              <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px">
+                <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
+                <h2 style="color: white; margin-top: -100px;">Don't Have an Account Yet?</h2>
                 <h3 style="color: white">Let's get you all set up.</h3>
                 <br />
-                <v-row>
-                  <v-col>
+                <v-row class="d-flex justify-center">
+                  <v-col cols="auto">
                     <v-btn
+                      rounded
                       tile
                       color="white"
                       variant="tonal"
@@ -97,9 +95,10 @@
                     >
                   </v-col>
 
-                  <v-col>
+                  <v-col cols="auto">
 
                     <v-btn 
+                      rounded
                       tile
                       color="white"
                       variant="tonal"
@@ -117,25 +116,23 @@
           </v-row>
         </v-window-item>
 
-        <v-window-item :value="2">
+        <v-window-item :value="2" style="height: 1000px;">
           <v-row align="center" justify="center" class="full-height">
             <v-col
               class="rounded-br-xl d-flex align-center justify-center"
               cols="12"
               md="6"
             >
-              <div style="text-align: center; justify-items: center; padding: 100px; margin-top: 60px;">
-                <v-img
-                  
-                  :src="coverimage"
-                ></v-img>
-                <h2 style="color: white">Already signed up?</h2>
-                <h3 style="color: white">Log in to your account.</h3>
-                <br />
+            <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px">
+              <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
+              <h2 style="color: white; margin-top: -100px;">Already signed up?</h2>
+              <h3 style="color: white">Log in to your account.</h3>
+              <br />
 
-                <v-row>
-                  <v-col>
+                <v-row class="d-flex justify-center">
+                  <v-col cols="auto">
                     <v-btn
+                      rounded
                       tile
                       color="white"
                       variant="tonal"
@@ -147,9 +144,10 @@
                     >
                   </v-col>
 
-                  <v-col>
+                  <v-col cols="auto">
 
-                    <v-btn 
+                    <v-btn
+                      rounded 
                       tile
                       color="white"
                       variant="tonal"
@@ -177,7 +175,7 @@
                           v-model="firstname"
                           color="primary"
                           label="First name"
-                          variant="underlined"
+                          variant="outlined"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -185,7 +183,7 @@
                           v-model="lastname"
                           color="primary"
                           label="Last name"
-                          variant="underlined"
+                          variant="outlined"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -194,7 +192,7 @@
                       dense
                       label="Email address"
                       prepend-inner-icon="mdi-email-outline"
-                      variant="underlined"
+                      variant="outlined"
                     ></v-text-field>
 
                     <v-text-field
@@ -204,7 +202,7 @@
                       dense
                       label="Enter your password"
                       prepend-inner-icon="mdi-lock-outline"
-                      variant="underlined"
+                      variant="outlined"
                       @click:append-inner="visible = !visible"
                     ></v-text-field>
 
@@ -216,8 +214,8 @@
                       >Sign up</v-btn
                     >
                     <br />
-                    <h4 class="text-center style --text mt-4 mb-3">
-                      Or sign in with one of the following services
+                    <h4 class="text-center style --text mt-4 mb-3" style="color: rgb(137, 136, 136);">
+                      Or sign up with one of the following services
                     </h4>
                     <br />
                     <div
@@ -305,11 +303,15 @@ export default {
           try {
             const db = getFirestore(firebaseApp);
             const auth = getAuth();
-            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.uid)), {
-              firstName: this.firstname,
-              lastName: this.lastname
+            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.email)), {
+              credentials: {firstname: this.firstname, lastname: this.lastname, email: String(auth.currentUser.email), userid: String(auth.currentUser.uid), firstlogin: true},
+              applications: {applied: {}, interviewed: {}, saved:{}},
+              jobpreferences: {},
+              settings: {progress_settings: 20, reminder_settings: {outlook: false, telegram: false}, sync_settings:{glassdoor: false, indeed: false, linkedin: false}},
+              events: {}
             });
             console.log('User data saved.');
+            console.log(auth.currentUser.email)
           } catch (error) {
             console.error('Error saving user data:', error);
           }
@@ -373,13 +375,5 @@ export default {
   border-bottom-right-radius: 400px;
 }
 
-h2 {
-  width: 320px;
-  height: 40px;
-}
 
-h3 {
-  width: 320px;
-  height: 30px;
-}
 </style>

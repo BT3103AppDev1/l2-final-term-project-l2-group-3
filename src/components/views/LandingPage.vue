@@ -185,8 +185,8 @@
             let t2 = gsap.timeline( {
                 scrollTrigger : {
                     trigger: '#firstfeature',
-                    start: '-20% center',
-                    end: 'bottom center',
+                    start: '-50% center',
+                    end: '60% center',
                     scrub: true,
                     markers: false,
                 }
@@ -197,8 +197,8 @@
             let t3 = gsap.timeline( {
                 scrollTrigger : {
                     trigger: '#secondfeature',
-                    start: 'top center',
-                    end: '60% center',
+                    start: '-40% center',
+                    end: '40% center',
                     scrub: true,
                     markers: false,
                 }
@@ -209,7 +209,7 @@
             let t4 = gsap.timeline( {
                 scrollTrigger : {
                     trigger: '#thirdfeature',
-                    start: 'top center',
+                    start: '-40% center',
                     end: '50% center',
                     scrub: true,
                     markers: false,

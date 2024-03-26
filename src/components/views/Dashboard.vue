@@ -112,14 +112,14 @@ export default {
     methods: {
         async closedialog() {
             this.dialog = false;
-            console.log(this.title);
-            const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
+            //console.log(this.title);
+            //const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
             //const indeedJobs = await RetrieveJobsFromIndeed(title);
             //const glassdoorJobs = await RetrieveJobsFromGlassdoor(title);
             //this.jobs = [...linkedinJobs, ...indeedJobs, ...glassdoorJobs]; 
-            this.jobs = await RetrieveJobsFromLinkedIn(this.title);
-            console.log("this is the job object")
-            console.log(this.jobs);
+            //this.jobs = await RetrieveJobsFromLinkedIn(this.title);
+            //console.log("this is the job object")
+            //console.log(this.jobs);
             this.GetUserData();
             //console.log(typeof(this.jobs))
             
@@ -129,8 +129,9 @@ export default {
             try {
                 const db = getFirestore(firebaseApp);
                 const auth = getAuth();
-                const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.uid)))
+                const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
                 console.log(docRef.data())
+                console.log("printed user data")
             } catch (error) {
                 console.error('Error reading user data:', error);
             }

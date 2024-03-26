@@ -7,10 +7,10 @@
         >
         <v-list>
             <v-list-item
-            prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-            subtitle="sandra_a88@gmailcom"
-            title="Sandra Adams"
+            prepend-avatar="@/assets/user.png"
             >
+            <v-list-item-subtitle> {{ email }}</v-list-item-subtitle>
+            <v-list-item-title> {{ name }}</v-list-item-title>
             <v-btn text="Log out" @click="logout" variant="text"></v-btn>
             </v-list-item>
         </v-list>
@@ -31,6 +31,8 @@
 <script>
   import {getAuth, signOut} from "firebase/auth";
   import gsap from 'gsap';
+  import { getFirestore, doc, getDoc } from "firebase/firestore";
+  import firebaseApp from "@/firebase";
   
     export default {
       data() {
@@ -40,14 +42,30 @@
             'About Us',
             'Contact Us',
           ],
-          menu_pressed:false
+          menu_pressed:false,
+          name: "",
+          email: "",
         }
       },
-      mounted() {
+      async mounted() {
         gsap.fromTo('.logo', 
                   { opacity: 0, y: 10 }, // From
                   { opacity: 1, y: 0, duration: 1, delay: 1 } // To
         );
+        const db = getFirestore(firebaseApp);
+        const auth = getAuth();
+        const docRef = doc(db, "Users", String(auth.currentUser.email));
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const userdata = docSnap.data()
+          this.name = userdata['credentials']['firstname'] + " " + userdata['credentials']['lastname']
+          this.email = String(auth.currentUser.email)
+          console.log("Document data:", docSnap.data());
+        } else {
+          // docSnap.data() will be undefined in this case
+          console.log("No such document!");
+        }
       },
   
       methods:{

@@ -75,7 +75,7 @@
               cols="12"
               md="6"
             >
-              <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px">
+              <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px; margin-top:50px">
                 <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
                 <h2 style="color: white; margin-top: -100px;">Don't Have an Account Yet?</h2>
                 <h3 style="color: white">Let's get you all set up.</h3>
@@ -123,7 +123,7 @@
               cols="12"
               md="6"
             >
-            <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px">
+            <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px; margin-top:50px">
               <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
               <h2 style="color: white; margin-top: -100px;">Already signed up?</h2>
               <h3 style="color: white">Log in to your account.</h3>

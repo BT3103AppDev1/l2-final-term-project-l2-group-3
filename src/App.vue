@@ -1,12 +1,7 @@
 <template>
   <div id="app">
     <router-view v-slot="{ Component }">
-      <transition
-        name="elastic"
-        enter-active-class="elastic-enter-active"
-        leave-active-class="elastic-leave-active"
-        mode="out-in"
-      >
+      <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
@@ -40,25 +35,13 @@ export default {
   font-style: normal;
 }
 
-@keyframes slideRightEnter {
-  0% {
-    transform: translateX(80%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
 }
-
-.elastic-enter-active, .elastic-leave-active {
-  transition: transform 0.4s, opacity 0.4s;
-  transition-timing-function: cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
-.elastic-enter, .elastic-leave-to /* Starting and ending state for enter/leave transitions */ {
-  transform: scale(1.2);
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+
 
 
 

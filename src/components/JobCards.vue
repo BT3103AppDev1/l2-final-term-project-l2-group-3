@@ -27,8 +27,15 @@
         <v-row class="ga-5">
             <v-col>
                 <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
-                    <v-card-title style="text-align: center;">Find Jobs</v-card-title>
-                    <v-card-subtitle style="text-align: center;">Here are the list of jobs according to your preference!</v-card-subtitle>
+                    <v-row>
+                        <v-col cols="7">
+                            <h2 class="title"> Find Jobs</h2>
+                        </v-col>
+
+                        <v-col cols="5">
+                            <v-btn variant="tonal" rounded> Edit preferences</v-btn>
+                        </v-col>
+                    </v-row>
                     <v-infinite-scroll
                         height="400"
                         mode="manual"
@@ -60,8 +67,7 @@
 
             <v-col>
                 <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
-                    <v-card-title style="text-align: center;">Applied Jobs</v-card-title>
-                    <v-card-subtitle style="text-align: center;">Here are the jobs you have applied on KiasuCareers</v-card-subtitle>
+                    <h2 class="title">Applied</h2>
                 </v-card>
             </v-col>
         </v-row>
@@ -69,15 +75,13 @@
         <v-row class="d-flex ga-5">
             <v-col>
                 <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
-                    <v-card-title style="text-align: center;">Saved Jobs</v-card-title>
-                    <v-card-subtitle style="text-align: center;">Here are the jobs you have saved on KiasuCareers</v-card-subtitle>
+                    <h2 class="title">Saved</h2>
                 </v-card>
             </v-col>
 
             <v-col>
                 <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
-                    <v-card-title style="text-align: center;">Interviewed</v-card-title>
-                    <v-card-subtitle style="text-align: center;">Here are the jobs you have interviewed with!</v-card-subtitle>
+                    <h2 class="title">Interviewed</h2>
                 </v-card>
             </v-col>
 
@@ -149,8 +153,13 @@ export default {
   white-space: nowrap; /* Ensure the text does not wrap */
 }
 
-.btn {
-    text-transform: none;
+.title {
+    text-align: left;
+    padding: 10px;
+    margin-top: -10px;
+    color: rgb(139, 139, 139);
+    font-weight: 600;
+    font-size: 22px;
 }
 
 

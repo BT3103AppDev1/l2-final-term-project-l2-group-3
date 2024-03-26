@@ -4,7 +4,7 @@
     <v-container style="margin-top: -10px;">
         <v-row>
             <v-col cols="12">
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
+                <v-card variant="elevated" color="#6381a3" class="pa-3" height="400px">
                     <v-card-title style="text-align: center;">Daily target</v-card-title>
                 </v-card>
             </v-col>
@@ -12,7 +12,7 @@
 
         <v-row class="ga-5">
             <v-col cols="12">
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
+                <v-card variant="elevated" color="#6381a3" class="pa-3" height="400px">
                     <v-card-title style="text-align: center;">Reminders</v-card-title>
                 </v-card>
             </v-col>
@@ -34,6 +34,8 @@
 .pa-3 {
     border-radius: 20px;
     box-shadow: none;
+    color: #6381a3;
+    
 }
 
 </style>

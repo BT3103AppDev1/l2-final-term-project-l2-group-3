@@ -63,7 +63,12 @@
                   <v-btn depressed outlined color="white" @click="githubSignIn">
                     <v-icon class="fab fa-github" color="black"></v-icon>
                   </v-btn>
-                  <v-btn depressed outlined color="white" @click="microsoftSignIn">
+                  <v-btn
+                    depressed
+                    outlined
+                    color="white"
+                    @click="microsoftSignIn"
+                  >
                     <v-icon
                       class="fab fa-microsoft"
                       color="light-blue lighten-3"
@@ -269,7 +274,12 @@
                       >
                         <v-icon class="fab fa-github" color="black"></v-icon>
                       </v-btn>
-                      <v-btn depressed outlined color="white" @click="microsoftSignIn">
+                      <v-btn
+                        depressed
+                        outlined
+                        color="white"
+                        @click="microsoftSignIn"
+                      >
                         <v-icon
                           class="fab fa-microsoft"
                           color="light-blue lighten-3"
@@ -295,7 +305,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GithubAuthProvider,
-  OAuthProvider
+  OAuthProvider,
 } from "firebase/auth";
 import coverimage from "@/assets/coverimage.png";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
@@ -324,14 +334,29 @@ export default {
 
     signIn() {
       const auth = getAuth();
+      if (!this.email || !this.password) {
+        alert("Email and password are required.");
+        return;
+      }
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then((result) => {
           console.log("Successfully logged in!", result.user);
           this.$router.push("/dashboard");
         })
         .catch((error) => {
+          let errorMessage;
+          switch (error.code) {
+            case "auth/invalid-credential":
+              errorMessage = "Have your login details been entered correctly?";
+              break;
+            case "auth/invalid-email":
+              errorMessage = "Email invalid.";
+              break;
+            default:
+              errorMessage = error.message;
+          }
           console.error(error.code, error.message);
-          alert(error.message);
+          alert(errorMessage);
         });
     },
 
@@ -390,6 +415,9 @@ export default {
           case "auth/weak-password":
             errorMessage = "Password should be at least 6 characters.";
             break;
+          case "auth/invalid-email":
+            errorMessage = "Email invalid.";
+            break;
           default:
             errorMessage = error.message;
         }
@@ -427,15 +455,15 @@ export default {
     },
 
     microsoftSignIn() {
-      const provider = new OAuthProvider('microsoft.com');
+      const provider = new OAuthProvider("microsoft.com");
       const auth = getAuth();
       signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = OAuthProvider.credentialFromResult(result);
-        const accessToken = credential.accessToken;
-        const idToken = credential.idToken;
-        console.log("Successfully logged in!", result.user);
-        this.$router.push("/dashboard");
+        .then((result) => {
+          const credential = OAuthProvider.credentialFromResult(result);
+          const accessToken = credential.accessToken;
+          const idToken = credential.idToken;
+          console.log("Successfully logged in!", result.user);
+          this.$router.push("/dashboard");
         })
         .catch((err) => {
           console.log(err);

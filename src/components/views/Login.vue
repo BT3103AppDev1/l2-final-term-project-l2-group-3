@@ -2,7 +2,7 @@
   <v-row align="center" justify="center" class="full-height">
     <v-col cols="12" sm="12">
       <v-window v-model="step">
-        <v-window-item :value="1" style="height: 1000px;">
+        <v-window-item :value="1" style="height: 1000px">
           <v-row justify="center" align="center" class="full-height">
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
               <v-card flat max-width="700">
@@ -47,7 +47,10 @@
                 >
                   Log In
                 </v-btn>
-                <h4 class="text-center style --text mt-4 mb-3" style="color: rgb(137, 136, 136)">
+                <h4
+                  class="text-center style --text mt-4 mb-3"
+                  style="color: rgb(137, 136, 136)"
+                >
                   Or sign in with one of the following services
                 </h4>
                 <br />
@@ -57,12 +60,12 @@
                   <v-btn depressed outlined color="white" @click="googleSignIn">
                     <v-icon class="fab fa-google" color="red"></v-icon>
                   </v-btn>
-                  <v-btn depressed outlined color="white">
-                    <v-icon class="fab fa-facebook-f" color="blue"></v-icon>
+                  <v-btn depressed outlined color="white" @click="githubSignIn">
+                    <v-icon class="fab fa-github" color="black"></v-icon>
                   </v-btn>
-                  <v-btn depressed outlined color="white">
+                  <v-btn depressed outlined color="white" @click="microsoftSignIn">
                     <v-icon
-                      class="fab fa-twitter"
+                      class="fab fa-microsoft"
                       color="light-blue lighten-3"
                     ></v-icon>
                   </v-btn>
@@ -75,9 +78,23 @@
               cols="12"
               md="6"
             >
-              <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px; margin-top:50px">
-                <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
-                <h2 style="color: white; margin-top: -100px;">Don't Have an Account Yet?</h2>
+              <div
+                style="
+                  text-align: center;
+                  justify-items: center;
+                  align-items: center;
+                  width: 1100px;
+                  height: 900px;
+                  margin-top: 50px;
+                "
+              >
+                <img
+                  src="@/assets/coverimage.png"
+                  style="width: 70%; height: 60%"
+                />
+                <h2 style="color: white; margin-top: -100px">
+                  Don't Have an Account Yet?
+                </h2>
                 <h3 style="color: white">Let's get you all set up.</h3>
                 <br />
                 <v-row class="d-flex justify-center">
@@ -96,8 +113,7 @@
                   </v-col>
 
                   <v-col cols="auto">
-
-                    <v-btn 
+                    <v-btn
                       rounded
                       tile
                       color="white"
@@ -106,28 +122,42 @@
                       outlined
                       dark
                       @click="gotohome"
-                      > Go Back to Home </v-btn>
+                    >
+                      Go Back to Home
+                    </v-btn>
                   </v-col>
-
                 </v-row>
-
               </div>
             </v-col>
           </v-row>
         </v-window-item>
 
-        <v-window-item :value="2" style="height: 1000px;">
+        <v-window-item :value="2" style="height: 1000px">
           <v-row align="center" justify="center" class="full-height">
             <v-col
               class="rounded-br-xl d-flex align-center justify-center"
               cols="12"
               md="6"
             >
-            <div style="text-align: center; justify-items: center; align-items: center; width: 1100px; height:900px; margin-top:50px">
-              <img src="@/assets/coverimage.png" style="width: 70%; height: 60%;">
-              <h2 style="color: white; margin-top: -100px;">Already signed up?</h2>
-              <h3 style="color: white">Log in to your account.</h3>
-              <br />
+              <div
+                style="
+                  text-align: center;
+                  justify-items: center;
+                  align-items: center;
+                  width: 1100px;
+                  height: 900px;
+                  margin-top: 50px;
+                "
+              >
+                <img
+                  src="@/assets/coverimage.png"
+                  style="width: 70%; height: 60%"
+                />
+                <h2 style="color: white; margin-top: -100px">
+                  Already signed up?
+                </h2>
+                <h3 style="color: white">Log in to your account.</h3>
+                <br />
 
                 <v-row class="d-flex justify-center">
                   <v-col cols="auto">
@@ -145,9 +175,8 @@
                   </v-col>
 
                   <v-col cols="auto">
-
                     <v-btn
-                      rounded 
+                      rounded
                       tile
                       color="white"
                       variant="tonal"
@@ -155,11 +184,11 @@
                       outlined
                       dark
                       @click="gotohome"
-                      > Go Back to Home </v-btn>
+                    >
+                      Go Back to Home
+                    </v-btn>
                   </v-col>
-
                 </v-row>
- 
               </div>
             </v-col>
 
@@ -214,7 +243,10 @@
                       >Sign up</v-btn
                     >
                     <br />
-                    <h4 class="text-center style --text mt-4 mb-3" style="color: rgb(137, 136, 136);">
+                    <h4
+                      class="text-center style --text mt-4 mb-3"
+                      style="color: rgb(137, 136, 136)"
+                    >
                       Or sign up with one of the following services
                     </h4>
                     <br />
@@ -229,12 +261,17 @@
                       >
                         <v-icon class="fab fa-google" color="red"></v-icon>
                       </v-btn>
-                      <v-btn depressed outlined color="white">
-                        <v-icon class="fab fa-facebook-f" color="blue"></v-icon>
+                      <v-btn
+                        depressed
+                        outlined
+                        color="white"
+                        @click="githubSignIn"
+                      >
+                        <v-icon class="fab fa-github" color="black"></v-icon>
                       </v-btn>
-                      <v-btn depressed outlined color="white">
+                      <v-btn depressed outlined color="white" @click="microsoftSignIn">
                         <v-icon
-                          class="fab fa-twitter"
+                          class="fab fa-microsoft"
                           color="light-blue lighten-3"
                         ></v-icon>
                       </v-btn>
@@ -245,7 +282,6 @@
             </v-col>
           </v-row>
         </v-window-item>
-
       </v-window>
     </v-col>
   </v-row>
@@ -254,12 +290,12 @@
 <script>
 import {
   getAuth,
-  sendSignInLinkToEmail,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  sendEmailVerification,
+  GithubAuthProvider,
+  OAuthProvider
 } from "firebase/auth";
 import coverimage from "@/assets/coverimage.png";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
@@ -283,64 +319,84 @@ export default {
 
   methods: {
     gotohome() {
-      this.$router.push("/")
+      this.$router.push("/");
     },
 
     signIn() {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then((result) => {
+          console.log("Successfully logged in!", result.user);
+          this.$router.push("/dashboard");
+        })
+        .catch((error) => {
+          console.error(error.code, error.message);
+          alert(error.message);
+        });
+    },
+
+    async saveUserData() {
+      try {
+        const db = getFirestore(firebaseApp);
         const auth = getAuth();
-        signInWithEmailAndPassword(auth, this.email, this.password)
-          .then((result) => {
-            console.log('Successfully logged in!', result.user);
-            this.$router.push('/dashboard');
-          })
-          .catch(error => {
-            console.error(error.code, error.message);
-            alert(error.message);
-          });
-        },
-
-        async saveUserData() {
-          try {
-            const db = getFirestore(firebaseApp);
-            const auth = getAuth();
-            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.email)), {
-              credentials: {firstname: this.firstname, lastname: this.lastname, email: String(auth.currentUser.email), userid: String(auth.currentUser.uid), firstlogin: true},
-              applications: {applied: {}, interviewed: {}, saved:{}},
-              jobpreferences: {},
-              settings: {progress_settings: 20, reminder_settings: {outlook: false, telegram: false}, sync_settings:{glassdoor: false, indeed: false, linkedin: false}},
-              events: {}
-            });
-            console.log('User data saved.');
-            console.log(auth.currentUser.email)
-          } catch (error) {
-            console.error('Error saving user data:', error);
+        const docRef = await setDoc(
+          doc(db, "Users", String(auth.currentUser.email)),
+          {
+            credentials: {
+              firstname: this.firstname,
+              lastname: this.lastname,
+              email: String(auth.currentUser.email),
+              userid: String(auth.currentUser.uid),
+              firstlogin: true,
+            },
+            applications: { applied: {}, interviewed: {}, saved: {} },
+            jobpreferences: {},
+            settings: {
+              progress_settings: 20,
+              reminder_settings: { outlook: false, telegram: false },
+              sync_settings: {
+                glassdoor: false,
+                indeed: false,
+                linkedin: false,
+              },
+            },
+            events: {},
           }
-        },
+        );
+        console.log("User data saved.");
+        console.log(auth.currentUser.email);
+      } catch (error) {
+        console.error("Error saving user data:", error);
+      }
+    },
 
-
-        async registerUser() {
-          let errorMessage = '';
-          try {
-            const auth = getAuth();
-            const userCredential = await createUserWithEmailAndPassword(auth, this.email, this.password);
-            const userData = await this.saveUserData(); 
-            console.log('Successfully registered!', userCredential);
-            this.$router.push('/dashboard'); 
-          } catch (error) {
-            switch (error.code) {
-              case 'auth/email-already-in-use':
-                errorMessage = 'Your email is already in use at KiasuCareers.';
-                break;
-              case 'auth/weak-password':
-                errorMessage = 'Password should be at least 6 characters.';
-                break;
-              default:
-                errorMessage = error.message;
-            }
-            console.error(error.code, error.message);
-            alert(errorMessage);
-          }
-        },
+    async registerUser() {
+      let errorMessage = "";
+      try {
+        const auth = getAuth();
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
+        const userData = await this.saveUserData();
+        console.log("Successfully registered!", userCredential);
+        this.$router.push("/dashboard");
+      } catch (error) {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            errorMessage = "Your email is already in use at KiasuCareers.";
+            break;
+          case "auth/weak-password":
+            errorMessage = "Password should be at least 6 characters.";
+            break;
+          default:
+            errorMessage = error.message;
+        }
+        console.error(error.code, error.message);
+        alert(errorMessage);
+      }
+    },
 
     googleSignIn() {
       const provider = new GoogleAuthProvider();
@@ -349,6 +405,37 @@ export default {
         .then((result) => {
           console.log("Successfully logged in!", result.user);
           this.$router.push("/dashboard");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    githubSignIn() {
+      const provider = new GithubAuthProvider();
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const credential = GithubAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken; //if we want to access Github API
+          console.log("Successfully logged in!", result.user);
+          this.$router.push("/dashboard");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    microsoftSignIn() {
+      const provider = new OAuthProvider('microsoft.com');
+      const auth = getAuth();
+      signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = OAuthProvider.credentialFromResult(result);
+        const accessToken = credential.accessToken;
+        const idToken = credential.idToken;
+        console.log("Successfully logged in!", result.user);
+        this.$router.push("/dashboard");
         })
         .catch((err) => {
           console.log(err);
@@ -374,6 +461,4 @@ export default {
   color: whitesmoke;
   border-bottom-right-radius: 400px;
 }
-
-
 </style>

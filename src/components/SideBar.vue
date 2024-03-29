@@ -25,6 +25,8 @@
             <v-list-item prepend-icon="mdi-google-analytics" title="Performance" value="performance" to="/performance"></v-list-item>
         </v-list>
         </v-navigation-drawer>
+
+        
       
 </template>
   

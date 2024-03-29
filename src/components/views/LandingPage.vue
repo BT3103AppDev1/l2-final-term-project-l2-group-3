@@ -112,7 +112,7 @@
                                     <v-row style="margin-top: 80px; margin-left: 100px;">
                                         <v-col>
                                             <h2 class = "particulars">Location</h2>    
-                                            <h3 class = "subparticulars"> LT18, 1 Business Link <br> Singapore 117592 </h3>
+                                            <h3 class = "subparticulars"> LT18, 1 Business Link <br>National University of Singapore <br> Singapore 117592 </h3>
                                         </v-col>
                                     </v-row>
 
@@ -155,6 +155,26 @@
 
                                     <v-card-actions style="margin-top: -160px; margin-left: 10px">
                                         <v-btn variant="outlined" @click="sendEmail"> Submit</v-btn>
+                                        <v-snackbar
+                                        location="top"
+                                        color="green"
+                                        v-model="snackbar"
+                                        :timeout="5000"
+                                        elevation="24"
+                                        width="500px"
+                                        >
+                                        Your enquiry has been sent to our official email, do note that a reply can take up to 2 working days.
+
+                                        <template v-slot:actions>
+                                            <v-btn
+                                            color="white"
+                                            variant="text"
+                                            @click="snackbar = false"
+                                            >
+                                            Close
+                                            </v-btn>
+                                        </template>
+                                        </v-snackbar>
                                     </v-card-actions>
                                 </v-card-title>
                             </v-card>
@@ -180,6 +200,7 @@
     export default {
         data() {
             return {
+                snackbar: false,
                 name: "",
                 senderemail: "",
                 message: "",
@@ -197,7 +218,8 @@
 
                 emailjs.send('service_cd7alk8', 'template_k3ptflf', templateParams, 'zagrIUfGnZEM9-wlw').then(
                 (response) => {
-                    alert('SUCCESS!', response.status, response.text);
+                    this.snackbar = true
+                    
                 },
                 (error) => {
                     alert('FAILED...', error);
@@ -219,6 +241,9 @@
         },
 
         mounted() {
+            setTimeout(() => {
+                this.confirmemail = false;
+            }, 3000);
             //smooth scroll
             const lenis = new Lenis()
 
@@ -306,7 +331,7 @@
                 }
             })
 
-            t5.from('#fourthcontainer', {rotation: 150, opacity:0, x:-500})
+            t5.from('#fourthcontainer', {rotation: 40, opacity:0, x:-500})
 
             gsap.fromTo('.logo', 
                 { opacity: 0, y: 10 },
@@ -515,7 +540,7 @@
 
     .effect.hovered::before{
         width: 100%;
-        filter: drop-shadow(0 0 5px #5a93f6);
+        filter: drop-shadow(0 0 3px #5a93f6);
     }
 </style>
 

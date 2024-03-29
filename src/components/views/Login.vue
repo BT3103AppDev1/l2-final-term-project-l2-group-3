@@ -20,16 +20,10 @@
                   class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
                 >
                   Password
-                  <v-dialog max-width="500">
-                    <template v-slot:activator="{props: activatorProps}">
-                      <div
-                        class="forgotpassword"
-                        v-bind="activatorProps"
-                      >
-                        Forgot password?
-                      </div>
-                    </template>
-                    <template v-slot:default="{ isActive }">
+                  <div class="forgotpassword" @click="showresetpassword= true">
+                      Forgot password?
+                  </div>
+                  <v-dialog max-width="500" v-model="showresetpassword">
                       <v-card title="Reset Password">
                         <v-card-text>Please enter the email address you'll like your password reset link sent to</v-card-text>
                         <v-text-field 
@@ -48,26 +42,42 @@
 
                           <router-link style="text-decoration: none; colour:inherit" to="/login">
                             <v-btn text="Send Email" 
-                            @click=" sendEmail(); isActive.value = false;"
+                            @click=" sendEmail();"
                             color="blue"
                             variant="tonal"
                             ></v-btn>
+
+                            <v-snackbar location="top" color="red" v-model="invalidemail" :timeout="5000" elevation="24" width="200px">
+                              Invalid email, please try again.
+                              <template v-slot:actions>
+                                <v-btn color="white" variant="text" @click="invalidemail = false"> Close </v-btn>
+                              </template>
+                            </v-snackbar>
                           </router-link>
                         </v-card-actions>
                       </v-card>  
-                    </template>
                   </v-dialog>
-                </div>
-                <v-dialog v-model="confirmationdialog" width="auto">
-                  <v-card title="Reset password" class="d-flex text-wrap" width="550px" height="180px">
-                    <v-card-subtitle style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; font-size: medium ;"> A reset password link is sent to the email you have indicated,<br> please check your junk if you do not see the email in your inbox.</v-card-subtitle>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                            <v-btn class="text-none" color="blue" variant="tonal" text="Close" @click="confirmationdialog=false"></v-btn>
-                    </v-card-actions>
-                  </v-card>
+                  <v-snackbar location="top" color="green" v-model="emailsent" :timeout="5000" elevation="24" width="500px">
+                    A password reset link has been sent to your email. Do check your junk if you do not see the email in your inbox.
+                    <template v-slot:actions>
+                      <v-btn color="white" variant="text" @click="emailsent = false"> Close </v-btn>
+                    </template>
+                  </v-snackbar>
 
-                </v-dialog>
+                  <v-snackbar location="top" color="red" v-model="incompletelogin" :timeout="5000" elevation="24" width="500px">
+                    Please enter your email and password to log in.
+                    <template v-slot:actions>
+                      <v-btn color="white" variant="text" @click="incompletelogin = false"> Close </v-btn>
+                    </template>
+                  </v-snackbar>
+
+                  <v-snackbar location="top" color="red" v-model="invalidlogin" :timeout="5000" elevation="24" width="500px">
+                    Invalid email or password, please try again.
+                    <template v-slot:actions>
+                      <v-btn color="white" variant="text" @click="invalidlogin = false"> Close </v-btn>
+                    </template>
+                  </v-snackbar>
+                </div>
                 <v-text-field
                   v-model="password"
                   :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -288,6 +298,28 @@
                       @click="registerUser"
                       >Sign up</v-btn
                     >
+
+                    <v-snackbar location="top" color="red" v-model="incompletesignup" :timeout="5000" elevation="24" width="500px">
+                      Please check if you have entered your email and password correctly.
+                      <template v-slot:actions>
+                        <v-btn color="white" variant="text" @click="incompletesignup = false"> Close </v-btn>
+                      </template>
+                    </v-snackbar>
+
+                    <v-snackbar location="top" color="red" v-model="weakpassword" :timeout="5000" elevation="24" width="500px">
+                      Please ensure that your password is at least 6 characters long.
+                      <template v-slot:actions>
+                        <v-btn color="white" variant="text" @click="weakpassword = false"> Close </v-btn>
+                      </template>
+                    </v-snackbar>
+
+                    <v-snackbar location="top" color="red" v-model="emailinuse" :timeout="5000" elevation="24" width="500px">
+                      Your email is already in use, please log in instead. 
+                      <template v-slot:actions>
+                        <v-btn color="white" variant="text" @click="emailinuse = false"> Close </v-btn>
+                      </template>
+                    </v-snackbar>
+
                     <br />
                     <h4
                       class="text-center style --text mt-4 mb-3"
@@ -356,6 +388,14 @@ import firebaseApp from "@/firebase";
 export default {
   data() {
     return {
+      weakpassword: false,
+      emailinuse: false,
+      incompletesignup: false,
+      incompletelogin: false,
+      invalidlogin: false,
+      emailsent: false,
+      showresetpassword: false,
+      invalidemail: false,
       resetEmail: "",
       confirmationdialog: false,
       coverimage: coverimage,
@@ -376,11 +416,11 @@ export default {
         const auth = getAuth()
         let errorMessage =''
         sendPasswordResetEmail(auth, this.resetEmail)
-          .then(()=> {this.confirmationdialog = true})
+          .then(()=> {this.confirmationdialog = true; this.showresetpassword = false; this.emailsent = true;})
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            alert(errorMessage)
+            this.invalidemail = true
           })
 
     },
@@ -392,7 +432,7 @@ export default {
     signIn() {
       const auth = getAuth();
       if (!this.email || !this.password) {
-        alert("Email and password are required.");
+        this.incomplete = true
         return;
       }
       signInWithEmailAndPassword(auth, this.email, this.password)
@@ -413,7 +453,7 @@ export default {
               errorMessage = error.message;
           }
           console.error(error.code, error.message);
-          alert(errorMessage);
+          this.invalidlogin = true
         });
     },
 
@@ -468,18 +508,21 @@ export default {
         switch (error.code) {
           case "auth/email-already-in-use":
             errorMessage = "Your email is already in use at KiasuCareers.";
+            this.emailinuse = true
             break;
           case "auth/weak-password":
             errorMessage = "Password should be at least 6 characters.";
+            this.weakpassword = true
             break;
           case "auth/invalid-email":
             errorMessage = "Email invalid.";
+            this.incompletesignup = true
             break;
           default:
             errorMessage = error.message;
+            this.incompletesignup = true
         }
         console.error(error.code, error.message);
-        alert(errorMessage);
       }
     },
 

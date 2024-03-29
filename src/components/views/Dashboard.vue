@@ -1,13 +1,18 @@
 <template>
     <v-app class="custom-bg">
+        
+
         <v-row class="rounded rounded-md">
             <Header />
             <SideBar />
         </v-row>
         
         <div class="text-center">
+            <v-snackbar location="top" v-model="welcome" :timeout="5000" color="#6381a3" rounded="pill" style="display: flex; justify-content: center; align-items: center;">
+                <h3 style="color: #fff; margin-left: 30px; font-weight: 500;">Welcome to KiasuCareers, {{ firstname }}.</h3>
+            </v-snackbar>
             <v-dialog v-model="dialog" width="auto">
-                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers!" color="#244d7b">
+                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers." color="#244d7b">
                     <v-card-text class="font-weight-light">
                         New member here? Fill up and indicate some details below to have your own personalised dashboard!
                         <v-container fluid> <br>
@@ -79,6 +84,8 @@ import {getAuth} from 'firebase/auth';
 export default {
     data() {
         return {
+            welcome: false,
+            firstname: "",
             jobs: null,
             title: "",
             dialog: null, 
@@ -140,12 +147,14 @@ export default {
     },
 
     async mounted() {
+        this.welcome = true
         const db = getFirestore(firebaseApp);
         const auth = getAuth();
         const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
         if (docRef.data()['credentials']['firstlogin']) {
             this.dialog = true
         }
+        this.firstname = docRef.data()['credentials']['firstname']
     }
 
 }

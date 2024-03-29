@@ -120,16 +120,12 @@
                           </v-card>  
                       </v-dialog>
                     
-                    <v-dialog v-model="confirmationdialog" width="auto">
-                      <v-card title="Reset password" class="d-flex text-wrap" width="550px" height="180px">
-                        <v-card-subtitle style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; font-size: medium ;"> A reset password link is sent to the email you have indicated,<br> please check your junk if you do not see the email in your inbox.</v-card-subtitle>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                                <v-btn class="text-none" color="blue" variant="tonal" text="Close" @click="confirmationdialog=false"></v-btn>
-                        </v-card-actions>
-                      </v-card>
-
-                    </v-dialog>
+                      <v-snackbar location="top" color="green" v-model="emailsent" :timeout="5000" elevation="24" width="500px">
+                        A password reset link has been sent to your email. Do check your junk if you do not see the email in your inbox.
+                        <template v-slot:actions>
+                          <v-btn color="white" variant="text" @click="emailsent = false"> Close </v-btn>
+                        </template>
+                      </v-snackbar>
                       
                       
                         <v-dialog v-model="showEditPasswordModal" persistent max-width="600px">
@@ -203,6 +199,12 @@
                         </v-card-actions>
                       </v-card>
                       </v-dialog>
+                      <v-snackbar location="top" color="red" v-model="deleted" :timeout="5000" elevation="24" width="500px">
+                        Your account has been deleted, goodbye.
+                        <template v-slot:actions>
+                          <v-btn color="white" variant="text" @click="deleted = false"> Close </v-btn>
+                        </template>
+                      </v-snackbar>
 
 
 
@@ -351,10 +353,13 @@ import IndeedLogo from "@/components/IndeedLogo.vue";
 import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
+import { waitForPendingWrites } from "firebase/firestore";
 
 
 export default {
   data: () => ({
+    deleted: false,
+    emailsent: false,
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
@@ -390,7 +395,7 @@ export default {
         const auth = getAuth()
         let errorMessage =''
         sendPasswordResetEmail(auth, String(auth.currentUser.email))
-          .then(()=> {this.confirmationdialog = true})
+          .then(()=> {this.emailsent = true})
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -448,9 +453,11 @@ export default {
 
       try {
         await deleteUser(user);
-        alert("Account deleted successfully!");
+        
         console.log("Account deleted.");
-        this.$router.push('/');
+        this.deleted = true
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        this.$router.push('/')
       } catch (error) {
         //requires recent login
         console.error("Error deleting user account", error);

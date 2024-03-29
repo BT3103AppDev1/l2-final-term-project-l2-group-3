@@ -48,7 +48,7 @@
 
                           <router-link style="text-decoration: none; colour:inherit" to="/login">
                             <v-btn text="Send Email" 
-                            @click=" sendEmail(); isActive.value = false; confirmationdialog = true"
+                            @click=" sendEmail(); isActive.value = false;"
                             color="blue"
                             variant="tonal"
                             ></v-btn>
@@ -350,7 +350,7 @@ import {
   sendPasswordResetEmail
 } from "firebase/auth";
 import coverimage from "@/assets/coverimage.png";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
 import firebaseApp from "@/firebase";
 
 export default {
@@ -372,15 +372,17 @@ export default {
   },
 
   methods: {
-    sendEmail() {
-      let errorMessage =''
-        const auth = getAuth();
+    async sendEmail() {
+        const auth = getAuth()
+        let errorMessage =''
         sendPasswordResetEmail(auth, this.resetEmail)
-        .then(()=> {})
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-        })
+          .then(()=> {this.confirmationdialog = true})
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage)
+          })
+
     },
 
     gotohome() {

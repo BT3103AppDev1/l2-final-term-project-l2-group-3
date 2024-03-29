@@ -5,8 +5,6 @@ import Resume from '../components/views/Resume.vue'
 import Calendar from '../components/views/Calendar.vue'
 import Performance from '../components/views/Performance.vue'
 import Login from '@/components/views/Login.vue'
-import PasswordReset from '@/components/views/PasswordReset.vue'
-import Reset from '@/components/views/Reset.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
@@ -44,20 +42,12 @@ const router = createRouter( {
             component: Performance
         },
 
-        {
-            path:"/forgotPassword",
-            component: PasswordReset
-        },
 
         {
             path:"/login",
             component: Login
         },
 
-        {
-            path:"/reset",
-            component: Reset
-        }
     ],
 
     scrollBehavior(to, from, savedPosition) {

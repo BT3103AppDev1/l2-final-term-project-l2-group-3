@@ -6,11 +6,11 @@
         </v-app-bar>
 
         <v-main class="container">
-            <v-row id="main" align-content="center" justify="center" style="height: max-content; margin-bottom: 50px;">
+            <v-row id="main" align-content="center" justify="center" style="height: max-content; margin-bottom: 50px;" @mouseover="hover = true" @mouseleave="hover = false">
                 
                 <v-col cols="8" align-self="center">
                     <div style="margin-left: 150px;">
-                        <h1 class="title"><span>Streamline</span> Your Success, One Application at a Time </h1>    
+                        <h1 class="title" > <h1 class="effect" :class="{ 'hovered' : hover}">Streamline</h1>Your Success, One Application at a Time </h1>    
                         <p class="description"> Review job applications from multiple job portals such as LinkedIn, Indeed and Glassdoor, all under one dashboard. </p>
                         <a href="#" class="btn" @click="gotologin" @mouseover="enter" @mouseleave="leave">Get started</a>
                     </div>
@@ -103,12 +103,66 @@
                 </v-col>
             </v-row>
 
-            <v-row class="d-flex justify-space-evenly" id="thirdcontainer" align-content="center" style="margin-top: 150px; height: 500px;">
-            
+            <v-row class="d-flex justify-center" id="fourthcontainer" align-content="center" style="height: 500px; margin-top: 150px;">
+                <v-col cols="9">
+                    <v-row no-gutters="">
+                        <v-col>
+                            <v-card color="#ccd3db" height="550px" class="d-flex" style="border-bottom-left-radius: 20px; border-top-left-radius: 20px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
+                                <v-container fluid style="margin-left: 20px;"> <br>
+                                    <v-row style="margin-top: 80px; margin-left: 100px;">
+                                        <v-col>
+                                            <h2 class = "particulars">Location</h2>    
+                                            <h3 class = "subparticulars"> LT18, 1 Business Link <br> Singapore 117592 </h3>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row style="margin-left: 100px; margin-top: 60px;">
+                                        <v-col>
+                                            <h2 class = "particulars">Contact details</h2>
+                                            <h3 class = "subparticulars"> Email: kiasucareers@gmail.com </h3>    
+                                            <h3 class = "subparticulars"> Phone: +65 6784 5649 </h3>    
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-card>
+                        </v-col>
+
+                        <v-col>
+                            <v-card color="#46678a" height="550px" class="justify-center" style= "border-bottom-right-radius: 20px; border-top-right-radius: 20px; border-bottom-left-radius: 0px; border-top-left-radius: 0px;">
+                                <v-card-title class="font-weight-light">
+                                    <h2 style="margin-left: 15px; margin-top: 20px; color: #b2c0da;"> Contact Us </h2>
+                                    <v-container fluid> <br>
+                                        <v-row style="margin-top: -40px;">
+                                            <v-col cols="12">
+                                                <v-text-field v-model="name" label="Enter your name" variant="solo-filled"></v-text-field>
+                                            </v-col>
+                                        </v-row>
+
+                                        <v-row>
+                                            <v-col cols="12"> 
+                                                <v-text-field v-model="senderemail" label="Enter a valid email address" variant="solo-filled"></v-text-field>
+                                            </v-col>
+                                        </v-row>
+
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-text-field v-model="message" style="height: 350px;"  variant="solo-filled">
+                                                </v-text-field>
+                                            </v-col>
+                                        </v-row>
+
+                                    </v-container>
+
+                                    <v-card-actions style="margin-top: -160px; margin-left: 10px">
+                                        <v-btn variant="outlined" @click="sendEmail"> Submit</v-btn>
+                                    </v-card-actions>
+                                </v-card-title>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+                </v-col>
             </v-row>
-
         </v-main>
-
         <Footer />
 
     </v-app>
@@ -120,14 +174,38 @@
     import ScrollTrigger from "gsap/ScrollTrigger";
     import Lenis from '@studio-freight/lenis'
     import Footer from "@/components/Footer.vue"
+    import emailjs from 'emailjs-com' 
+    import { alignJustify } from 'fontawesome';
 
     export default {
         data() {
             return {
-                //
+                name: "",
+                senderemail: "",
+                message: "",
+                hover: false
             }
         },
         methods: {
+            sendEmail() {
+                var templateParams = {
+                    to_name: "KiasuCareers",
+                    from_name: this.name,
+                    email_id: this.senderemail,
+                    message: this.message
+                };
+
+                emailjs.send('service_cd7alk8', 'template_k3ptflf', templateParams, 'zagrIUfGnZEM9-wlw').then(
+                (response) => {
+                    alert('SUCCESS!', response.status, response.text);
+                },
+                (error) => {
+                    alert('FAILED...', error);
+                },
+                );
+
+
+            },
             gotologin() {
                 this.$router.push("/login")
             },
@@ -218,14 +296,26 @@
 
             t4.from('#thirdfeature', {opacity:0, x: 800})
 
+            let t5 = gsap.timeline( {
+                scrollTrigger : {
+                    trigger: '#thirdfeature',
+                    start: '110% center',
+                    end: '200% center',
+                    scrub: true,
+                    markers: false,
+                }
+            })
+
+            t5.from('#fourthcontainer', {rotation: 150, opacity:0, x:-500})
+
             gsap.fromTo('.logo', 
                 { opacity: 0, y: 10 },
                 { opacity: 1, y: 0, duration: 1, delay: 2 }
             );
 
             gsap.fromTo('.title', 
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1, delay: 1.6 }
+                { opacity: 0, y: 30, rotation:-30 },
+                { opacity: 1, y: 0, duration: 1,rotation:0, delay: 1.6 }
             );
 
             gsap.fromTo('.description', 
@@ -265,6 +355,7 @@
         font-style: normal;
         min-height: 100vh;        
         background-color: #19375a;
+        height: 3000px;
     }
         
     p {
@@ -319,7 +410,6 @@
     }
 
     .title span{
-        
         color: #5a93f6;
     }
 
@@ -387,6 +477,45 @@
         100% {
             transform: translateY(30px);
         }
+    }
+
+    .particulars{
+        color: #3f5377;
+        font-weight: 800
+    }
+
+    .subparticulars {
+        color: #3f5377;
+        font-weight: 500
+    }
+
+    .effect{
+        font-size: 60px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        float: left;
+        margin-right: 10px;
+    }
+
+    .effect {
+        color: transparent;
+        -webkit-text-stroke: 2px #5a93f6;
+        position: relative;
+    }
+
+    .effect::before {
+        content: "Streamline";
+        position: absolute;
+        width: 0%;
+        height: 100%;
+        overflow: hidden;
+        color: #5a93f6;
+        border-right: 4px solid #5a93f6;
+        transition: 1s ease-in-out;
+    }
+
+    .effect.hovered::before{
+        width: 100%;
+        filter: drop-shadow(0 0 5px #5a93f6);
     }
 </style>
 

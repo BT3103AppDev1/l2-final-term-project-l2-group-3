@@ -20,13 +20,54 @@
                   class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
                 >
                   Password
-                  <router-link
-                    to="/forgotPassword"
-                    class="text-caption text-decoration-none text-blue"
-                  >
-                    Forgot password?
-                  </router-link>
+                  <v-dialog max-width="500">
+                    <template v-slot:activator="{props: activatorProps}">
+                      <div
+                        class="forgotpassword"
+                        v-bind="activatorProps"
+                      >
+                        Forgot password?
+                      </div>
+                    </template>
+                    <template v-slot:default="{ isActive }">
+                      <v-card title="Reset Password">
+                        <v-card-text>Please enter the email address you'll like your password reset link sent to</v-card-text>
+                        <v-text-field 
+                          style="margin-left:25px;
+                          margin-right:50px"
+                          v-model="resetEmail"
+                          dense
+                          placeholder="Email address"
+                          prepend-inner-icon="mdi-email-outline"
+                          variant="underlined"
+                        >
+                        </v-text-field>
+                        
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+
+                          <router-link style="text-decoration: none; colour:inherit" to="/login">
+                            <v-btn text="Send Email" 
+                            @click=" sendEmail(); isActive.value = false; confirmationdialog = true"
+                            color="blue"
+                            variant="tonal"
+                            ></v-btn>
+                          </router-link>
+                        </v-card-actions>
+                      </v-card>  
+                    </template>
+                  </v-dialog>
                 </div>
+                <v-dialog v-model="confirmationdialog" width="auto">
+                  <v-card title="Reset password" class="d-flex text-wrap" width="550px" height="180px">
+                    <v-card-subtitle style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; font-size: medium ;"> A reset password link is sent to the email you have indicated,<br> please check your junk if you do not see the email in your inbox.</v-card-subtitle>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                            <v-btn class="text-none" color="blue" variant="tonal" text="Close" @click="confirmationdialog=false"></v-btn>
+                    </v-card-actions>
+                  </v-card>
+
+                </v-dialog>
                 <v-text-field
                   v-model="password"
                   :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
@@ -306,6 +347,7 @@ import {
   signInWithPopup,
   GithubAuthProvider,
   OAuthProvider,
+  sendPasswordResetEmail
 } from "firebase/auth";
 import coverimage from "@/assets/coverimage.png";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
@@ -314,6 +356,8 @@ import firebaseApp from "@/firebase";
 export default {
   data() {
     return {
+      resetEmail: "",
+      confirmationdialog: false,
       coverimage: coverimage,
       firstname: "",
       lastname: "",
@@ -328,6 +372,17 @@ export default {
   },
 
   methods: {
+    sendEmail() {
+      let errorMessage =''
+        const auth = getAuth();
+        sendPasswordResetEmail(auth, this.resetEmail)
+        .then(()=> {})
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+        })
+    },
+
     gotohome() {
       this.$router.push("/");
     },
@@ -488,5 +543,14 @@ export default {
   background-color: #244d7b;
   color: whitesmoke;
   border-bottom-right-radius: 400px;
+}
+
+.forgotpassword {
+  color: blue;
+  font-size: small;
+}
+
+.forgotpassword:hover {
+  cursor: pointer;
 }
 </style>

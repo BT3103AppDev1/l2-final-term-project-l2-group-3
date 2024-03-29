@@ -14,21 +14,21 @@
                             <v-row>
                                 <span> <b>Job Title</b> </span>
                                 <v-col cols="12">
-                                    <v-text-field v-model="title" label="Enter job title you are looking for, or any keywords"></v-text-field>
+                                    <v-text-field v-model="title" label="Enter job title you are looking for"></v-text-field>
                                 </v-col>
                             </v-row>
 
                             <v-row>
-                                <span> <b>Industries</b> </span>
+                                <span> <b>Job portals</b> </span>
                                 <v-col cols="12"> 
-                                    <v-combobox clearable chips :items="items" label="Select the industries you are interested in" multiple> </v-combobox>
+                                    <v-combobox clearable :items="portals" label="Find jobs posted in the job portals you select"> </v-combobox>
                                 </v-col>
                             </v-row>
 
                             <v-row>
-                                <span><b>Job types</b></span>
+                                <span><b>Employment types</b></span>
                                 <v-col cols="12">
-                                    <v-combobox clearable chips :items="jtypes" label="Select job types" multiple></v-combobox>
+                                    <v-combobox clearable chips :items="jtypes" label="Select employment types"></v-combobox>
                                 </v-col>
                             </v-row>
 
@@ -46,11 +46,11 @@
             
         <v-row class="view" style="margin-left: 55px; height: 100%; margin-top: 70px;">
 
-            <v-col cols="8">
-                <JobCards :jobs = "jobs" />
+            <v-col cols="9">
+                <JobCards :jobs = "jobs" @datadata="childcall($event)" />
             </v-col>
 
-            <v-col cols="4">
+            <v-col cols="3">
                 <Progress/>
             </v-col>
                 
@@ -70,7 +70,7 @@ import {RetrieveJobsFromLinkedIn} from '@/linkedin.js';
 // import {RetrieveJobsFromIndeed} from '@/indeed.js';
 import SaveJob from "@/components/SaveJob.vue"
 import Header from "@/components/Header.vue"
-import SideBar from "@/components/SideBar.vue"
+//import SideBar from "@/components/SideBar.vue"
 import Footer from "@/components/Footer.vue"
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import firebaseApp from "@/firebase";
@@ -81,24 +81,18 @@ export default {
         return {
             jobs: null,
             title: "",
-            dialog: true, //setting it to true for now (to test the dialog)
-            items: [
-                'Financial Services',
-                'IT Services and IT Consulting',
-                'Staffing and Recruiting',
-                'Human Resources Services',
-                'Banking',
-                'Technology, information and internet',
-                'Entertainment Provides',
-                'Hospitals abd Healthcare'
+            dialog: null, 
+            portals: [
+                'LinkedIn',
+                'Indeed',
+                'Glassdoor',
+                'Others'
             ],
             jtypes: [
                 'Full-time',
-                'Contract',
+                'Contractor',
                 'Part-time',
-                'Internship',
-                'Temporary',
-                'Volunteer'
+                'Intern',
             ],
         };
     },
@@ -110,6 +104,10 @@ export default {
     },
 
     methods: {
+        childcall(x) {
+            this.dialog = x
+        },
+
         async closedialog() {
             this.dialog = false;
             //console.log(this.title);
@@ -121,6 +119,9 @@ export default {
             //console.log("this is the job object")
             //console.log(this.jobs);
             this.GetUserData();
+            const db = getFirestore(firebaseApp);
+            const auth = getAuth();
+            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.email)), {credentials: {firstlogin: false}}, {merge: true})
             //console.log(typeof(this.jobs))
             
         },
@@ -137,6 +138,15 @@ export default {
             }
         },
     },
+
+    async mounted() {
+        const db = getFirestore(firebaseApp);
+        const auth = getAuth();
+        const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
+        if (docRef.data()['credentials']['firstlogin']) {
+            this.dialog = true
+        }
+    }
 
 }
 </script>

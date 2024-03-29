@@ -1,21 +1,29 @@
 <template>
-    <v-row style="margin-top: 20px;">
+    <v-row style="margin-top: 10px;">
         <h2 class="subheading">Dashboard</h2>
         <v-btn class="expandablebutton" color= #154c79 @click="showSaveJob = true" @mouseover="hover = true" @mouseleave="hover = false">
             <v-icon>mdi-plus</v-icon>
             <span v-if="hover" class="button-text">Save a new job</span>
         </v-btn>
         <v-dialog v-model="showSaveJob" max-width="700px">
-            <v-card color="#54739a" title="Save a new job">
+            <v-card color="#244d7b" title="Save a new job">
                 <v-card-text class="font-weight-light">
                 Enter the following details and the application will appear under Saved Jobs!
                 </v-card-text>
 
                 <v-card-text>
-                    <SaveJob @job-saved="showSaveJob = false" />
-                    <v-col class="d-flex justify-center">
-                        <v-btn variant="tonal" width="250px" @click="showSaveJob = false">Close</v-btn>
-                    </v-col>
+                    
+                        <div class="save-job-form">
+                            <v-text-field label="Job Title" v-model="job.title"></v-text-field>
+                            <v-text-field label="Company Name" v-model="job.company"></v-text-field>
+                            <v-text-field label="Job Location" v-model="job.location"></v-text-field>
+                            <v-text-field label="Job Link" v-model="job.link"></v-text-field>
+                            <v-col class="d-flex justify-center">
+                                <v-btn variant="tonal" width="250px">Save Job</v-btn>
+                            </v-col>
+                        </div>
+                        <v-btn variant="tonal" width="250px" @click="showSaveJob = false" style="margin-left: 201px; margin-top: -30px;">Close</v-btn>
+                    
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -24,16 +32,26 @@
 
 
     <v-container>
-        <v-row class="ga-5">
+        <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
                     <v-row>
-                        <v-col cols="7">
+                        <v-col cols="5">
                             <h2 class="title"> Find Jobs</h2>
                         </v-col>
 
-                        <v-col cols="5">
-                            <v-btn variant="tonal" rounded> Edit preferences</v-btn>
+                        <v-col cols="7">
+                            <v-row>
+                                <v-col cols="3">
+                                    <v-btn variant="blank"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
+                                </v-col>
+
+                                <v-col cols="9">
+                                    <v-btn variant="tonal" rounded color="#244d7b" @click="editpreferences"> Edit preferences</v-btn>
+                                </v-col>
+
+                            </v-row>
+                            
                         </v-col>
                     </v-row>
                     <v-infinite-scroll
@@ -66,21 +84,21 @@
             </v-col>
 
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
                     <h2 class="title">Applied</h2>
                 </v-card>
             </v-col>
         </v-row>
 
-        <v-row class="d-flex ga-5">
+        <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
                     <h2 class="title">Saved</h2>
                 </v-card>
             </v-col>
 
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="550px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
                     <h2 class="title">Interviewed</h2>
                 </v-card>
             </v-col>
@@ -95,10 +113,15 @@
 export default {
     data() {
         return {
-            dialog: false,
             currentviewedjob: null,
             hover: false,
             showSaveJob: false,
+            job: {
+                title: '',
+                company: '',
+                location: '',
+                link: ''
+            }
         }
     },
 
@@ -106,7 +129,13 @@ export default {
         jobs: Object
     },
 
+    emits:["datadata"],
+
     methods : {
+        editpreferences() {
+            this.$emit("datadata", true)
+        },
+
         print() {
             console.log(Object.values(this.jobs)[1])
         },
@@ -160,6 +189,13 @@ export default {
     color: rgb(139, 139, 139);
     font-weight: 600;
     font-size: 22px;
+}
+
+.save-job-form {
+    max-width: 500px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
 }
 
 

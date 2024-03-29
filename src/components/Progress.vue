@@ -1,7 +1,7 @@
 <template>
     <h2 class="subheading">Progress and Reminders</h2>
 
-    <v-container style="margin-top: -10px;">
+    <v-container style="margin-top: -20px;">
         <v-row>
             <v-col cols="12">
                 <v-card variant="elevated" color="#6381a3" class="pa-3" height="400px">

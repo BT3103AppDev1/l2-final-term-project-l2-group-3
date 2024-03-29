@@ -21,8 +21,8 @@
 
         <v-card-text>
           <v-window v-model="tab">
-            <v-window-item value="one">
-              <v-container>
+            <v-window-item value="one" style="width: 1300px;">
+              <v-container style="width: 100%;">
               <br><br>
               <v-row style="margin-top: -50px;">
                 <v-col xl="8" lg="8" md="8">
@@ -78,11 +78,11 @@
 
             <v-col xl="4" lg="4" md="4">
               <v-row>
-                <v-card style="border-radius: 15px;margin-top: 12px; " color="#ffffff" height="max-content" max-width="1900px" >
+                <v-card style="border-radius: 15px;margin-top: 12px; " color="#ffffff" height="max-content" width="700px" >
                   <v-row justify="center" align-content="center" >
                     <v-col>
                       
-                      <h2 style="padding: 10px; color:rgb(41, 40, 40); padding: 20px; margin-bottom: -20px;">Change Password</h2>
+                      <h2 style="padding: 10px; color:rgb(41, 40, 40); padding: 20px; margin-bottom: -20px;">Change or Reset Password</h2>
                     </v-col>
                     
                     <v-col cols="12">
@@ -90,7 +90,48 @@
                     </v-col>
                         
                     <v-col cols="12" class="d-flex justify-center" style="margin-top: -10px; margin-bottom: 20px;">
-                      <v-btn  text="Change Password" @click="showEditPasswordModal = true" class="text-none" style="width: 300px; color: #5da8ff" variant="tonal"></v-btn>
+                      <v-row class="d-flex justify-space">
+                        <v-col cols="auto" style="margin-left: 30px;">
+                          <v-btn  text="Change Password" @click="showEditPasswordModal = true" class="text-none" style="width: 150px; color: #5da8ff" variant="tonal"></v-btn>
+                        </v-col>
+
+                        <v-col cols="auto">
+                          <v-btn  text="Reset Password" @click="showResetPasswordModal = true" class="text-none" style="width: 150px; color: #5da8ff" variant="tonal"></v-btn>
+                        </v-col>
+                      </v-row>
+                      <v-dialog max-width="500" v-model="showResetPasswordModal">
+                          <v-card title="Reset Password">
+                            <v-card-text>A password reset email will be sent to your registered email. Would you like to proceed?</v-card-text>
+                            
+                            <v-card-actions>
+                              <v-spacer></v-spacer>
+                              <v-btn text="Yes" 
+                                @click=" sendEmail(); showResetPasswordModal = false;"
+                                color="blue"
+                                variant="tonal"
+                              ></v-btn>
+
+                              <v-btn text="Cancel" 
+                                @click="showResetPasswordModal = false"
+                                color="grey"
+                                variant="tonal"
+                              ></v-btn>
+                            </v-card-actions>
+                          </v-card>  
+                      </v-dialog>
+                    
+                    <v-dialog v-model="confirmationdialog" width="auto">
+                      <v-card title="Reset password" class="d-flex text-wrap" width="550px" height="180px">
+                        <v-card-subtitle style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; font-size: medium ;"> A reset password link is sent to the email you have indicated,<br> please check your junk if you do not see the email in your inbox.</v-card-subtitle>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                                <v-btn class="text-none" color="blue" variant="tonal" text="Close" @click="confirmationdialog=false"></v-btn>
+                        </v-card-actions>
+                      </v-card>
+
+                    </v-dialog>
+                      
+                      
                         <v-dialog v-model="showEditPasswordModal" persistent max-width="600px">
                           <v-card>
                             <v-card-title>
@@ -99,6 +140,7 @@
                             <v-card-text>
                               <v-form ref="form" v-model="valid">
                                 <v-text-field
+                                  style="margin-left: 50px; margin-right: 50px;"
                                   label="Old Password"
                                   v-model="oldPassword"
                                   :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -107,6 +149,7 @@
                                   required
                                 ></v-text-field>
                                 <v-text-field
+                                  style="margin-left: 50px; margin-right: 50px;"
                                   label="New Password"
                                   v-model="newPassword"
                                   :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -115,6 +158,7 @@
                                   required
                                 ></v-text-field>
                                 <v-text-field
+                                  style="margin-left: 50px; margin-right: 50px;"
                                   label="Confirm New Password"
                                   v-model="confirmNewPassword"
                                   :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -306,11 +350,12 @@
 import IndeedLogo from "@/components/IndeedLogo.vue";
 import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
-import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser } from 'firebase/auth';
+import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
 
 
 export default {
   data: () => ({
+    resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
     syncLinkedin: true,
@@ -322,6 +367,8 @@ export default {
     remindOutlook: false,
     remindTelegram: false,
     showEditPasswordModal: false,
+    showResetPasswordModal: false,
+    confirmationdialog: false,
     valid: true,
     oldPassword: '',
     newPassword: '',
@@ -339,6 +386,19 @@ export default {
   },
 
   methods: {
+    async sendEmail() {
+        const auth = getAuth()
+        let errorMessage =''
+        sendPasswordResetEmail(auth, String(auth.currentUser.email))
+          .then(()=> {this.confirmationdialog = true})
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            alert(errorMessage)
+          })
+
+    },
+
     async validatePasswordChange() {
       if (!this.$refs.form.validate()) {
         return;

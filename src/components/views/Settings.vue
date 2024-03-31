@@ -221,7 +221,7 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="300px" >
+                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="350px" >
                   <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
@@ -239,7 +239,7 @@
                     </v-col>
 
                     <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" value="success" v-model="syncLinkedin" style="margin-right: 20px;"></v-switch> <!-- properly define vmodel for switch to be toggled -->
+                      <v-switch inset color="success" v-model="syncLinkedin" @change="handleSyncLinkedin" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
 
@@ -252,7 +252,20 @@
                     </v-col>
                   
                     <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" value="success" v-model="syncIndeed" style="margin-right: 20px;"></v-switch>
+                      <v-switch inset color="success" v-model="syncIndeed" @change="handleSyncIndeed" style="margin-right: 20px;"></v-switch>
+                    </v-col>
+                  </v-row>
+
+                  <v-row class="mt-n0 mb-n10">
+                    <v-col cols="6" class="d-flex align-self-center justify-start">
+                      <v-list-item-icon style="margin-left: 20px;">
+                        <glassdoor-logo />
+                      </v-list-item-icon>
+                      <h3 class="switch-label" style="margin-left: 5px;"><b>Glassdoor</b></h3>
+                    </v-col>
+                  
+                    <v-col cols="6" class="d-flex align-self-center justify-end">
+                      <v-switch inset color="success" v-model="syncGlassdoor" @change="handleSyncGlassdoor" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
                 </v-card><br>
@@ -287,7 +300,7 @@
                     <v-card>
                       <v-card-title>Enter Custom Goal</v-card-title>
                         <v-card-text>
-                          <v-text-field v-model="inputCustomGoal" label="Custom Goal" type="number"></v-text-field>
+                          <v-text-field v-model="inputCustomGoal" label="Custom Goal" type="number" :rules="customGoalRules"></v-text-field>
                         </v-card-text>
                         <v-card-actions>
                           <v-btn color="blue darken-1" text @click="closeCustomDialog">Cancel</v-btn>
@@ -323,7 +336,7 @@
                     </v-col>
                     
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
-                      <v-switch inset color="success" value="success" v-model="remindOutlook" style="margin-right: 20px;"></v-switch>
+                      <v-switch inset color="success" v-model="remindOutlook" @change="handleRemindOutlook" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
 
@@ -335,7 +348,7 @@
                       <h3 class="switch-label" style="margin-left: 10px;"><b>Telegram</b></h3>
                     </v-col>
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
-                      <v-switch inset color="success" value="success" v-model="remindTelegram" style="margin-right: 20px;"></v-switch>
+                      <v-switch inset color="success" v-model="remindTelegram" @change="handleRemindTelegram" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
                 </v-card>
@@ -354,6 +367,9 @@ import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
 import { waitForPendingWrites } from "firebase/firestore";
+import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
+import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, setDoc  } from 'firebase/firestore';
+import firebaseApp from "@/firebase";
 
 
 export default {
@@ -365,10 +381,12 @@ export default {
     userEmail: 'user@example.com',
     syncLinkedin: true,
     syncIndeed: false,
+    syncGlassdoor: false,
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
     inputCustomGoal: '',
+    customGoalRules: [v => (v >= 0 && v <= 100) || 'Custom goal must be between 0 and 100'],
     remindOutlook: false,
     remindTelegram: false,
     showEditPasswordModal: false,
@@ -451,7 +469,12 @@ export default {
         return;
       }
 
+      const db = getFirestore();
+      const userDocRef = doc(db, 'Users', user.email);
+
       try {
+        await deleteDoc(userDocRef);
+
         await deleteUser(user);
         
         console.log("Account deleted.");
@@ -465,12 +488,14 @@ export default {
       }
     },
     
-    //methods for custom option under Daily Application Goal
+    //methods for Daily Application Goal
     handleRadioChange(value) {
       console.log("Radio value changed:", this.dailyGoal);
       if (this.dailyGoal == 'custom' && !this.showCustomDialog) {
         console.log("Custom option selected, showing dialog...");
         this.showCustomDialog = true;
+      } else {
+        this.updateDailyGoal(this.dailyGoal);
       }
     }, 
 
@@ -479,31 +504,116 @@ export default {
     }, 
 
     submitCustomGoal() {
-      //console.log("Submitting custom goal:", this.customGoal);
       if (this.inputCustomGoal && !isNaN(this.inputCustomGoal)) {
         this.customGoal = this.inputCustomGoal; //updates the stored custom value
         this.dailyGoal = 'custom'; //keeps the custom radio button selected
         console.log("Daily goal updated to custom value:", this.dailyGoal)
+        this.updateDailyGoal(this.customGoal);
       }
       this.closeCustomDialog();
     },
 
+    updateDailyGoal(goalValue) {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      setDoc(userDocRef, {settings: {progress_settings: goalValue}}, {merge:true});
+      console.log('Progress setting in firebase updated to:', goalValue);
+    },
+
     
-    //logic not done yet
+    //sync settings methods
     async handleSyncLinkedin() { 
-      console.log('syncLinkedIn changed:', this.syncLinkedin);
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {sync_settings: {linkedin: this.syncLinkedin}}}, {merge:true});
+        console.log('syncLinkedin setting updated in Firestore to:', this.syncLinkedin);
+      } catch (error) {
+        console.error('Error updating syncLinkedin setting:', error);
+      }
     },
 
     async handleSyncIndeed() {
-      console.log('syncIndeed changed:', this.syncIndeed);
-    },
+      //console.log('syncIndeed changed:', this.syncIndeed);
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
 
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {sync_settings: {indeed: this.syncIndeed}}}, {merge:true});
+        console.log('syncIndeed setting updated in Firestore to:', this.syncIndeed);
+      } catch (error) {
+        console.error('Error updating syncIndeed setting:', error);
+      }
+    },
+ 
+    async handleSyncGlassdoor() {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {sync_settings: {glassdoor: this.syncGlassdoor}}}, {merge:true});
+        console.log('syncGlassdoor setting updated in Firestore to:', this.syncGlassdoor);
+      } catch (error) {
+        console.error('Error updating syncGlassdoor setting:', error);
+      }
+    },
+    
+    //reminder settings methods
     async handleRemindOutlook() {
-      console.log('remindOutlook changed:', this.remindOutlook);
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {reminder_settings: {outlook: this.remindOutlook}}}, {merge:true});
+        console.log('remindOutlook setting updated in Firestore to:', this.remindOutlook);
+      } catch (error) {
+        console.error('Error updating remindOutlook setting:', error);
+      }
     },
 
     async handleRemindTelegram() {
-      console.log('remindTelegram changed:', this.remindTelegram);
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {reminder_settings: {telegram: this.remindTelegram}}}, {merge:true});
+        console.log('remindTelegram setting updated in Firestore to:', this.remindTelegram);
+      } catch (error) {
+        console.error('Error updating remindTelegram setting:', error);
+      }
     },
  }
 }

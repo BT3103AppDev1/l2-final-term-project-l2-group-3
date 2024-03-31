@@ -5,9 +5,11 @@ import router from './router'
 import Vuetify from '@/plugins/vuetify';
 import firebaseApp from './firebase';
 //import { MotionPlugin } from '@vueuse/motion'
+import VueChartkick from 'vue-chartkick'
+import 'chartkick/chart.js'
 
 
 const app = createApp(App)
 
 
-app.use(Vuetify).use(router).mount('#app')
+app.use(Vuetify).use(router).use(VueChartkick).mount('#app')

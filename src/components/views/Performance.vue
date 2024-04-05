@@ -155,24 +155,28 @@
 
 
 <script>
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import firebaseApp from "@/firebase";
+
 export default {
     
     // sample data
     data() {
         return {
             applicationsCompleted: {
-                count: 34,
-                trend: 1
+                count: this.fetchApplied(),
+                trend: 0
             },
 
             interviewsAttended: {
-                count: 10,
-                trend: 2
+                count:this.fetchInterview(),
+                trend: 0
             },
 
             progressionToNextStage: {
-                count: 1,
-                trend: 2
+                count: this.fetchProgress(),
+                trend: 0
             },
 
             chartData: {
@@ -200,6 +204,83 @@ export default {
             ]
         }
     },
+
+        methods: {
+        async fetchApplied() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+                
+                if (user) {
+                    const userDocRef = doc(db,"Users", user.email) 
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists) {
+                        const appliedJobsDict = userDocSnapshot.data().applications.applied;
+                        const appliedJobsCount = Object.keys(appliedJobsDict).length;
+
+                        this.applicationsCompleted.count = appliedJobsCount;
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching applied jobs count: ", error);
+            }
+        },
+
+        async fetchInterview() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+                
+                if (user) {
+                    const userDocRef = doc(db,"Users", user.email) 
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists) {
+                        const appliedInterviewedDict = userDocSnapshot.data().applications.interviewed;
+                        const appliedInterviewCount = Object.keys(appliedInterviewedDict).length;
+
+                        this.interviewsAttended.count = appliedInterviewCount;
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching interview count: ", error);
+            }
+        },
+        async fetchProgress() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+                
+                if (user) {
+                    const userDocRef = doc(db,"Users", user.email);
+                    const userRef = doc(db,"Users", user.email);
+                    const userRefSnapshot= await getDoc(userRef);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists) {
+                        const progressSetting= userRefSnapshot.data().settings.progress_settings;
+                        const appliedInterviewedDict = userDocSnapshot.data().applications.interviewed;
+                        const appliedInterviewCount = Object.keys(appliedInterviewedDict).length;
+
+                        this.progressionToNextStage.count= progressSetting - appliedInterviewCount;
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching interview count: ", error);
+            }
+        }
+    },
+
 };
 </script>
 

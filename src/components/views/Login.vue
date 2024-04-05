@@ -6,7 +6,7 @@
           <v-row justify="center" align="center" class="full-height">
             <v-col cols="12" md="6" class="d-flex align-center justify-center">
               <v-card flat max-width="700">
-                <h2 class="text-center">KiasuCareers Login</h2>
+                <h2 class="text-center">KiasuCareers Login </h2>
                 <br />
                 <div class="text-subtitle-1 text-medium-emphasis">Account</div>
                 <v-text-field

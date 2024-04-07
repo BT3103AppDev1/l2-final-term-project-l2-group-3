@@ -44,7 +44,7 @@
 
                     
                       <v-col xl="11" lg="10" md="9">
-                          <h2 style="margin-bottom: 20px; margin-top: 20px; color: rgb(80, 76, 76);"> {{ userFirstName }} {{ userLastName }} </h2>
+                          <h2 style="margin-bottom: 20px; margin-top: 20px; color: rgb(80, 76, 76);"> Sandra Adams </h2>
                           <v-btn class="text-none" style="margin-right: 10px; color: #5da8ff;" variant="tonal">Upload Profile Photo</v-btn>
                           <v-btn variant="outlined" class="text-none" color="red">Delete</v-btn>
                       </v-col>                    
@@ -56,19 +56,19 @@
                     <v-row style="margin-left: 10px;">
                       <v-col cols="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>First Name</b></h3>
-                        <v-text-field :model-value="userFirstName" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field model-value="Shashank" disabled variant="outlined" density="compact"></v-text-field>
                       </v-col>
 
                       <v-col cols="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>Last Name</b></h3>
-                        <v-text-field :model-value="userLastName" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field model-value="Shekhar" disabled variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
 
                     <v-row style="margin-left: 10px; margin-top: -20px;">
                       <v-col cols="8" sm="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>Email</b></h3>
-                        <v-text-field :model-value="userEmail" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field model-value="shashank@gmail.com" disabled variant="outlined" density="compact"></v-text-field>
                         
                       </v-col>
 
@@ -120,16 +120,12 @@
                           </v-card>  
                       </v-dialog>
                     
-                    <v-dialog v-model="confirmationdialog" width="auto">
-                      <v-card title="Reset password" class="d-flex text-wrap" width="550px" height="180px">
-                        <v-card-subtitle style="margin-left: 10px; margin-top: 20px; margin-bottom: 20px; font-size: medium ;"> A reset password link is sent to the email you have indicated,<br> please check your junk if you do not see the email in your inbox.</v-card-subtitle>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                                <v-btn class="text-none" color="blue" variant="tonal" text="Close" @click="confirmationdialog=false"></v-btn>
-                        </v-card-actions>
-                      </v-card>
-
-                    </v-dialog>
+                      <v-snackbar location="top" color="green" v-model="emailsent" :timeout="5000" elevation="24" width="500px">
+                        A password reset link has been sent to your email. Do check your junk if you do not see the email in your inbox.
+                        <template v-slot:actions>
+                          <v-btn color="white" variant="text" @click="emailsent = false"> Close </v-btn>
+                        </template>
+                      </v-snackbar>
                       
                       
                         <v-dialog v-model="showEditPasswordModal" persistent max-width="600px">
@@ -203,6 +199,12 @@
                         </v-card-actions>
                       </v-card>
                       </v-dialog>
+                      <v-snackbar location="top" color="red" v-model="deleted" :timeout="5000" elevation="24" width="500px">
+                        Your account has been deleted, goodbye.
+                        <template v-slot:actions>
+                          <v-btn color="white" variant="text" @click="deleted = false"> Close </v-btn>
+                        </template>
+                      </v-snackbar>
 
 
 
@@ -219,7 +221,7 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
+                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="350px" >
                   <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
@@ -237,7 +239,7 @@
                     </v-col>
 
                     <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncLinkedin" @change="handleSyncLinkedin" style="margin-right: 20px;"></v-switch> <!-- properly define vmodel for switch to be toggled -->
+                      <v-switch inset color="success" v-model="syncLinkedin" @change="handleSyncLinkedin" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
 
@@ -266,26 +268,6 @@
                       <v-switch inset color="success" v-model="syncGlassdoor" @change="handleSyncGlassdoor" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
-
-
-                  <v-row class="mt-n0 mb-n10">
-                    <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <v-list-item-icon style="margin-left: 20px;">
-                        <v-icon style="color:#244d7b;">mdi-dots-vertical</v-icon>
-                      </v-list-item-icon>
-                      <h3 class="switch-label" style="margin-left: 5px;"><b>Others</b></h3>
-                    </v-col>
-                  
-                    <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncOthers" @change="handleSyncOthers" style="margin-right: 20px;"></v-switch>
-                    </v-col>
-                  </v-row>
-
-
-
-
-
-
                 </v-card><br>
 
                 <v-card style="border-radius: 30px; " color="ffffff" height="165px" >
@@ -308,7 +290,7 @@
                         <v-radio label="5" value="5"></v-radio>
                         <v-radio label="10" value="10"></v-radio>
                         <v-radio label="20" value="20"></v-radio>
-                        <v-radio :label="`Custom: ${customGoal || 'N/A'}`" value="custom"></v-radio>
+                        <v-radio :label="customLabel" value="custom"></v-radio>
                       </v-radio-group>
                     </v-col>
                   </v-row>
@@ -383,24 +365,23 @@
 import IndeedLogo from "@/components/IndeedLogo.vue";
 import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
-import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
-import { getFirestore, collection, query, where, getDocs, getDoc, deleteDoc, doc, setDoc, onSnapshot  } from 'firebase/firestore';
+import { waitForPendingWrites } from "firebase/firestore";
+import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
+import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, setDoc  } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
 
 
 export default {
   data: () => ({
-    userFirstName: '',
-    userLastName: '',
-    userEmail: '',
+    deleted: false,
+    emailsent: false,
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
     syncLinkedin: true,
     syncIndeed: false,
     syncGlassdoor: false,
-    syncOthers: false,
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -432,7 +413,7 @@ export default {
         const auth = getAuth()
         let errorMessage =''
         sendPasswordResetEmail(auth, String(auth.currentUser.email))
-          .then(()=> {this.confirmationdialog = true})
+          .then(()=> {this.emailsent = true})
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -489,21 +470,17 @@ export default {
       }
 
       const db = getFirestore();
-      const userDocRef = collection(db, 'Users');
-      const q = query(userDocRef, where('email', '==', user.email));
+      const userDocRef = doc(db, 'Users', user.email);
 
       try {
-        //fetch user documents associated with their email
-        const querySnapshot = await getDocs(q);
+        await deleteDoc(userDocRef);
 
-        //delete each document associated with the user's email
-        querySnapshot.forEach(async (doc) => {await deleteDoc(doc.ref); console.log(`Document with ID ${doc.id} deleted.`)});
-
-        //now delete user account
         await deleteUser(user);
-        alert("Account deleted successfully!");
+        
         console.log("Account deleted.");
-        this.$router.push('/');
+        this.deleted = true
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        this.$router.push('/')
       } catch (error) {
         //requires recent login
         console.error("Error deleting user account", error);
@@ -511,7 +488,7 @@ export default {
       }
     },
     
-    //methods for custom option under Daily Application Goal
+    //methods for Daily Application Goal
     handleRadioChange(value) {
       console.log("Radio value changed:", this.dailyGoal);
       if (this.dailyGoal == 'custom' && !this.showCustomDialog) {
@@ -527,7 +504,6 @@ export default {
     }, 
 
     submitCustomGoal() {
-      //console.log("Submitting custom goal:", this.customGoal);
       if (this.inputCustomGoal && !isNaN(this.inputCustomGoal)) {
         this.customGoal = this.inputCustomGoal; //updates the stored custom value
         this.dailyGoal = 'custom'; //keeps the custom radio button selected
@@ -546,6 +522,7 @@ export default {
       console.log('Progress setting in firebase updated to:', goalValue);
     },
 
+    
     //sync settings methods
     async handleSyncLinkedin() { 
       const db = getFirestore(firebaseApp);
@@ -601,24 +578,6 @@ export default {
         console.error('Error updating syncGlassdoor setting:', error);
       }
     },
-
-    async handleSyncOthers() {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-
-      if (!auth.currentUser) {
-        console.error("No user is currently signed in.");
-      }
-
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        await setDoc(userDocRef, {settings: {sync_settings: {others: this.syncOthers}}}, {merge:true});
-        console.log('syncOthers setting updated in Firestore to:', this.syncOthers);
-      } catch (error) {
-        console.error('Error updating syncOthers setting:', error);
-      }
-    },
     
     //reminder settings methods
     async handleRemindOutlook() {
@@ -656,67 +615,7 @@ export default {
         console.error('Error updating remindTelegram setting:', error);
       }
     },
-
-    async fetchSettings() {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        const docSnapshot = await getDoc(userDocRef);
-        if (docSnapshot.exists()) {
-          const settings = docSnapshot.data().settings;
-          if (settings) {
-            console.log('hi');
-
-            this.syncLinkedin = settings.sync_settings?.linkedin ?? false; // fallback to false if not set
-            this.syncIndeed = settings.sync_settings?.indeed ?? false;
-            this.syncGlassdoor = settings.sync_settings?.glassdoor ?? false;
-            this.syncOthers = settings.sync_settings?.others ?? false;
-            const progressSetting = settings.progress_settings;
-            if (progressSetting && progressSetting !== '5' && progressSetting !== '10' && progressSetting !== '20') {
-              this.dailyGoal = 'custom';
-              this.customGoal = progressSetting;
-            } else {
-            this.dailyGoal = progressSetting || '20';
-            }
-            this.remindOutlook = settings.reminder_settings?.outlook ?? false;
-            this.remindTelegram = settings.reminder_settings?.telegram ?? false;
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching settings:", error);
-      }
-    },
-
-    async fetchUserDetails() {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-      if (auth.currentUser) {
-        const userDocRef = doc(db, 'Users', auth.currentUser.email);
-        try {
-          const docSnapshot = await getDoc(userDocRef);
-          if (docSnapshot.exists()) {
-            const userData = docSnapshot.data().credentials; // Assuming 'credentials' is the correct path
-            this.userFirstName = userData.firstname; // Make sure the field names match your Firestore structure
-            this.userLastName = userData.lastname;
-            this.userEmail = userData.email;
-          } else {
-            console.log("No user document found.");
-          }
-        } catch (error) {
-          console.error("Error fetching user details:", error);
-        }
-      } else {
-        console.error("No user is currently signed in.");
-      }
-    },
- },
-
- async mounted() {
-    await this.fetchSettings();
-    await this.fetchUserDetails();
-  }
+ }
 }
 </script>
 

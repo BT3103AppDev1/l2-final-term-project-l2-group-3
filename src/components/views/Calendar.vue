@@ -9,7 +9,7 @@
         <v-col>
          
           <v-row style="margin-left: 55px; height: 100%; margin-top: 70px;">
-            <CalendarCard/>
+            <CalendarCardv2/>
 
             <v-col cols="2">
 

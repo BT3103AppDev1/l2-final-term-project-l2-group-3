@@ -44,7 +44,7 @@
 
                     
                       <v-col xl="11" lg="10" md="9">
-                          <h2 style="margin-bottom: 20px; margin-top: 20px; color: rgb(80, 76, 76);"> Sandra Adams </h2>
+                          <h2 style="margin-bottom: 20px; margin-top: 20px; color: rgb(80, 76, 76);"> {{ userFirstName }} {{ userLastName }} </h2>
                           <v-btn class="text-none" style="margin-right: 10px; color: #5da8ff;" variant="tonal">Upload Profile Photo</v-btn>
                           <v-btn variant="outlined" class="text-none" color="red">Delete</v-btn>
                       </v-col>                    
@@ -56,19 +56,19 @@
                     <v-row style="margin-left: 10px;">
                       <v-col cols="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>First Name</b></h3>
-                        <v-text-field model-value="Shashank" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field :model-value="userFirstName" disabled variant="outlined" density="compact"></v-text-field>
                       </v-col>
 
                       <v-col cols="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>Last Name</b></h3>
-                        <v-text-field model-value="Shekhar" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field :model-value="userLastName" disabled variant="outlined" density="compact"></v-text-field>
                       </v-col>
                     </v-row>
 
                     <v-row style="margin-left: 10px; margin-top: -20px;">
                       <v-col cols="8" sm="4">
                         <h3 style="color: rgb(92, 85, 85); padding: 5px;"> <b>Email</b></h3>
-                        <v-text-field model-value="shashank@gmail.com" disabled variant="outlined" density="compact"></v-text-field>
+                        <v-text-field :model-value="userEmail" disabled variant="outlined" density="compact"></v-text-field>
                         
                       </v-col>
 
@@ -221,7 +221,7 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="350px" >
+                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
                   <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
@@ -268,6 +268,20 @@
                       <v-switch inset color="success" v-model="syncGlassdoor" @change="handleSyncGlassdoor" style="margin-right: 20px;"></v-switch>
                     </v-col>
                   </v-row>
+
+                  <v-row class="mt-n0 mb-n10">
+                    <v-col cols="6" class="d-flex align-self-center justify-start">
+                      <v-list-item-icon style="margin-left: 20px;">
+                        <v-icon style="color:#244d7b;">mdi-dots-vertical</v-icon>
+                      </v-list-item-icon>
+                      <h3 class="switch-label" style="margin-left: 5px;"><b>Others</b></h3>
+                    </v-col>
+                  
+                    <v-col cols="6" class="d-flex align-self-center justify-end">
+                      <v-switch inset color="success" v-model="syncOthers" @change="handleSyncOthers" style="margin-right: 20px;"></v-switch>
+                    </v-col>
+                  </v-row>
+
                 </v-card><br>
 
                 <v-card style="border-radius: 30px; " color="ffffff" height="165px" >
@@ -290,7 +304,7 @@
                         <v-radio label="5" value="5"></v-radio>
                         <v-radio label="10" value="10"></v-radio>
                         <v-radio label="20" value="20"></v-radio>
-                        <v-radio :label="customLabel" value="custom"></v-radio>
+                        <v-radio :label="`Custom: ${customGoal || 'N/A'}`" value="custom"></v-radio>
                       </v-radio-group>
                     </v-col>
                   </v-row>
@@ -368,12 +382,15 @@ import OutlookLogo from "@/components/OutlookLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
 import { waitForPendingWrites } from "firebase/firestore";
 import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
-import { getFirestore, collection, query, where, getDocs, deleteDoc, doc, setDoc  } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, getDoc, deleteDoc, doc, setDoc  } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
 
 
 export default {
   data: () => ({
+    userFirstName: '',
+    userLastName: '',
+    userEmail: '',
     deleted: false,
     emailsent: false,
     resetEmail: "",
@@ -382,6 +399,7 @@ export default {
     syncLinkedin: true,
     syncIndeed: false,
     syncGlassdoor: false,
+    syncOthers: false,
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -578,6 +596,24 @@ export default {
         console.error('Error updating syncGlassdoor setting:', error);
       }
     },
+
+    async handleSyncOthers() {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+
+      if (!auth.currentUser) {
+        console.error("No user is currently signed in.");
+      }
+
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        await setDoc(userDocRef, {settings: {sync_settings: {others: this.syncOthers}}}, {merge:true});
+        console.log('syncOthers setting updated in Firestore to:', this.syncOthers);
+      } catch (error) {
+        console.error('Error updating syncOthers setting:', error);
+      }
+    },
     
     //reminder settings methods
     async handleRemindOutlook() {
@@ -615,7 +651,68 @@ export default {
         console.error('Error updating remindTelegram setting:', error);
       }
     },
- }
+
+    async fetchSettings() {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      try {
+        const docSnapshot = await getDoc(userDocRef);
+        if (docSnapshot.exists()) {
+          const settings = docSnapshot.data().settings;
+          if (settings) {
+            console.log('hi');
+
+            this.syncLinkedin = settings.sync_settings?.linkedin ?? false; // fallback to false if not set
+            this.syncIndeed = settings.sync_settings?.indeed ?? false;
+            this.syncGlassdoor = settings.sync_settings?.glassdoor ?? false;
+            this.syncOthers = settings.sync_settings?.others ?? false;
+            const progressSetting = settings.progress_settings;
+            if (progressSetting && progressSetting !== '5' && progressSetting !== '10' && progressSetting !== '20') {
+              this.dailyGoal = 'custom';
+              this.customGoal = progressSetting;
+            } else {
+            this.dailyGoal = progressSetting || '20';
+            }
+            this.remindOutlook = settings.reminder_settings?.outlook ?? false;
+            this.remindTelegram = settings.reminder_settings?.telegram ?? false;
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching settings:", error);
+      }
+    },
+
+    async fetchUserDetails() {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+      if (auth.currentUser) {
+        const userDocRef = doc(db, 'Users', auth.currentUser.email);
+        try {
+          const docSnapshot = await getDoc(userDocRef);
+          if (docSnapshot.exists()) {
+            const userData = docSnapshot.data().credentials; 
+            this.userFirstName = userData.firstname;
+            this.userLastName = userData.lastname;
+            this.userEmail = userData.email;
+          } else {
+            console.log("No user document found.");
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      } else {
+        console.error("No user is currently signed in.");
+      }
+    },
+  },
+  
+  async mounted() {
+    await this.fetchSettings();
+    await this.fetchUserDetails();
+  }
+
 }
 </script>
 

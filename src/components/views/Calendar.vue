@@ -101,25 +101,27 @@ const eventEndDate = ref('');
 const eventEndTime = ref('');
 const eventColor = ref('#FFFFFF');
 
-const eventsCollectionRef = collection(db, "events");
-
 async function saveEvent() {
-  await addDoc(eventsCollectionRef, {
-    title: eventTitle.value,
-    description: eventDescription.value,
-    startdate: eventStartDate.value,
-    starttime: eventStartTime.value,
-    enddate: eventEndDate.value,
-    endtime: eventEndTime.value,
-    color: eventColor.value,
-  });
-  dialogEvent.value = false;
-  eventTitle.value = '';
-  eventDescription.value = '';
-  eventStartDate.value = '';
-  eventStartTime.value = '';
-  eventEndDate.value = '';
-  eventEndTime.value = '';
+  if (user.value) {
+    const userEventsCollectionRef = collection(db, "Users", user.value.uid, "events");
+    await addDoc(userEventsCollectionRef, {
+      title: eventTitle.value,
+      description: eventDescription.value,
+      startdatetime: `${eventStartDate.value}T${eventStartTime.value}`,
+      enddatetime: `${eventEndDate.value}T${eventEndTime.value}`,
+      color: eventColor.value,
+    });
+    eventTitle.value = '';
+    eventDescription.value = '';
+    eventStartDate.value = '';
+    eventStartTime.value = '';
+    eventEndDate.value = '';
+    eventEndTime.value = '';
+    eventColor.value = '#FFFFFF';
+    dialogEvent.value = false;
+  } else {
+    console.error('User is not authenticated');
+  }
 }
 
 </script>

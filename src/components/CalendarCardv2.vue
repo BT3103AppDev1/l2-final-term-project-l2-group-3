@@ -14,46 +14,55 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted, watchEffect, computed } from 'vue';
 import { db } from '@/firebase.js'; 
-import { collection, query, onSnapshot } from 'firebase/firestore';
-
-const selectedColor = ref('blue'); // Example: default color, adjust as needed
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const events = ref([]);
 
-// Assuming you have a method to adjust dates for timezone, if not, you might not need this.
-// This is just a placeholder function. Implement timezone adjustment as required.
-function adjustForTimezone(date) {
-  return date; // Placeholder: adjust the date object to account for timezone if necessary
-}
-
-const q = query(collection(db, "events"));
-
-onMounted(() => {
-  onSnapshot(q, (querySnapshot) => {
-    events.value = querySnapshot.docs.map(doc => {
-      const eventData = doc.data();
-      const startDateTime = adjustForTimezone(new Date(`${eventData.startdate}T${eventData.starttime}Z`));
-      const endDateTime = adjustForTimezone(new Date(`${eventData.enddate}T${eventData.endtime}Z`));
-
+async function fetchEvents() {
+  const usersCollectionRef = collection(db, "Users");
+  const userDocsSnapshot = await getDocs(usersCollectionRef);
+  const eventsPromises = userDocsSnapshot.docs.map(async (userDoc) => {
+    const userEmail = userDoc.id;
+    const userEventsCollectionRef = collection(db, "Users", userEmail, "reminders");
+    const eventsSnapshot = await getDocs(userEventsCollectionRef);
+    return eventsSnapshot.docs.map((eventDoc) => {
+      const eventData = eventDoc.data();
+      const startDateTime = new Date(eventData.eventstartdatetime);
+      const endDateTime = new Date(eventData.eventenddatetime);
       return {
-        ...eventData,
-        start: startDateTime,
-        end: endDateTime,
+        eventname: eventData.eventname,
+        eventstartdatetime: startDateTime,
+        eventenddatetime: endDateTime,
       };
     });
   });
+  const eventsNestedArray = await Promise.all(eventsPromises);
+  events.value = eventsNestedArray.flat();
+}
+
+onMounted(() => {
+  fetchEvents();
 });
 
-const attributes = computed(() => events.value.map(event => ({
-  dates: { start: event.start, end: event.end },
-  dot: {
-    color: event.color,
-    class: event.isComplete ? 'opacity-75' : '',
-  },
-  popover: {
-    label: event.name, // Assuming you want to use the event name for the popover label
-  },
-})));
+const attributes = computed(() => {
+  return events.value.map(event => ({
+    dates: { start: event.eventstartdatetime, end: event.eventenddatetime },
+    dot: {
+      color: event.color || 'green', 
+    },
+    customData: {
+      name: event.eventname,
+      description: event.description || 'No description',
+    },
+    popover: {
+      label: todo.description,
+      visibility: 'hover',
+      hideIndicator: true,
+    },
+  }));
+});
+
 </script>

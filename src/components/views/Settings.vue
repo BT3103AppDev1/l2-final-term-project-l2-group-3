@@ -284,7 +284,7 @@
 
                 </v-card><br>
 
-                <v-card style="border-radius: 30px; " color="ffffff" height="165px" >
+                <v-card style="border-radius: 30px; width: 1000px;" color="ffffff" height="175px">
                   <v-row>
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Progress</h2>
@@ -293,8 +293,8 @@
                       </v-col>
                   </v-row>
                   
-                  <v-row class="my-2" justify="space-between">
-                    <v-col cols="auto">
+                  <v-row class="mt-n0 mb-n10" justify="space-between">
+                    <v-col cols="6" class="d-flex align-self-center justify-start">
                       <h3 class="switch-label" style="margin-left: 20px;"><b>Daily Application Goal</b></h3>
                     </v-col>
                     
@@ -662,7 +662,6 @@ export default {
         if (docSnapshot.exists()) {
           const settings = docSnapshot.data().settings;
           if (settings) {
-            console.log('hi');
 
             this.syncLinkedin = settings.sync_settings?.linkedin ?? false; // fallback to false if not set
             this.syncIndeed = settings.sync_settings?.indeed ?? false;

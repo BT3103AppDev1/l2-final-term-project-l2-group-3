@@ -364,6 +364,11 @@
               </v-card>
             </v-col>
           </v-row>
+          <v-dialog>
+            <v-card>
+              hello
+            </v-card>
+          </v-dialog>
         </v-window-item>
       </v-window>
     </v-col>
@@ -484,10 +489,9 @@ export default {
               },
             },
             events: {},
+            reminders: {},
           }
         );
-        console.log("User data saved.");
-        console.log(auth.currentUser.email);
       } catch (error) {
         console.error("Error saving user data:", error);
       }
@@ -527,32 +531,48 @@ export default {
       }
     },
 
-    googleSignIn() {
+    async googleSignIn() {
       const provider = new GoogleAuthProvider();
+      const db = getFirestore(firebaseApp);
       const auth = getAuth();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          console.log("Successfully logged in!", result.user);
-          this.$router.push("/dashboard");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        console.log("Successfully logged in!", result.user);
+        // Ensure saveUserData is defined as an async function and returns a promise.
+        
+        const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
+
+        if (!users.data()) {
+          await this.saveUserData();
+        }
+        this.$router.push("/dashboard");
+      } catch (err) {
+        console.log(err);
+      }
     },
 
-    githubSignIn() {
+    async githubSignIn() {
       const provider = new GithubAuthProvider();
+      const db = getFirestore(firebaseApp);
       const auth = getAuth();
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          const credential = GithubAuthProvider.credentialFromResult(result);
-          const token = credential.accessToken; //if we want to access Github API
-          console.log("Successfully logged in!", result.user);
-          this.$router.push("/dashboard");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+
+      try {
+          
+        const result = await signInWithPopup(auth, provider);
+        const credential = GithubAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // Ensure saveUserData is defined as an async function and returns a promise.
+        
+        const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
+
+        if (!users.data()) {
+          await this.saveUserData();
+        }
+        this.$router.push("/dashboard");
+      } catch (err) {
+        console.log(err);
+      }
     },
 
     microsoftSignIn() {

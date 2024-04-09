@@ -17,7 +17,7 @@ export async function RetrieveJobs(title, emptype, jobportals) {
 };
 
 try {
-    console.log(jobportals)
+    //console.log(jobportals)
     const dic = {}
     let counter = 1
 	const response = await axios.request(options);

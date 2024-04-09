@@ -12,7 +12,7 @@
                         <v-col cols="7">
                             <v-row>
                                 <v-col cols="3">
-                                    <v-btn variant="text"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
+                                    <v-btn variant="text" @click="refresh"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
                                 </v-col>
 
                                 <v-col cols="9">
@@ -311,15 +311,20 @@
                                     <v-card-text>
                                         
                                             <div class="save-job-form">
-                                                <v-text-field label="Job Title" v-model="job.title"></v-text-field>
-                                                <v-text-field label="Company Name" v-model="job.company"></v-text-field>
-                                                <v-text-field label="Job Location" v-model="job.location"></v-text-field>
-                                                <v-text-field label="Job Link" v-model="job.link"></v-text-field>
-                                                <v-col class="d-flex justify-center">
-                                                    <v-btn variant="tonal" width="250px">Save Job</v-btn>
-                                                </v-col>
+                                                <span> <b>Job Title</b> </span>
+                                                <v-text-field label="Enter the Job Title" v-model="job.job_title"></v-text-field>
+                                                <span> <b>Company</b> </span>
+                                                <v-text-field label="Enter the company's name" v-model="job.company"></v-text-field>
+                                                <span> <b>Industry</b> </span>
+                                                <v-text-field label="Enter the job listing's industry" v-model="job_industry"></v-text-field>
+                                                <span> <b>Job Link</b> </span>
+                                                <v-text-field label="Enter the job listing link" v-model="job.job_apply_link"></v-text-field>
                                             </div>
-                                            <v-btn variant="tonal" width="250px" @click="showSaveJob = false" style="margin-left: 201px; margin-top: -30px;">Close</v-btn>
+                                            <v-card-actions class="justify-end" style="margin-right: -20px;">
+                                                <v-btn variant="tonal" @click="showSaveJob = false">Cancel</v-btn>
+                                                <v-btn variant="tonal" @click="manualsave(job); showSaveJob = false">Save</v-btn>
+                                            </v-card-actions>
+                                            
                                         
                                     </v-card-text>
                                 </v-card>
@@ -493,6 +498,7 @@ import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, deleteField} 
 import firebaseApp from "@/firebase";
 import {getAuth} from 'firebase/auth';
 import gsap from 'gsap'
+import {RetrieveJobs} from '@/jsearch.js';
 
 const db = getFirestore(firebaseApp);
 const auth = getAuth();
@@ -529,21 +535,33 @@ export default {
             showSaveJob: false,
             generatedimage: null,
             job: {
-                title: '',
+                job_title: '',
                 company: '',
-                location: '',
-                link: ''
+                job_apply_link: '',
+                job_industry: ''
             }
         }
     },
     async mounted() {
         onSnapshot(doc(db, 'Users', String(auth.currentUser.email)), doc => {
             let applications = doc.data().applications;
-            
-            this.findjobs = this.sortJobsByTitle(applications.FindJobs);
+
             this.appliedjobs = this.sortJobsByTitle(applications.applied);
             this.savedjobs = this.sortJobsByTitle(applications.saved);
             this.interviewedjobs = this.sortJobsByTitle(applications.interviewed);
+
+            const findjobs_object = {}
+
+            for (const job in applications.FindJobs) {
+                const id = applications.FindJobs[job]["job_title"] + applications.FindJobs[job]["company"]
+                if (id in applications.applied || id in applications.saved || id in applications.interviewed) {
+                    continue
+                }
+                findjobs_object[id] = applications.FindJobs[job]
+            }
+
+            this.findjobs = this.sortJobsByTitle(findjobs_object)
+
             
             this.findcount = this.findjobs.length;
             this.appliedcount = this.appliedjobs.length;
@@ -576,9 +594,21 @@ export default {
             return jobsArray;
         },
 
-        async load() {
-            await new Promise(resolve => setTimeout(resolve, 4000));
-            this.progress = false
+        async refresh() {
+            const docref = doc(db, 'Users', String(auth.currentUser.email))
+            const preferencesref = await getDoc(docref)
+            const preferences = preferencesref.data()['jobpreferences']
+
+            const list = []
+            for (const portal in preferences["jobportals"].split(",")) {
+                list.push(preferences["jobportals"].split(",")[portal])
+            }
+            console.log(preferences["jobtitle"])
+            console.log(list)
+            console.log(preferences["emptypes"])
+
+            const updatedfindjobs = await RetrieveJobs(preferences["jobtitle"], preferences["emptypes"], list)
+            await updateDoc(docref, {'applications.FindJobs' : updatedfindjobs})
 
         },
         check_saved(job) {
@@ -610,7 +640,14 @@ export default {
             await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
             await setDoc(docref, {applications : {saved : {[id] : {job_saved_date : currdate}}}}, {merge: true})
             await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
-        },   
+        },
+        
+        async manualsave(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+
+        },
         
         async confirminterview(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));

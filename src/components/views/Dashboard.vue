@@ -129,7 +129,6 @@ export default {
             const job_portals = []
             this.portalchoices.forEach(x => job_portals.push(x))
             const employment_types = this.jtypeschoices.toUpperCase()
-            //this.jtypeschoices.forEach(x => employment_types.push(x.replace("-", "").toUpperCase()))
             this.findjobs = await RetrieveJobs(job_title, employment_types, job_portals)
             console.log(this.findjobs)
 
@@ -140,6 +139,7 @@ export default {
 
             await setDoc(docref, {credentials: {firstlogin: false}}, {merge: true})
             await updateDoc(docref, {'applications.FindJobs' : this.findjobs})
+            await setDoc(docref, {jobpreferences: {jobtitle : job_title, jobportals: String(job_portals), emptypes: employment_types}}, {merge: true})
             
             
         },

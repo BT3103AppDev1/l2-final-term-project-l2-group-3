@@ -26,14 +26,14 @@
                             <v-row>
                                 <span> <b>Job portals</b> </span>
                                 <v-col cols="12"> 
-                                    <v-combobox clearable :items="portals" label="Find jobs posted in the job portals you select"> </v-combobox>
+                                    <v-combobox clearable multiple chips v-model="portalchoices" :items="portals" label="Find jobs posted in the job portals you select"> </v-combobox>
                                 </v-col>
                             </v-row>
 
                             <v-row>
                                 <span><b>Employment types</b></span>
                                 <v-col cols="12">
-                                    <v-combobox clearable chips :items="jtypes" label="Select employment types"></v-combobox>
+                                    <v-combobox clearable chips v-model="jtypeschoices" :items="jtypes" label="Select employment types"></v-combobox>
                                 </v-col>
                             </v-row>
 
@@ -43,6 +43,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                             <v-btn class="text-none" variant="tonal" text="Save" @click="closedialog"></v-btn>
+                            <v-btn class="text-none" variant="tonal" text="Cancel" @click="closedialogwithoutquery"></v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>        
@@ -51,11 +52,11 @@
             
         <v-row class="view" style="margin-left: 55px; height: 100%; margin-top: 70px;">
 
-            <v-col cols="9">
-                <JobCards :jobs = "jobs" @datadata="childcall($event)" />
+            <v-col cols="8">
+                <JobCards @datadata="childcall($event)" />
             </v-col>
 
-            <v-col cols="3">
+            <v-col cols="4">
                 <Progress/>
             </v-col>
                 
@@ -70,14 +71,12 @@
 <script>
 import JobCards from "@/components/JobCards.vue";
 import Progress from "@/components/Progress.vue";
-import {RetrieveJobsFromLinkedIn} from '@/linkedin.js';
-//import {RetrieveJobsFromGlassdoor} from '@/glassdoor.js';
-// import {RetrieveJobsFromIndeed} from '@/indeed.js';
+import {RetrieveJobs} from '@/jsearch.js';
 import SaveJob from "@/components/SaveJob.vue"
 import Header from "@/components/Header.vue"
 //import SideBar from "@/components/SideBar.vue"
 import Footer from "@/components/Footer.vue"
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, updateDoc} from "firebase/firestore";
 import firebaseApp from "@/firebase";
 import {getAuth} from 'firebase/auth';
 
@@ -86,8 +85,10 @@ export default {
         return {
             welcome: false,
             firstname: "",
-            jobs: null,
+            findjobs: null,
             title: "",
+            portalchoices: null,
+            jtypeschoices: null,
             dialog: null, 
             portals: [
                 'LinkedIn',
@@ -115,21 +116,31 @@ export default {
             this.dialog = x
         },
 
+        closedialogwithoutquery() {
+            this.dialog = false
+        },
+
         async closedialog() {
             this.dialog = false;
-            //console.log(this.title);
-            //const linkedinJobs = await RetrieveJobsFromLinkedIn(this.title);
-            //const indeedJobs = await RetrieveJobsFromIndeed(title);
-            //const glassdoorJobs = await RetrieveJobsFromGlassdoor(title);
-            //this.jobs = [...linkedinJobs, ...indeedJobs, ...glassdoorJobs]; 
-            //this.jobs = await RetrieveJobsFromLinkedIn(this.title);
+            //this.jobs = await RetrieveJobs(this.title);
             //console.log("this is the job object")
             //console.log(this.jobs);
+            const job_title = this.title
+            const job_portals = []
+            this.portalchoices.forEach(x => job_portals.push(x))
+            const employment_types = this.jtypeschoices.toUpperCase()
+            //this.jtypeschoices.forEach(x => employment_types.push(x.replace("-", "").toUpperCase()))
+            this.findjobs = await RetrieveJobs(job_title, employment_types, job_portals)
+            console.log(this.findjobs)
+
             this.GetUserData();
             const db = getFirestore(firebaseApp);
             const auth = getAuth();
-            const docRef = await setDoc(doc(db, 'Users', String(auth.currentUser.email)), {credentials: {firstlogin: false}}, {merge: true})
-            //console.log(typeof(this.jobs))
+            const docref = doc(db, 'Users', String(auth.currentUser.email))
+
+            await setDoc(docref, {credentials: {firstlogin: false}}, {merge: true})
+            await updateDoc(docref, {'applications.FindJobs' : this.findjobs})
+            
             
         },
 
@@ -138,8 +149,8 @@ export default {
                 const db = getFirestore(firebaseApp);
                 const auth = getAuth();
                 const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
-                console.log(docRef.data())
-                console.log("printed user data")
+                //console.log(docRef.data())
+                //console.log("printed user data")
             } catch (error) {
                 console.error('Error reading user data:', error);
             }

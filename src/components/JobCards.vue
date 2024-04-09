@@ -1,49 +1,18 @@
 <template>
-    <v-row style="margin-top: 10px;">
-        <h2 class="subheading">Dashboard</h2>
-        <v-btn class="expandablebutton" color= #154c79 @click="showSaveJob = true" @mouseover="hover = true" @mouseleave="hover = false">
-            <v-icon>mdi-plus</v-icon>
-            <span v-if="hover" class="button-text">Save a new job</span>
-        </v-btn>
-        <v-dialog v-model="showSaveJob" max-width="700px">
-            <v-card color="#244d7b" title="Save a new job">
-                <v-card-text class="font-weight-light">
-                Enter the following details and the application will appear under Saved Jobs!
-                </v-card-text>
 
-                <v-card-text>
-                    
-                        <div class="save-job-form">
-                            <v-text-field label="Job Title" v-model="job.title"></v-text-field>
-                            <v-text-field label="Company Name" v-model="job.company"></v-text-field>
-                            <v-text-field label="Job Location" v-model="job.location"></v-text-field>
-                            <v-text-field label="Job Link" v-model="job.link"></v-text-field>
-                            <v-col class="d-flex justify-center">
-                                <v-btn variant="tonal" width="250px">Save Job</v-btn>
-                            </v-col>
-                        </div>
-                        <v-btn variant="tonal" width="250px" @click="showSaveJob = false" style="margin-left: 201px; margin-top: -30px;">Close</v-btn>
-                    
-                </v-card-text>
-            </v-card>
-        </v-dialog>
-
-    </v-row>
-
-
-    <v-container>
+    <v-container style="margin-top: 15px;">
         <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
                     <v-row>
                         <v-col cols="5">
-                            <h2 class="title"> Find Jobs</h2>
+                            <h2 class="title"> Find Jobs ({{ findcount }})</h2>
                         </v-col>
 
                         <v-col cols="7">
                             <v-row>
                                 <v-col cols="3">
-                                    <v-btn variant="blank"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
+                                    <v-btn variant="text"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
                                 </v-col>
 
                                 <v-col cols="9">
@@ -54,52 +23,462 @@
                             
                         </v-col>
                     </v-row>
-                    <v-infinite-scroll
-                        height="400"
-                        mode="manual"
-                        @load="load"
-                        empty-text="There are no job postings that fit your descriptions!"
-                    >
-                        <main v-for="(job) in jobs" style="margin-top: 10px; border-radius: 20px;" >
-                            <v-card variant="flat" hover style="border-radius: 10px;" @click="dialog = true; currentviewedjob = job" opacity=0.9 color="#e9f5f9"> 
-                                <v-card-item class="custom-card-item" prepend-icon="mdi-bank">
-                                    <v-card-title style="text-align: left; font-weight: 500; color: rgb(37, 89, 168);"> {{ job["job_position"] }}</v-card-title>
-                                    <v-card-subtitle>{{ job["company_name"] }}</v-card-subtitle>
-                                    <v-card-subtitle>Source: LinkedIn</v-card-subtitle>
-                                </v-card-item>
+            
 
-                                <v-dialog v-model="dialog" width="600px" opacity=0.1>
-                                    <v-card>
-                                        <v-card-title>{{ currentviewedjob["company_name"] }}</v-card-title>
-                                        <v-divider></v-divider>
-                                        <v-card-text height="200px">Job description</v-card-text>
-                                    </v-card>
-                                </v-dialog>
+                    <v-sheet
+                        class="scrollable-sheet"
+                        elevation="0"
+                        max-height="320px"
+                    >
+                        <v-progress-linear v-if="progress" color="primary" indeterminate></v-progress-linear>
+                        <main v-for="job in findjobs" :key="job.id" style="margin-top: 10px; border-radius: 20px;">
+                            <v-card variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.dialog = true;" opacity="0.9" >
+                                <v-card-item style="height: max-content; margin-top: 5px;">
+                                    <v-row>
+                                        <v-col class="d-flex align-center" cols="2">
+                                            <div v-if="job.employer_logo" style="float: left;">
+                                                <img :src="job.employer_logo" style="width: 40px; border-radius: 10%;">
+                                            </div>
+                                            <div v-else style="float: left;">
+                                                <img src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 50px; border-radius: 10%;">
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <div>
+                                                <v-card-title style="text-align: left; font-weight: 500;font-size: medium; color: rgb(37, 89, 168);">{{ job["job_title"] }}</v-card-title>
+                                                <span style="font-weight: 700; color: rgb(76, 76, 76);">{{ job["company"] }}</span> &mdash; <span style="font-weight: 600; color: rgb(118, 118, 118);">{{ job["job_publisher"] }}</span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-item>
+                                <v-card-actions v-if="check_applied(job)" class="justify-end">
+                                    <v-btn variant="flat" disabled>Applied</v-btn>
+                                    <v-btn color="blue" variant="tonal" @click="saveapplication(job)">Save</v-btn>
+                                </v-card-actions>
+                                <v-card-actions v-else class="justify-end">
+                                    <v-btn color="blue" variant="tonal" :href="job.job_apply_link" target="_blank" @click.stop="applyapplication(job)">Apply</v-btn>
+                                    <v-btn color="blue" variant="tonal" @click.stop ="saveapplication(job)">Save</v-btn>
+                                </v-card-actions>
                             </v-card>
-                            
+                                
                         </main>
-                    </v-infinite-scroll>
-                    
+                    </v-sheet>
                 </v-card>
             </v-col>
 
+            <v-dialog v-model="dialog" width="900px">
+                <v-card style="border-radius: 25px; background-color: rgba(213,222,238,255);" >
+                    <v-row style="padding: 40px;">
+                        <v-col cols = "2" class="d-flex align-center">
+                            <img v-if="currentviewedjob.employer_logo" :src="currentviewedjob.employer_logo" style="width: 100px;">
+                            <img v-else src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 100px; border-radius: 10%;">
+                        </v-col>
+                        <v-col cols = "10">
+                            <v-row>
+                                <h2 style="color: #5D78AD"> {{currentviewedjob["job_title"]}}</h2>
+                            </v-row>
+                            <v-row>
+                                <h2> {{ currentviewedjob["company"] }}</h2>
+                            </v-row>
+                            <v-row v-if="check_saved(currentviewedjob)" class="d-flex justify-space-between">
+                                <v-col cols="2">
+                                    <v-btn variant="tonal" color="red"> Unsave </v-btn>
+                                    
+                                </v-col>
+
+                                <v-col v-if="check_applied(currentviewedjob)" style="margin-left: -15px;" cols ="2">
+                                    <v-btn color="red" variant="tonal" @click="unapply(currentviewedjob)"> Unapply</v-btn>
+                                </v-col>
+
+                                <v-col>
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob)"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
+                                </v-col>
+
+                            </v-row>
+
+                            <v-row v-else class="d-flex justify-space-between">
+                                <v-col cols="2">
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" @click="saveapplication(currentviewedjob)"> Save </v-btn>
+                                </v-col>
+
+                                <v-col v-if="check_applied(currentviewedjob)" style="margin-left: -35px;" cols ="2">
+                                    <v-btn color="red" variant="tonal" @click="unapply(currentviewedjob)"> Unapply</v-btn>
+                                </v-col>
+
+                                <v-col>
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob)"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
+                                </v-col>
+
+                                
+
+                                
+                            </v-row>
+
+                        </v-col>
+                    </v-row>
+                    <v-card-text class="font-weight-light" style="margin-top: -80px;">
+                        <v-container fluid> <br>
+                            <v-sheet
+                                width="820px"
+                                color="#c8d3eb"
+                                elevation="0"
+                                max-height="320px"
+                                style="border-radius: 25px; margin-left: -10px;"
+                            >
+                                <div style="padding: 20px;">
+                                    <v-row style="margin-bottom: -40px;">
+                                        <v-col>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Job Publisher: </b>{{currentviewedjob["job_publisher"]}}</h3> <br>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Location: </b> {{ currentviewedjob["job_city"] ? currentviewedjob["job_city"] : "Not Available"}} </h3> <br>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Job employment type: </b> {{ currentviewedjob["job_emptype"] ? currentviewedjob["job_emptype"][0] + currentviewedjob["job_emptype"].slice(1,).toLowerCase() : "Not Available"}} </h3> <br>
+                                        </v-col>
+
+                                        <v-col>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Industry: </b> {{ currentviewedjob["job_industry"] ? currentviewedjob["job_industry"] : "Not Available"}} </h3> <br>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Posted On: </b> {{currentviewedjob["job_posted_date"] ? currentviewedjob["job_posted_date"].slice(0, 10) : "Not Available"}}</h3> <br>
+                                            <h3> <b style="color: rgb(86, 86, 86);">Application Deadline: </b> {{currentviewedjob["job_expiry"] ? currentviewedjob["job_expiry"].slice(0,10) : "Not Available"}}</h3>
+                                        </v-col>
+                                    </v-row>
+                                    
+                                    
+                                </div>
+
+                            </v-sheet>
+                            
+                            <v-row>
+                                <br>
+                                <v-sheet
+                                    color="#c8d3eb"
+                                    class="scrollable-sheet"
+                                    elevation="0"
+                                    max-height="290px"
+                                    style="border-radius: 25px;"
+                                >
+                                    <div style="padding: 15px;" v-html="currentjobdescription"></div>
+                                </v-sheet>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+
+                    <v-card-actions style="padding: 15px;">
+                        <v-spacer></v-spacer>
+                            <v-btn variant="tonal" color="blue" text="Close" @click="dialog = false"></v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
-                    <h2 class="title">Applied</h2>
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                    <h2 class="title">Applied ({{ appliedcount }})</h2>
+                    <v-sheet
+                        class="scrollable-sheet"
+                        elevation="0"
+                        max-height="320px"
+                    >
+                        <main v-for="job in appliedjobs" :key="job.id" style="margin-top: 10px; border-radius: 20px;">
+                            <v-card variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.applieddialog = true" opacity="0.9" >
+                                <v-card-item style="height: max-content; margin-top: 5px;">
+                                    <v-row>
+                                        <v-col class="d-flex align-center" cols="2">
+                                            <div v-if="job.employer_logo" style="float: left;">
+                                                <img :src="job.employer_logo" style="width: 40px; border-radius: 10%;">
+                                            </div>
+                                            <div v-else style="float: left;">
+                                                <img src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 50px; border-radius: 10%;">
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <div>
+                                                <v-card-title style="text-align: left; font-weight: 500;font-size: medium; color: rgb(37, 89, 168);">{{ job["job_title"] }}</v-card-title>
+                                                <span style="font-weight: 700; color: rgb(76, 76, 76);">{{ job["company"] }}</span> &mdash; <span style="font-weight: 600; color: rgb(118, 118, 118);">{{ job["job_publisher"] }}</span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-item>
+                                <v-card-actions class="justify-end">
+                                    <v-btn variant="tonal" color="green" @click.stop="confirminterview(job)"> Confirm Interview </v-btn>
+                                    <v-btn variant="flat" disabled> Applied</v-btn>
+                                    <v-btn disabled variant="flat">Saved</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                                
+                        </main>
+                    </v-sheet>
+
+                    <v-dialog v-model="applieddialog" width="900px">
+                        <v-card style="border-radius: 25px; background-color: rgba(213,222,238,255);" >
+                            <v-row style="padding: 40px;">
+                                <v-col cols = "2" class="d-flex align-center">
+                                    <img v-if="currentviewedjob.employer_logo" :src="currentviewedjob.employer_logo" style="width: 100px;">
+                                    <img v-else src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 100px; border-radius: 10%;">
+                                </v-col>
+                                <v-col cols = "10">
+                                    <v-row>
+                                        <h2 style="color: #5D78AD"> {{currentviewedjob["job_title"]}}</h2>
+                                    </v-row>
+                                    <v-row>
+                                        <h2> {{ currentviewedjob["company"] }}</h2>
+                                    </v-row>
+                                    <v-row class="d-flex justify-space-between">
+                                        <v-col style="margin-left: -15px;" cols ="2">
+                                            <v-btn color="red" variant="tonal" @click="unapply(currentviewedjob); applieddialog = false"> Unapply</v-btn>
+                                        </v-col>
+
+                                        <v-col cols="3">
+                                            <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" @click="applieddialog = false" target="_blank"> Go to job link </v-btn>
+                                        </v-col>
+
+                                        <v-col>
+                                            <v-btn style="margin-left: -20px;" variant="tonal" color="green" @click="confirminterview(currentviewedjob); applieddialog = false"> Confirm Interview </v-btn>
+                                        </v-col>
+
+                                    </v-row>
+
+                                </v-col>
+                            </v-row>
+                            <v-card-text class="font-weight-light" style="margin-top: -80px;">
+                                <v-container fluid> <br>
+                                    <v-sheet
+                                        width="820px"
+                                        color="#c8d3eb"
+                                        elevation="0"
+                                        max-height="320px"
+                                        style="border-radius: 25px; margin-left: -10px;"
+                                    >
+                                        <div style="padding: 20px;">
+                                            <v-row style="margin-bottom: -40px;">
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job Publisher: </b>{{currentviewedjob["job_publisher"]}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Location: </b> {{ currentviewedjob["job_city"] ? currentviewedjob["job_city"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job employment type: </b> {{ currentviewedjob["job_emptype"] ? currentviewedjob["job_emptype"][0] + currentviewedjob["job_emptype"].slice(1,).toLowerCase() : "Not Available"}} </h3> <br>
+                                                </v-col>
+
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Industry: </b> {{ currentviewedjob["job_industry"] ? currentviewedjob["job_industry"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Posted On: </b> {{currentviewedjob["job_posted_date"] ? currentviewedjob["job_posted_date"].slice(0, 10) : "Not Available"}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Application Deadline: </b> {{currentviewedjob["job_expiry"] ? currentviewedjob["job_expiry"].slice(0,10) : "Not Available"}}</h3>
+                                                </v-col>
+                                            </v-row>
+                                            
+                                            
+                                        </div>
+
+                                    </v-sheet>
+                                    
+                                    <v-row>
+                                        <br>
+                                        <v-sheet
+                                            color="#c8d3eb"
+                                            class="scrollable-sheet"
+                                            elevation="0"
+                                            max-height="290px"
+                                            style="border-radius: 25px;"
+                                        >
+                                            <div style="padding: 15px;" v-html="currentjobdescription"></div>
+                                        </v-sheet>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+
+                            <v-card-actions style="padding: 15px;">
+                                <v-spacer></v-spacer>
+                                    <v-btn variant="tonal" color="blue" text="Close" @click="applieddialog = false"></v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </v-col>
         </v-row>
 
         <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
-                    <h2 class="title">Saved</h2>
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                    <v-row>
+                        <v-col cols="4">
+                            <h2 class="title">Saved ({{ savedcount }})</h2>
+                        </v-col>
+                        <v-col cols="8">
+                            <v-btn class="expandablebutton" color= #6381a3 style="margin-top: 2px; margin-left: -30px;" @click="showSaveJob = true" @mouseover="hover = true" @mouseleave="hover = false">
+                                <v-icon>mdi-plus</v-icon>
+                                <span v-if="hover" class="button-text">Save a new job</span>
+                            </v-btn>
+                            <v-dialog v-model="showSaveJob" max-width="700px">
+                                <v-card color="#244d7b" title="Save a new job">
+                                    <v-card-text class="font-weight-light">
+                                    Enter the following details and the application will appear under Saved Jobs!
+                                    </v-card-text>
+
+                                    <v-card-text>
+                                        
+                                            <div class="save-job-form">
+                                                <v-text-field label="Job Title" v-model="job.title"></v-text-field>
+                                                <v-text-field label="Company Name" v-model="job.company"></v-text-field>
+                                                <v-text-field label="Job Location" v-model="job.location"></v-text-field>
+                                                <v-text-field label="Job Link" v-model="job.link"></v-text-field>
+                                                <v-col class="d-flex justify-center">
+                                                    <v-btn variant="tonal" width="250px">Save Job</v-btn>
+                                                </v-col>
+                                            </div>
+                                            <v-btn variant="tonal" width="250px" @click="showSaveJob = false" style="margin-left: 201px; margin-top: -30px;">Close</v-btn>
+                                        
+                                    </v-card-text>
+                                </v-card>
+                            </v-dialog>
+                        </v-col>
+                    </v-row>
+                    <v-sheet
+                        class="scrollable-sheet"
+                        elevation="0"
+                        max-height="320px"
+                    >
+                        <main v-for="job in savedjobs" :key="job.id" style="margin-top: 10px; border-radius: 20px;">
+                            <v-card class="jobcard" variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.dialog=true" opacity="0.9" >
+                                <v-card-item style="height: max-content; margin-top: 5px;">
+                                    <v-row>
+                                        <v-col class="d-flex align-center" cols="2">
+                                            <div v-if="job.employer_logo" style="float: left;">
+                                                <img :src="job.employer_logo" style="width: 40px; border-radius: 10%;">
+                                            </div>
+                                            <div v-else style="float: left;">
+                                                <img src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 50px; border-radius: 10%;">
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <div>
+                                                <v-card-title style="text-align: left; font-weight: 500;font-size: medium; color: rgb(37, 89, 168);">{{ job["job_title"] }}</v-card-title>
+                                                <span style="font-weight: 700; color: rgb(76, 76, 76);">{{ job["company"] }}</span> &mdash; <span style="font-weight: 600; color: rgb(118, 118, 118);">{{ job["job_publisher"] }}</span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-item>
+                                <v-card-actions v-if="check_applied(job)" class="justify-end">
+                                    <v-btn variant="flat" disabled> Applied</v-btn>
+                                    <v-btn color="red" variant="tonal">Unsave</v-btn>
+                                </v-card-actions>
+                                <v-card-actions v-else class="justify-end">
+                                    <v-btn color="blue" variant="tonal" :href="job.job_apply_link" target="_blank" @click.stop="applyapplication(job)">Apply</v-btn>
+                                    <v-btn color="red" variant="tonal" @click.stop="unsave(job)">Unsave</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                                
+                        </main>
+                    </v-sheet>
                 </v-card>
             </v-col>
 
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px">
-                    <h2 class="title">Interviewed</h2>
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                    <h2 class="title">Interviewed ({{ interviewedcount }})</h2>
+                    <v-sheet
+                        class="scrollable-sheet"
+                        elevation="0"
+                        max-height="320px"
+                    >
+                        <main v-for="job in interviewedjobs" :key="job.id" style="margin-top: 10px; border-radius: 20px;">
+                            <v-card variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); interviewdialog = true" opacity="0.9" >
+                                <v-card-item style="height: max-content; margin-top: 5px;">
+                                    <v-row>
+                                        <v-col class="d-flex align-center" cols="2">
+                                            <div v-if="job.employer_logo" style="float: left;">
+                                                <img :src="job.employer_logo" style="width: 40px; border-radius: 10%;">
+                                            </div>
+                                            <div v-else style="float: left;">
+                                                <img src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 50px; border-radius: 10%;">
+                                            </div>
+                                        </v-col>
+                                        <v-col cols="9">
+                                            <div>
+                                                <v-card-title style="text-align: left; font-weight: 500;font-size: medium; color: rgb(37, 89, 168);">{{ job["job_title"] }}</v-card-title>
+                                                <span style="font-weight: 700; color: rgb(76, 76, 76);">{{ job["company"] }}</span> &mdash; <span style="font-weight: 600; color: rgb(118, 118, 118);">{{ job["job_publisher"] }}</span>
+                                            </div>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-item>
+                                <v-card-actions class="justify-end">
+                                    <v-btn variant="flat" disabled> Interviewed</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                                
+                        </main>
+                    </v-sheet>
+
+                    <v-dialog v-model="interviewdialog" width="900px">
+                        <v-card style="border-radius: 25px; background-color: rgba(213,222,238,255);" >
+                            <v-row style="padding: 40px;">
+                                <v-col cols = "2" class="d-flex align-center">
+                                    <img v-if="currentviewedjob.employer_logo" :src="currentviewedjob.employer_logo" style="width: 100px;">
+                                    <img v-else src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 100px; border-radius: 10%;">
+                                </v-col>
+                                <v-col cols = "10">
+                                    <v-row>
+                                        <h2 style="color: #5D78AD"> {{currentviewedjob["job_title"]}}</h2>
+                                    </v-row>
+                                    <v-row>
+                                        <h2> {{ currentviewedjob["company"] }}</h2>
+                                    </v-row>
+                                    <v-row class="d-flex justify-space-between">
+                                        <v-col cols="3">
+                                            <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank"> Go to job link </v-btn>
+                                        </v-col>
+
+                                        <v-col>
+                                            <v-btn style="margin-left: -20px;" variant="tonal" color="red" @click="cancelinterview(currentviewedjob); this.interviewdialog = false"> Remove Interview </v-btn>
+                                        </v-col>
+
+                                    </v-row>
+
+                                </v-col>
+                            </v-row>
+                            <v-card-text class="font-weight-light" style="margin-top: -80px;">
+                                <v-container fluid> <br>
+                                    <v-sheet
+                                        width="820px"
+                                        color="#c8d3eb"
+                                        elevation="0"
+                                        max-height="320px"
+                                        style="border-radius: 25px; margin-left: -10px;"
+                                    >
+                                        <div style="padding: 20px;">
+                                            <v-row style="margin-bottom: -40px;">
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job Publisher: </b>{{currentviewedjob["job_publisher"]}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Location: </b> {{ currentviewedjob["job_city"] ? currentviewedjob["job_city"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job employment type: </b> {{ currentviewedjob["job_emptype"] ? currentviewedjob["job_emptype"][0] + currentviewedjob["job_emptype"].slice(1,).toLowerCase() : "Not Available"}} </h3> <br>
+                                                </v-col>
+
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Industry: </b> {{ currentviewedjob["job_industry"] ? currentviewedjob["job_industry"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Posted On: </b> {{currentviewedjob["job_posted_date"] ? currentviewedjob["job_posted_date"].slice(0, 10) : "Not Available"}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Application Deadline: </b> {{currentviewedjob["job_expiry"] ? currentviewedjob["job_expiry"].slice(0,10) : "Not Available"}}</h3>
+                                                </v-col>
+                                            </v-row>
+                                            
+                                            
+                                        </div>
+
+                                    </v-sheet>
+                                    
+                                    <v-row>
+                                        <br>
+                                        <v-sheet
+                                            color="#c8d3eb"
+                                            class="scrollable-sheet"
+                                            elevation="0"
+                                            max-height="290px"
+                                            style="border-radius: 25px;"
+                                        >
+                                            <div style="padding: 15px;" v-html="currentjobdescription"></div>
+                                        </v-sheet>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+
+                            <v-card-actions style="padding: 15px;">
+                                <v-spacer></v-spacer>
+                                    <v-btn variant="tonal" color="blue" text="Close" @click="interviewdialog = false"></v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </v-col>
 
@@ -110,12 +489,45 @@
 </template>
 
 <script>
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc, deleteField} from "firebase/firestore";
+import firebaseApp from "@/firebase";
+import {getAuth} from 'firebase/auth';
+import gsap from 'gsap'
+
+const db = getFirestore(firebaseApp);
+const auth = getAuth();
+const date = new Date();
+
+let day = date.getDate();
+let month = date.getMonth() + 1;
+let year = date.getFullYear();
+
+let currdate = `${day}-${month}-${year}`;
+
+
 export default {
     data() {
         return {
+            progress: false,
+            findcount: null,
+            appliedcount: null,
+            savedcount: null,
+            interviewedcount: null,
+            findjobs: null,
+            appliedjobs: null,
+            savedjobs: null,
+            interviewedjobs: null,
+            dialog: false,
+            applieddialog: false,
+            interviewdialog: false,
             currentviewedjob: null,
+            currentjobindustry: null,
+            currentjoblink: null,
+            currentgooglelink: null,
+            currentjobdescription: null,
             hover: false,
             showSaveJob: false,
+            generatedimage: null,
             job: {
                 title: '',
                 company: '',
@@ -124,35 +536,143 @@ export default {
             }
         }
     },
-
-    props: {
-        jobs: Object
+    async mounted() {
+        onSnapshot(doc(db, 'Users', String(auth.currentUser.email)), doc => {
+            let applications = doc.data().applications;
+            
+            this.findjobs = this.sortJobsByTitle(applications.FindJobs);
+            this.appliedjobs = this.sortJobsByTitle(applications.applied);
+            this.savedjobs = this.sortJobsByTitle(applications.saved);
+            this.interviewedjobs = this.sortJobsByTitle(applications.interviewed);
+            
+            this.findcount = this.findjobs.length;
+            this.appliedcount = this.appliedjobs.length;
+            this.savedcount = this.savedjobs.length;
+            this.interviewedcount = this.interviewedjobs.length;
+        })
+        
     },
 
     emits:["datadata"],
 
+
     methods : {
-        editpreferences() {
+        sortJobsByTitle(jobsObject) {
+            let jobsArray = Object.values(jobsObject || {});
+
+            jobsArray.sort((a, b) => {
+                let titleA = a.job_title.toUpperCase(); 
+                let titleB = b.job_title.toUpperCase(); 
+                if (titleA < titleB) {
+                    return -1;
+                }
+                if (titleA > titleB) {
+                    return 1;
+                }
+
+                return 0;
+            });
+
+            return jobsArray;
+        },
+
+        async load() {
+            await new Promise(resolve => setTimeout(resolve, 4000));
+            this.progress = false
+
+        },
+        check_saved(job) {
+            const jobtitle = job["job_title"] + job["company"]
+            return jobtitle in this.savedjobs
+        },
+
+        check_applied(job) {
+            const jobtitle = job["job_title"] + job["company"]
+            return jobtitle in this.appliedjobs
+        },
+
+        async applyapplication(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+
+            const id = job["job_title"] + job["company"]
+
+            await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
+            await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
+
+
+            await setDoc(docref, {applications : {applied : {[id] : job}}}, {merge: true})
+            await setDoc(docref, {applications : {applied : {[id] : {job_applied_date : currdate}}}}, {merge: true})
+        },
+
+        async saveapplication(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+            await setDoc(docref, {applications : {saved : {[id] : {job_saved_date : currdate}}}}, {merge: true})
+            await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
+        },   
+        
+        async confirminterview(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await setDoc(docref, {applications : {interviewed : {[id] : job}}}, {merge: true})
+            await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
+        }, 
+
+        async unsave(job) {
+            this.dialog = false
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
+            await setDoc(docref, {applications : {FindJobs : {[id] : job}}}, {merge: true})
+            
+
+        },
+
+        async unapply(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
+            await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+        },
+
+        async cancelinterview(job) {
+            const docref = doc(db, 'Users', String(auth.currentUser.email));
+            const id = job["job_title"] + job["company"]
+            await updateDoc(docref, {[`applications.interviewed.${id}`] : deleteField()})
+            await setDoc(docref, {applications : {applied : {[id] : job}}}, {merge: true})
+        },
+
+        async editpreferences() {
             this.$emit("datadata", true)
+            this.progress = true
+            await new Promise(resolve => setTimeout(resolve, 15000));
+            this.progress = false
         },
 
-        print() {
-            console.log(Object.values(this.jobs)[1])
-        },
+        recordjobdetails(job) {
+            this.currentviewedjob = job
+            this.currentjobindustry = this.currentviewedjob["job_industry"]
+            this.currentjoblink = this.currentviewedjob["job_apply_link"]
+            this.currentgooglelink = this.currentviewedjob["job_google_link"]
+            this.currentjobdescription = this.currentviewedjob["job_description"].split("\n").map(paragraph => `<p>${paragraph.replace(/\n/, '<br>')}</p>`).join('<br>');
 
-        load ({ done }) {
-            setTimeout(() => {
-                console.log(typeof(this.jobs));
-            this.jobs.push(...Array.from({ length: 10 }, (k, v) => v + this.jobs.at(-1) + 1))
-
-            done('ok')
-            }, 1000)
         },
     }
 }
 </script>
 
 <style scoped>
+* {
+    font-family: "K2D", sans-serif;
+    font-style: normal;
+}
+
+.scrollable-sheet {
+  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
 .subheading{
     color:#1e2242;
     font-weight: 500;
@@ -169,6 +689,7 @@ export default {
     width: 50px; /* Initial width */
     overflow: hidden;
     margin-top: 20px;
+    border-radius: 20px;
 /* Center items horizontally */
 }
 
@@ -196,6 +717,12 @@ export default {
     margin: 20px auto;
     display: flex;
     flex-direction: column;
+}
+
+h3 {
+    color: #5D78AD;
+    font-weight: 600;
+    font-size: medium;
 }
 
 

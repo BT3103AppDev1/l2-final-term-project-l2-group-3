@@ -2,7 +2,7 @@
     <v-app>
         <v-app-bar app clipped-left :elevation="0" color= "#19375a">
             <v-app-bar-title class="logo" style="font-size: x-large;">Kiasu<strong><i>Careers</i></strong></v-app-bar-title>
-            <v-btn variant="tonal" @click="gotologin" style="margin-right: 50px; margin-top: 10px;">Log in</v-btn>
+            <v-btn class = "loginbutton" variant="tonal" @click="gotologin" style="margin-right: 50px; margin-top: 10px;">Log in</v-btn>
         </v-app-bar>
 
         <v-main class="container">
@@ -12,7 +12,7 @@
                     <div style="margin-left: 150px;">
                         <h1 class="title" > <h1 class="effect" :class="{ 'hovered' : hover}">Streamline</h1>Your Success, One Application at a Time </h1>    
                         <p class="description"> Review job applications from multiple job portals such as LinkedIn, Indeed and Glassdoor, all under one dashboard. </p>
-                        <a href="#" class="btn" @click="gotologin" @mouseover="enter" @mouseleave="leave">Get started</a>
+                        <a class="btn" @click="gotologin" @mouseover="enter" @mouseleave="leave">Get started</a>
                     </div>
                 </v-col>
                 
@@ -26,7 +26,7 @@
                 <v-col cols="8">
                     <h1 class="heading" style="color: #fff;">Integrated Job Listings</h1>
                     <p class="heading">Indicate your job preferences such as job title, industry, experience level, and view filtered job listings from different job portals.</p>
-                    <v-card class="stagger" v-motion-slide-visible-top variant="elevated" style="background-color: #516b9b; border-radius: 40px;">
+                    <v-card class="stagger" variant="elevated" style="background-color: #516b9b; border-radius: 40px;">
                         <v-row>
                             <v-col style="padding: 50px;" class="brand">
                                 <v-card class="d-flex justify-center align-center flex-column" variant="tonal" style="border-radius: 40px; height: fit-content;">
@@ -68,7 +68,7 @@
                         </v-col>
 
                         <v-col cols="6" class="d-flex justify-center align-center">
-                            <v-card variant="blank" style="width: 75%;">
+                            <v-card variant="text" style="width: 75%;">
                                 <h1 class = "feature_title"> Resume Crafting</h1>
                                 <h2 class="feature_description"> Prepare for your applications and interviews using our ATS-optimised templates and interview preparation module which offers resources, mock interviews, and industry-specific tips. </h2> 
                             </v-card>
@@ -77,7 +77,7 @@
 
                     <v-row id="secondfeature">
                         <v-col cols="6" class="d-flex justify-center align-center">
-                            <v-card variant="blank" style="width: 75%">
+                            <v-card variant="text" style="width: 75%">
                                 <h1 class="feature_title"> Integrated Reminders </h1>
                                 <h2 class="feature_description"> Receive reminders by exporting key interview and application dates to your Outlook calendar, or subscribe to our telegram chatbot for automated reminders. </h2>
                             </v-card>
@@ -93,7 +93,7 @@
                         </v-col>
 
                         <v-col cols="6" class="d-flex justify-center align-center">
-                            <v-card variant="blank" style="width: 75%;">
+                            <v-card variant="text" style="width: 75%;">
                                 <h1 class = "feature_title">Performance Analytics</h1>
                                 <h2 class="feature_description"> Discover key performance metrics such as job offer rates and interview rates to track your job application performance.</h2> 
                             </v-card>
@@ -241,9 +241,8 @@
         },
 
         mounted() {
-            setTimeout(() => {
-                this.confirmemail = false;
-            }, 3000);
+
+            /*
             //smooth scroll
             const lenis = new Lenis()
 
@@ -258,6 +257,7 @@
 
             requestAnimationFrame(raf)
 
+            */
             //animations 
             gsap.registerPlugin(ScrollTrigger);
 
@@ -333,6 +333,11 @@
 
             t5.from('#fourthcontainer', {rotation: 40, opacity:0, x:-500})
 
+            gsap.fromTo('.loginbutton', 
+                { opacity: 0, y: 0 },
+                { opacity: 1, y: 0, duration: 1, delay: 2 }
+            );
+
             gsap.fromTo('.logo', 
                 { opacity: 0, y: 10 },
                 { opacity: 1, y: 0, duration: 1, delay: 2 }
@@ -380,7 +385,7 @@
         font-style: normal;
         min-height: 100vh;        
         background-color: #19375a;
-        height: 3000px;
+        height: 3200px;
     }
         
     p {

@@ -74,7 +74,7 @@
 import { ref, onMounted } from 'vue';
 import { db } from '@/firebase.js';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, Timestamp, setDoc } from 'firebase/firestore';
 
 const dialogEvent = ref(false);
 const eventDetail = ref('');
@@ -102,14 +102,12 @@ async function saveEvent() {
     try {
       // Get the user's document
       const docSnap = await getDoc(userDocRef);
-      let eventsArray = [];
 
-      if (docSnap.exists() && docSnap.data().events) {
-        eventsArray = docSnap.data().events;
-      }
+      const eventsArray = docSnap.data().events;
+      
 
       // Determine the name for the next event
-      const nextEventName = `event${eventsArray.length + 1}`;
+      const nextEventName = `event${Object.keys(eventsArray).length + 1}`;
 
       // Prepare the new event data with Timestamp
       const newEventData = {
@@ -120,11 +118,8 @@ async function saveEvent() {
         }
       };
 
-      // Append the new event to the events array
-      eventsArray.push(newEventData);
-
       // Update the document with the new events array
-      await updateDoc(userDocRef, { events: eventsArray });
+      await setDoc(userDocRef, { events: newEventData }, {merge: true});
 
       // Reset the form fields
       dialogEvent.value = false;

@@ -166,14 +166,6 @@ export default {
             this.dialog = true
         }
         this.firstname = docRef.data()['credentials']['firstname']
-
-        auth.currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-        // Send token to your backend via HTTPS
-        // ...
-        console.log(idToken)
-        }).catch(function(error) {
-        // Handle error
-        });
     }
 
 }

@@ -642,6 +642,11 @@ export default {
         console.error("No user is currently signed in.");
       }
 
+      if (this.remindTelegram) {
+        const url = 'https://t.me/KiasuCareersBot?start=' + auth.currentUser.uid; // URL you want to open
+        window.open(url, '_blank');
+      }
+
       const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
 
       try {

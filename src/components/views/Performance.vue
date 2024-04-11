@@ -32,9 +32,13 @@
                                         <v-col cols="6" style="margin-top: 15px;">
                                             <v-row style="margin-left: 10px;">
                                                 <div style="display: flex; align-items: center; font-size:medium;">
-                                                    <v-icon small color="green">{{ applicationsCompleted.trend > 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
-                                                    <span :class="applicationsCompleted.trend> 0 ? 'green--text' : 'red--text'"> {{ applicationsCompleted.trend }}% </span>
-                                                 </div>
+                                                    <v-icon small :color="applicationsCompleted.trend >= 0 ? 'green' : 'red'">
+                                                        {{ applicationsCompleted.trend >= 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                                    </v-icon>
+                                                    <span :class="applicationsCompleted.trend >= 0 ? 'green--text' : 'red--text'">
+                                                        {{ applicationsCompleted.trend }}%
+                                                    </span>
+                                                </div>
                                             </v-row>
                                             <v-row>
                                                 <div class="card-text"> <h5> since last week</h5> </div>
@@ -62,9 +66,13 @@
                                         <v-col cols="6" style="margin-top:15px;">
                                             <v-row style="margin-left: 10px;">
                                                 <div style="display: flex; align-items: center; font-size:medium;">
-                                                    <v-icon small color="green">{{ interviewsAttended.trend > 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
-                                                    <span :class="interviewsAttended.trend > 0 ? 'green--text' : 'red--text'"> {{ interviewsAttended.trend }}% </span>
-                                                 </div>
+                                                    <v-icon small :color="interviewsAttended.trend >= 0 ? 'green' : 'red'">
+                                                        {{ interviewsAttended.trend >= 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                                    </v-icon>
+                                                    <span :class="interviewsAttended.trend >= 0 ? 'green--text' : 'red--text'">
+                                                        {{ interviewsAttended.trend }}%
+                                                    </span>
+                                                </div>
                                             </v-row>
 
                                             <v-row>
@@ -93,9 +101,13 @@
                                         <v-col cols="6" style="margin-top:15px;">
                                             <v-row style="margin-left: 10px;">
                                                 <div style="display: flex; align-items: center; font-size:medium;">
-                                                    <v-icon small color="green">{{ progressionToNextStage.trend > 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
-                                                    <span :class="progressionToNextStage.trend> 0 ? 'green--text' : 'red--text'"> {{ progressionToNextStage.trend }}% </span>
-                                                 </div>
+                                                    <v-icon small :color="progressionToNextStage.trend >= 0 ? 'green' : 'red'">
+                                                        {{ progressionToNextStage.trend >= 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
+                                                    </v-icon>
+                                                    <span :class="progressionToNextStage.trend >= 0 ? 'green--text' : 'red--text'">
+                                                        {{ progressionToNextStage.trend }}%
+                                                    </span>
+                                                </div>
                                             </v-row>
 
                                             <v-row>
@@ -166,12 +178,12 @@ export default {
         return {
             applicationsCompleted: {
                 count: this.fetchApplied(),
-                trend: 0
+                trend: -1
             },
 
             interviewsAttended: {
                 count:this.fetchInterview(),
-                trend: 0
+                trend: -5
             },
 
             progressionToNextStage: {
@@ -196,16 +208,18 @@ export default {
                 'Web Dev': [[new Date(2023, 11), 1], [new Date(2024, 0), 3], [new Date(2024, 1), 6], [new Date(2024, 2), 9]],
             },
 
-            offersAndInterviews: [
-                { company: 'DBS', date: '28/02/2024', role: 'DBS Structured Internship 2024', step: 'Interview' },
+            offersAndInterviews: []
+                /*{ company: 'DBS', date: '28/02/2024', role: 'DBS Structured Internship 2024', step: 'Interview' },
                 { company: 'UOB', date: '24/02/2024', role: 'UOB Management Associate Programme 2024', step: 'Interview' },
-                { company: 'HSBC', date: '20/01/2024', role: 'Securities Services Graduate Programme 2024', step: 'Interview' }
-        
-            ]
+                { company: 'HSBC', date: '20/01/2024', role: 'Securities Services Graduate Programme 2024', step: 'Interview' }*/
         }
     },
 
-        methods: {
+    mounted() {
+        this.fetchOffersAndInterviews();
+    },
+
+    methods: {
         async fetchApplied() {
             try {
                 const db = getFirestore(firebaseApp);
@@ -270,7 +284,7 @@ export default {
                         const appliedInterviewedDict = userDocSnapshot.data().applications.interviewed;
                         const appliedInterviewCount = Object.keys(appliedInterviewedDict).length;
 
-                        this.progressionToNextStage.count= progressSetting - appliedInterviewCount;
+                        this.progressionToNextStage.count= progressSetting - appliedInterviewCount; //actly what is progression to nxt stage
                     }
                 } else {
                     console.log("No user is signed in.");
@@ -278,7 +292,41 @@ export default {
             } catch (error) {
                 console.error("Error fetching interview count: ", error);
             }
-        }
+        }, 
+
+        async fetchOffersAndInterviews() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+
+                if (user) {
+                    const userDocRef = doc(db, "Users", user.email);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists) {
+                        const interviewedDict = userDocSnapshot.data().applications.interviewed;
+                        const offersAndInterviewsArray = [];
+
+                        for (const [jobTitle, jobDetails] of Object.entries(interviewedDict)) {
+                            offersAndInterviewsArray.push({
+                                company: jobDetails.company,
+                                date: jobDetails.job_applied_date, // interview date?
+                                role: jobDetails.job_title,
+                                step: "Interview"// Interview? Offer?
+                            });
+                        }
+
+                        this.offersAndInterviews = offersAndInterviewsArray;
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching offers and interviews: ", error);
+            }
+        },
+
     },
 
 };

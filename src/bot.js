@@ -147,12 +147,12 @@ async function checkAndSendReminders() {
                 const finaldatetime = "<b><u>" + formatter.format(val.eventstartdatetime.toDate()) + "</u></b>"
                 const msg = "Reminder: "+ val.eventname + " is happening in less than 24 hours at " + "(" + finaldatetime + ")";
                 reminded.push(val.eventname)
-                bot.sendMessage("307219207", msg, {parse_mode: 'HTML'})
+                bot.sendMessage(chatId, msg, {parse_mode: 'HTML'})
             }
         })
     } catch(error) {
         console.log(error)
-        bot.sendMessage("307219207","error occurred")
+        bot.sendMessage(chatId,"Error occurred, failed to send reminders")
     }
 }
 

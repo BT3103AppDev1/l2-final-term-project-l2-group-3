@@ -70,7 +70,7 @@
                         elevation="0"
                         max-height="400px"
                     >
-                    <main v-for="reminder in reminders" style="margin-top: 10px; border-radius: 20px;">
+                    <main v-for="reminder in reminders" :key="reminder.id" style="margin-top: 10px; border-radius: 20px;">
                         <v-card variant="flat" hover style="margin-left: 15px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.dialog = true;" opacity="0.9" >
                             <v-card-title style="font-size: large; font-weight: 800;"> 
                                 
@@ -221,6 +221,7 @@ export default {
                     id = r
                 }
             }
+            console.log(id)
             await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`reminders.${id}`] : deleteField()})
             await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`events.${id}`] : deleteField()})
         }

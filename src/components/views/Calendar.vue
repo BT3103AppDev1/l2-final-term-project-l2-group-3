@@ -112,7 +112,7 @@ async function saveEvent() {
       // Prepare the new event data with Timestamp
       const start = Timestamp.fromDate(new Date(`${eventStartDate.value}T${eventStartTime.value}`))
       const end = Timestamp.fromDate(new Date(`${eventEndDate.value}T${eventEndTime.value}`))
-      const id = eventDetail.value + start
+      const id = String(eventDetail.value + start.toMillis())
 
       const newEventData = {
         [id]: {

@@ -110,11 +110,15 @@ async function saveEvent() {
       const nextEventName = `event${Object.keys(eventsArray).length + 1}`;
 
       // Prepare the new event data with Timestamp
+      const start = Timestamp.fromDate(new Date(`${eventStartDate.value}T${eventStartTime.value}`))
+      const end = Timestamp.fromDate(new Date(`${eventEndDate.value}T${eventEndTime.value}`))
+      const id = eventDetail.value + start
+
       const newEventData = {
-        [nextEventName]: {
-          details: eventDetail.value,
-          eventstartdatetime: Timestamp.fromDate(new Date(`${eventStartDate.value}T${eventStartTime.value}`)),
-          eventenddatetime: Timestamp.fromDate(new Date(`${eventEndDate.value}T${eventEndTime.value}`)),
+        [id]: {
+          eventname: eventDetail.value,
+          eventstartdatetime: start,
+          eventenddatetime:end,
         }
       };
 

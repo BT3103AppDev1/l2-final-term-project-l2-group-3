@@ -221,7 +221,7 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
+                <!--<v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
                   <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
@@ -282,7 +282,7 @@
                     </v-col>
                   </v-row>
 
-                </v-card><br>
+                </v-card><br>-->
 
                 <v-card style="border-radius: 30px; width: 1000px;" color="ffffff" height="175px">
                   <v-row>
@@ -396,10 +396,10 @@ export default {
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
-    syncLinkedin: true,
+    /*syncLinkedin: true,
     syncIndeed: false,
     syncGlassdoor: false,
-    syncOthers: false,
+    syncOthers: false,*/
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -542,7 +542,7 @@ export default {
 
     
     //sync settings methods
-    async handleSyncLinkedin() { 
+   /* async handleSyncLinkedin() { 
       const db = getFirestore(firebaseApp);
       const auth = getAuth();
 
@@ -613,7 +613,7 @@ export default {
       } catch (error) {
         console.error('Error updating syncOthers setting:', error);
       }
-    },
+    },*/
     
     //reminder settings methods
     async handleRemindOutlook() {

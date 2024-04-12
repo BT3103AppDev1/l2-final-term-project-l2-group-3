@@ -28,14 +28,16 @@ export default {
   computed: {
     attributes() {
       return this.events.map(event => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        const formattedStartDateTime = event.start.toLocaleString('default', options);
+        const formattedEndDateTime = event.end.toLocaleString('default', options);
         let attribute = {
           dot: {
-            color: event.color || 'blue',
+            color: event.color
           },
           popover: {
-            label: event.details,
+            label: `${event.details} from ${formattedStartDateTime} to ${formattedEndDateTime}`,
             visibility: 'hover',
-            hideIndicator: true,
           }
         };
 
@@ -51,7 +53,7 @@ export default {
       });
     },
   },
-  
+
   mounted() {
   const auth = getAuth();
   onSnapshot(doc(db, "Users", auth.currentUser.email), (docSnapshot) => {
@@ -66,7 +68,7 @@ export default {
           details: eventData.eventname,
           start: startDateTime,
           end: endDateTime,
-          color: eventData.color || 'blue'
+          color: eventData.eventcolour
         };
       });
     }

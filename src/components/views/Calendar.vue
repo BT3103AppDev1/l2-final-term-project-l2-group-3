@@ -15,7 +15,7 @@
 
           <v-btn class="expandablebutton" color= #154c79 @click="dialogEvent = true" @mouseover="hover = true" @mouseleave="hover = false">
           <v-icon>mdi-plus</v-icon>
-          <span v-if="hover" class="button-text">Add Events</span>
+          <span v-if="hover" class="button-text">Add Event</span>
           </v-btn>
 
           <v-dialog v-model="dialogEvent" persistent max-width="600px">
@@ -83,6 +83,7 @@ const eventStartTime = ref('');
 const eventEndDate = ref('');
 const eventEndTime = ref('');
 const user = ref(null);
+const hover = ref(false);
 
 const auth = getAuth();
 

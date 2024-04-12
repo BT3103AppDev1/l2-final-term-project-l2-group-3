@@ -3,7 +3,6 @@
     <v-sheet height="600">
       <VCalendar
         expanded
-        :color="selectedColor"
         :attributes="attributes"
         :rows="1"
         is-dark="system"
@@ -22,7 +21,7 @@ export default {
   data() {
     return {
       events: [],
-      selectedColor: 'blue', // Assuming 'selectedColor' is a data property
+      selectedColor: null, // Assuming 'selectedColor' is a data property
     };
   },
   computed: {

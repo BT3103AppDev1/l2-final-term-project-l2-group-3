@@ -47,6 +47,13 @@
                   </v-col>
                 </v-row>
 
+                <v-row>
+                  <span> <b>Event Colour Tag</b> </span>
+                  <v-col cols="12">
+                    <v-text-field v-model="eventColour" label="Enter name of colour"></v-text-field>
+                  </v-col>
+                </v-row>
+
               </v-col>
             </v-row>
           </v-container>
@@ -82,6 +89,7 @@ const eventStartDate = ref('');
 const eventStartTime = ref('');
 const eventEndDate = ref('');
 const eventEndTime = ref('');
+const eventColour = ref('')
 const user = ref(null);
 const hover = ref(false);
 
@@ -114,12 +122,14 @@ async function saveEvent() {
       const start = Timestamp.fromDate(new Date(`${eventStartDate.value}T${eventStartTime.value}`))
       const end = Timestamp.fromDate(new Date(`${eventEndDate.value}T${eventEndTime.value}`))
       const id = String(eventDetail.value + start.toMillis())
+      
 
       const newEventData = {
         [id]: {
           eventname: eventDetail.value,
           eventstartdatetime: start,
           eventenddatetime:end,
+          eventcolour: eventColour.value,
         }
       };
 
@@ -133,6 +143,7 @@ async function saveEvent() {
       eventStartTime.value = '';
       eventEndDate.value = '';
       eventEndTime.value = '';
+      eventColour.value = '';
 
     } catch (error) {
       console.error('Error saving event:', error);

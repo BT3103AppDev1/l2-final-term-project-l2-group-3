@@ -87,18 +87,18 @@
                                 <v-card variant="elevated" color=#ffffff class="pa-3" height="125px" style="border-radius: 10px;">
                                     <v-row> 
                                         <v-card-title>
-                                            <h5 class="card-title"> Progression to next stage </h5>
+                                            <h5 class="card-title"> Application to Interview Ratio </h5>
                                         </v-card-title>
                                     </v-row>
 
                                     <v-row style="margin-top: -10px;">
-                                        <v-col cols="6">
+                                        <v-col>
                                             <v-card-text>
-                                                <div class="display-1" style="font-size: 40px; margin-left: 10px;"><b>{{ progressionToNextStage.count }}</b></div>
+                                                <div class="display-1" style="font-size: 40px; text-align: center;"><b>{{ isNaN(progressionToNextStage.count) ? 0 : progressionToNextStage.count }}%</b></div>
                                             </v-card-text>
                                         </v-col>
 
-                                        <v-col cols="6" style="margin-top:15px;">
+                                        <!---<v-col cols="6" style="margin-top:15px;">
                                             <v-row style="margin-left: 10px;">
                                                 <div style="display: flex; align-items: center; font-size:medium;">
                                                     <v-icon small :color="progressionToNextStage.trend >= 0 ? 'green' : 'red'">
@@ -113,7 +113,7 @@
                                             <v-row>
                                                 <div class="card-text"> <h5> since last week</h5></div>
                                             </v-row>
-                                        </v-col>
+                                        </v-col>-->
                                     </v-row>
                                 </v-card>
                             </v-col>
@@ -124,7 +124,8 @@
                             <v-col cols="12">
                                 <v-card variant="elevated" color=#ffffff class="pa-3" height="350px" style="border-radius: 10px;">
                                     <h5 class="card-title"> Application Progress </h5>
-                                    <line-chart :data="lineChartData" :min="0" :max="10" :library="{backgroundColor: 'transparent', elements: { line: { tension: 0, borderWidth: 4 }}}"></line-chart>
+                                    <line-chart :data="lineChartData" :min="0" :library="{ backgroundColor: 'transparent', elements: { line: { tension: 0, borderWidth: 4}}}"> </line-chart>
+
                                 </v-card>
                             </v-col>
                         </v-row>
@@ -133,12 +134,6 @@
                             <v-col cols="12">
                                 <v-card variant="elevated" color=#ffffff class="pa-3" height="250px" style="border-radius: 10px;">
                                     <h5 class="card-title"> Track past offers and interviews </h5>
-                                    <v-data-table
-                                        :items="offersAndInterviews"
-                                        :hide-default-footer="true"
-                                        class="elevation-1"
-                                        style="max-height: 200px; overflow-y: auto;"
-                                    ></v-data-table>
 
                                 </v-card>
                             </v-col>
@@ -179,49 +174,38 @@ export default {
         return {
             applicationsCompleted: {
                 count: this.fetchApplied(),
-                trend: -1
+                trend: 0,
             },
 
             interviewsAttended: {
                 count:this.fetchInterview(),
-                trend: -5
+                trend: 0,
             },
 
             progressionToNextStage: {
                 count: this.fetchProgress(),
-                trend: 0
+                trend: 0,
             },
 
-            chartData: {
-                "Financial Industry": 67,
-                "Other Industries": 33
-            },
+            chartData: {}, 
       
-            barChartData: [
-                /*["Government", 30],
-                ["Tech", 50],
-                ["Finance", 40],
-                ["Manufacturing", 35]*/
-            ],
+            barChartData: [],
 
-            lineChartData: {
-                'SWE': [[new Date(2023, 11), 0], [new Date(2024, 0), 2], [new Date(2024, 1), 4], [new Date(2024, 2), 8]],
-                'Web Dev': [[new Date(2023, 11), 1], [new Date(2024, 0), 3], [new Date(2024, 1), 6], [new Date(2024, 2), 9]],
-            },
+            lineChartData: {}
 
-            offersAndInterviews: []
-                /*{ company: 'DBS', date: '28/02/2024', role: 'DBS Structured Internship 2024', step: 'Interview' },
-                { company: 'UOB', date: '24/02/2024', role: 'UOB Management Associate Programme 2024', step: 'Interview' },
-                { company: 'HSBC', date: '20/01/2024', role: 'Securities Services Graduate Programme 2024', step: 'Interview' }*/
         }
     },
 
     mounted() {
-        this.fetchOffersAndInterviews();
         this.fetchIndustryData();
+        this.fetchCompanyContactData();
+        this.fetchAppliedTrend();
+        this.fetchInterviewTrend();
+        this.fetchApplicationsPerDay();
     },
 
     methods: {
+
         async fetchApplied() {
             try {
                 const db = getFirestore(firebaseApp);
@@ -236,7 +220,11 @@ export default {
                         const appliedJobsDict = userDocSnapshot.data().applications.applied;
                         const appliedJobsCount = Object.keys(appliedJobsDict).length;
 
-                        this.applicationsCompleted.count = appliedJobsCount;
+                        const appliedInterviewedDict = userDocSnapshot.data().applications.interviewed;
+                        const appliedInterviewCount = Object.keys(appliedInterviewedDict).length;
+
+
+                        this.applicationsCompleted.count = appliedJobsCount + appliedInterviewCount;
                     }
                 } else {
                     console.log("No user is signed in.");
@@ -269,6 +257,7 @@ export default {
                 console.error("Error fetching interview count: ", error);
             }
         },
+
         async fetchProgress() {
             try {
                 const db = getFirestore(firebaseApp);
@@ -286,7 +275,12 @@ export default {
                         const appliedInterviewedDict = userDocSnapshot.data().applications.interviewed;
                         const appliedInterviewCount = Object.keys(appliedInterviewedDict).length;
 
-                        this.progressionToNextStage.count= progressSetting - appliedInterviewCount; //actly what is progression to nxt stage
+                        const appliedJobsDict = userDocSnapshot.data().applications.applied;
+                        const appliedJobsCount = Object.keys(appliedJobsDict).length;
+
+                        console.log(appliedInterviewCount, appliedJobsCount)
+
+                        this.progressionToNextStage.count = Math.round(appliedInterviewCount / (appliedJobsCount + appliedInterviewCount) * 100);
                     }
                 } else {
                     console.log("No user is signed in.");
@@ -296,37 +290,67 @@ export default {
             }
         }, 
 
-        async fetchOffersAndInterviews() {
+        async fetchTrend(status) {
             try {
                 const db = getFirestore(firebaseApp);
                 const auth = getAuth();
                 const user = auth.currentUser;
 
                 if (user) {
-                    const userDocRef = doc(db, "Users", user.email);
+                    const userDocRef = doc(db,"Users", user.email);
                     const userDocSnapshot = await getDoc(userDocRef);
 
-                    if (userDocSnapshot.exists) {
-                        const interviewedDict = userDocSnapshot.data().applications.interviewed;
-                        const offersAndInterviewsArray = [];
+                    if (userDocSnapshot.exists()) {
+                        const sevenDaysAgo = new Date();
+                        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-                        for (const [jobTitle, jobDetails] of Object.entries(interviewedDict)) {
-                            offersAndInterviewsArray.push({
-                                company: jobDetails.company,
-                                date: jobDetails.job_applied_date, // interview date?
-                                role: jobDetails.job_title,
-                                step: "Interview"// Interview? Offer?
-                            });
+                        const applications = userDocSnapshot.data().applications[status];
+                        let recentCount = 0;
+                        let pastCount = 0;
+
+                        Object.values(applications).forEach(application => {
+                            const [day, month, year] = application.job_applied_date.split('-').map(Number);
+                            const appliedDate = new Date(year, month - 1, day); // months are 0-indexed
+                    
+                            if (appliedDate >= sevenDaysAgo) {
+                                recentCount++;
+                            } else {
+                                pastCount++;
+                            }
+                        });
+
+                        if (pastCount === 0) {
+                            return recentCount > 0 ? 100 : "N/A";
                         }
 
-                        this.offersAndInterviews = offersAndInterviewsArray;
+                        if (recentCount === 0) {
+                            return -100; // Indicate a decrease if no recent applications
+                        }
+
+                        return ((recentCount - pastCount) / pastCount) * 100;
+                    } else {
+                        console.log("User document does not exist.");
+                        return 0;
                     }
                 } else {
                     console.log("No user is signed in.");
+                    return 0;
                 }
             } catch (error) {
-                console.error("Error fetching offers and interviews: ", error);
+                console.error("Error fetching trend: ", error);
+                return 0;
             }
+        },
+
+
+        async fetchAppliedTrend() {
+            const trend = await this.fetchTrend('applied');
+            this.applicationsCompleted.trend = trend;
+        },
+
+        async fetchInterviewTrend() {
+            const trend = await this.fetchTrend('applied');
+            this.interviewsAttended.trend = trend;
         },
 
         async fetchIndustryData() {
@@ -366,9 +390,95 @@ export default {
             } catch (error) {
                 console.error("Error fetching industry data: ", error);
             }
+        },
+
+        async fetchCompanyContactData() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+
+                if (user) {
+                    const userDocRef = doc(db, "Users", user.email);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    let companyCounts = {};
+
+                    if (userDocSnapshot.exists()) {
+                        const userData = userDocSnapshot.data();
+                        const interviewed = userData.applications.interviewed;
+
+                        if (interviewed && typeof interviewed === 'object') {
+                            Object.values(interviewed).forEach((jobDetails) => {
+                                const company = jobDetails.company || 'Others';
+                                if (company) {
+                                    companyCounts[company] = (companyCounts[company] || 0) + 1;
+                                }
+                            });
+                            this.chartData = companyCounts;
+                        } else {
+                            console.log("No interviewed jobs or the structure is not as expected.");
+                            this.chartData = {};
+                        }
+                    } else {
+                        console.log("Document does not exist.");
+                        this.chartData = {};
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                    this.chartData = {};
+                }
+            } catch (error) {
+                console.error("Error fetching company contact data: ", error);
+                this.chartData = {};
+            }
+        },
+
+        async fetchApplicationsPerDay() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+    
+                if (user) {
+                    const userDocRef = doc(db, "Users", user.email);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    if (userDocSnapshot.exists()) {
+                        const appliedJobs = userDocSnapshot.data().applications.applied;
+                        let applicationsPerDay = {};
+
+                        // Initialize count for each day of the past week
+                        for (let i = 6; i >= 0; i--) {
+                            let date = new Date();
+                            date.setDate(date.getDate() - i);
+                            let dateString = date.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
+                            applicationsPerDay[dateString] = 0;
+                        }
+
+                        // Count applications per day
+                        Object.values(appliedJobs).forEach((application) => {
+                            let [day, month, year] = application.job_applied_date.split('-');
+
+                            // Create a date object at noon UTC to avoid timezone issues
+                            let appliedDate = new Date(Date.UTC(year, month - 1, day, 12)); // Month is zero-indexed, so subtract 1
+                            let appliedDateString = appliedDate.toISOString().split('T')[0];
+
+
+                            if (appliedDateString in applicationsPerDay) {
+                                applicationsPerDay[appliedDateString]++;
+                            }
+                        });
+                        let chartDataArray = Object.entries(applicationsPerDay).map(([date, count]) => [date, count]);
+                        this.lineChartData = chartDataArray;
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching applications per day: ", error);
+            }
         }
-
-
 
     },
 

@@ -123,6 +123,7 @@
                         <v-row style="margin-top: 12px; margin-left: 30px;">
                             <v-col cols="12">
                                 <v-card variant="elevated" color=#ffffff class="pa-3" height="350px" style="border-radius: 10px;">
+                                    <h5 class="card-title"> Application Progress </h5>
                                     <line-chart :data="lineChartData" :min="0" :max="10" :library="{backgroundColor: 'transparent', elements: { line: { tension: 0, borderWidth: 4 }}}"></line-chart>
                                 </v-card>
                             </v-col>
@@ -197,10 +198,10 @@ export default {
             },
       
             barChartData: [
-                ["Government", 30],
+                /*["Government", 30],
                 ["Tech", 50],
                 ["Finance", 40],
-                ["Manufacturing", 35]
+                ["Manufacturing", 35]*/
             ],
 
             lineChartData: {
@@ -217,6 +218,7 @@ export default {
 
     mounted() {
         this.fetchOffersAndInterviews();
+        this.fetchIndustryData();
     },
 
     methods: {
@@ -326,6 +328,47 @@ export default {
                 console.error("Error fetching offers and interviews: ", error);
             }
         },
+
+        async fetchIndustryData() {
+            try {
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const user = auth.currentUser;
+
+                if (user) {
+                    const userDocRef = doc(db, "Users", user.email);
+                    const userDocSnapshot = await getDoc(userDocRef);
+
+                    let industryCounts = {};
+
+                    if (userDocSnapshot.exists()) {
+                        const userData = userDocSnapshot.data();
+                        const interviewed = userData.applications.interviewed;
+
+                        if (interviewed && typeof interviewed === 'object') {
+                            Object.values(interviewed).forEach((job) => {
+                                const industry = job.job_industry || 'Others'; //if job_industry is Not Available, reflected as Others in bar chart
+                                if (industry) {
+                                    industryCounts[industry] = (industryCounts[industry] || 0) + 1;
+                                }
+                            });
+                            this.barChartData = Object.entries(industryCounts).map(([industry, count]) => [industry, count]);
+                        } else {
+                            console.log("No interviewed jobs or the structure is not as expected.");
+                            this.barChartData = [];
+                        }
+                    } else {
+                        console.log("Document does not exist.");
+                    }
+                } else {
+                    console.log("No user is signed in.");
+                }
+            } catch (error) {
+                console.error("Error fetching industry data: ", error);
+            }
+        }
+
+
 
     },
 

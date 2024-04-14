@@ -77,89 +77,193 @@
 
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { db } from '@/firebase.js';
+<script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, updateDoc, Timestamp, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase.js';
+import { getFirestore, doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import firebaseApp from "@/firebase";
+import { PublicClientApplication } from '@azure/msal-browser';
 
-const dialogEvent = ref(false);
-const eventDetail = ref('');
-const eventStartDate = ref('');
-const eventStartTime = ref('');
-const eventEndDate = ref('');
-const eventEndTime = ref('');
-const eventColour = ref('')
-const user = ref(null);
-const hover = ref(false);
+export default {
+  data() {
+    return {
+      dialogEvent: false,
+      eventDetail: '',
+      eventStartDate: '',
+      eventStartTime: '',
+      eventEndDate: '',
+      eventEndTime: '',
+      eventColour: '',
+      user: null,
+      hover: false,
+      token: null,
+      msalInstance: null,
+    };
+  },
+  async created() {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.user = user;
+      } else {
+        this.user = null;
+      }
+    });
 
-const auth = getAuth();
+    if (auth.currentUser) {
+      this.user = auth.currentUser;
+    }
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    user.value = user;
-  } else {
-    user.value = null;
-  }
-});
-
-async function saveEvent() {
-  if (user.value && user.value.email) {
-    // Reference to the user's document that contains the "events" field
-    const userDocRef = doc(db, "Users", user.value.email);
-
-    try {
-      // Get the user's document
-      const docSnap = await getDoc(userDocRef);
-
-      const eventsArray = docSnap.data().events;
-      
-
-      // Determine the name for the next event
-      const nextEventName = `event${Object.keys(eventsArray).length + 1}`;
-
-      // Prepare the new event data with Timestamp
-      const start = Timestamp.fromDate(new Date(`${eventStartDate.value}T${eventStartTime.value}`))
-      const end = Timestamp.fromDate(new Date(`${eventEndDate.value}T${eventEndTime.value}`))
-      const id = String(eventDetail.value + start.toMillis())
-      
-
-      const newEventData = {
-        [id]: {
-          eventname: eventDetail.value,
-          eventstartdatetime: start,
-          eventenddatetime:end,
-          eventcolour: eventColour.value,
+    await this.initializeMsal();
+  },
+  methods: {
+    async initializeMsal() {
+      const msalConfig = {
+        auth: {
+          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
+          authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
+          redirectUri: 'http://localhost:3005/settings/' // Assuming you handle redirects at the root
+        },
+        cache: {
+          cacheLocation: "localStorage", // Enables cache to be stored in localStorage
+          storeAuthStateInCookie: true, // Recommended for browsers
         }
       };
 
-      // Update the document with the new events array
-      await setDoc(userDocRef, { events: newEventData }, {merge: true});
+      this.msalInstance = await PublicClientApplication.createPublicClientApplication(msalConfig);
+    },
+    
+    //reminder settings methods
+    async save_to_outlook(event) {
 
-      // Reset the form fields
-      dialogEvent.value = false;
-      eventDetail.value = '';
-      eventStartDate.value = '';
-      eventStartTime.value = '';
-      eventEndDate.value = '';
-      eventEndTime.value = '';
-      eventColour.value = '';
+      const loginRequest = {
+        scopes: ['openid', 'profile', 'User.Read', 'Calendars.ReadWrite'],
+      };
 
-    } catch (error) {
-      console.error('Error saving event:', error);
+      try {
+        // Try to get all accounts from the cache
+        const accounts = this.msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          // If there are accounts in the cache, set the first one as the active account
+          this.msalInstance.setActiveAccount(accounts[0]);
+        }
+
+        const silentResult = await this.msalInstance.acquireTokenSilent(loginRequest);
+        console.log('Token acquired silently', silentResult.accessToken);
+        this.token = silentResult.accessToken
+      } catch (error) {
+        // If silent token acquisition fails, fallback to interactive method
+        console.log('Silent token acquisition failed, acquiring token using popup');
+        try {
+          const popupResult = await this.msalInstance.loginPopup(loginRequest);
+          console.log('Token acquired via popup', popupResult.accessToken);
+          this.token = popupResult.accessToken;
+          // Set the account from the popupResult as the active account
+          this.msalInstance.setActiveAccount(popupResult.account);
+          // Continue with your logic here...
+        } catch (popupError) {
+          console.error('Error acquiring token via popup', popupError);
+        }
+      } finally {
+          const db = getFirestore(firebaseApp);
+          const auth = getAuth();
+
+          const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
+
+          this.addEventToOutlookCalendar(this.token, event)
+          }
+
+          console.log("event added")
+    },
+
+    convert_timestamp(seconds) {
+      const utc = new Date(seconds * 1000)
+      const sgt = new Date(utc.getTime() + 8 * 3600 * 1000)
+      const sgtDateString = sgt.toISOString().replace('.000Z', '');
+
+      return sgtDateString;
+    },
+
+    addEventToOutlookCalendar(token, event) {
+      const headers = new Headers();
+      const bearer = `Bearer ${token}`;
+
+      headers.append('Authorization', bearer);
+      headers.append('Content-Type', 'application/json');
+
+      console.log(this.convert_timestamp(event.eventstartdatetime.seconds))
+
+      const options = {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          subject: event.eventname,
+          start: {
+              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), // Set the start time
+              timeZone: 'Singapore Standard Time'
+          },
+          end: {
+              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), // Set the end time
+              timeZone: 'Singapore Standard Time'
+          },
+        })
+      };
+
+      fetch('https://graph.microsoft.com/v1.0/me/events', options)
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+        }).catch(error => {
+          console.error(error);
+        });
+    },
+
+    async saveEvent() {
+      if (this.user && this.user.email) {
+        const userDocRef = doc(db, "Users", this.user.email);
+
+        try {
+          const docSnap = await getDoc(userDocRef);
+          const eventsArray = docSnap.data().events;
+          const nextEventName = `event${Object.keys(eventsArray).length + 1}`;
+          const start = Timestamp.fromDate(new Date(`${this.eventStartDate}T${this.eventStartTime}`));
+          const end = Timestamp.fromDate(new Date(`${this.eventEndDate}T${this.eventEndTime}`));
+          const id = String(this.eventDetail + start.toMillis());
+
+          const newEventData = {
+            [id]: {
+              eventname: this.eventDetail,
+              eventstartdatetime: start,
+              eventenddatetime: end,
+              eventcolour: this.eventColour,
+            }
+          };
+
+          this.save_to_outlook(newEventData[id])
+
+          await setDoc(userDocRef, { events: newEventData }, { merge: true });
+
+          this.resetFormFields();
+        } catch (error) {
+          console.error('Error saving event:', error);
+        }
+      } else {
+        console.error('User is not authenticated');
+      }
+    },
+
+    resetFormFields() {
+      this.dialogEvent = false;
+      this.eventDetail = '';
+      this.eventStartDate = '';
+      this.eventStartTime = '';
+      this.eventEndDate = '';
+      this.eventEndTime = '';
+      this.eventColour = '';
     }
-  } else {
-    console.error('User is not authenticated');
   }
 }
-
-onMounted(() => {
-  if (auth.currentUser) {
-    user.value = auth.currentUser;
-  }
-});
 </script>
-
 
 
 

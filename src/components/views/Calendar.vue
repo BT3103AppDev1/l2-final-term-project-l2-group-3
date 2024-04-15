@@ -1,81 +1,76 @@
 <template>
   <v-app class="custom-bg">
-      <v-row class="rounded rounded-md">
-          <Header />
-          <SideBar />
-      </v-row>
-
-      <v-row class="fill-height">
-      <v-col>
-       
-        <v-row style="margin-left: 55px; height: 100%; margin-top: 70px;">
-          <CalendarCardv2/>
-
-          <v-col cols="2">
-
-          <v-btn class="expandablebutton" color= #154c79 @click="dialogEvent = true" @mouseover="hover = true" @mouseleave="hover = false">
-          <v-icon>mdi-plus</v-icon>
-          <span v-if="hover" class="button-text">Add Event</span>
-          </v-btn>
-
-          <v-dialog v-model="dialogEvent" persistent max-width="600px">
-          <v-card width="800px" prepend-icon="mdi-pencil" title="Add an Event" color="#244d7b">
-          <v-card-text class="font-weight-light">
-            Fill up details of important events below to receive personalised reminders!
-          <v-container fluid> <br>
-            <v-row>
-              <v-col cols="12">
-                <v-row>
-                  <span> <b>Event Details</b> </span>
-                  <v-col cols="12">
-                    <v-text-field v-model="eventDetail" label="Enter details of event"></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <span> <b>Event Date & Time</b> </span>
-                </v-row>
-
-                <v-row>
-                  <v-col>
-                    <v-text-field v-model="eventStartDate" label="Start Date" type="date"></v-text-field>
-                    <v-text-field v-model="eventStartTime" label="Start Time" suffix="SGT" type="time"></v-text-field>
-                  </v-col> 
-                  <v-col>
-                    <v-text-field v-model="eventEndDate" label="End Date" type="date"></v-text-field>
-                    <v-text-field v-model="eventEndTime" label="End Time" suffix="SGT" type="time"></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <span> <b>Event Colour Tag</b> </span>
-                  <v-col cols="12">
-                    <v-text-field v-model="eventColour" label="Enter name of colour"></v-text-field>
-                  </v-col>
-                </v-row>
-
-              </v-col>
-            </v-row>
-          </v-container>
-          </v-card-text>
-          <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn class="text-none" variant="tonal" text="Close" @click="dialogEvent = false"></v-btn>
-          <v-btn class="text-none" variant="tonal" text="Save" @click="saveEvent"></v-btn>
-          </v-card-actions>
-          </v-card>
-          </v-dialog>
-          </v-col>
-          </v-row>
-
-    </v-col>
+    <v-row class="rounded rounded-md">
+      <Header />
+      <SideBar />
     </v-row>
+    
 
-  <Footer />
+    <v-row class="fill-height" style="margin-top: 100px; margin-left: 70px;">
+      <v-col cols="10">
+        <CalendarCard />    
+      </v-col>
+
+      <v-col cols="2">
+            <v-btn class="expandablebutton" color="#154c79" @click="dialogEvent = true" @mouseover="hover = true" @mouseleave="hover = false">
+              <v-icon>mdi-plus</v-icon>
+              <span v-if="hover" class="button-text">Add Event</span>
+            </v-btn>
+
+            <v-dialog v-model="dialogEvent" persistent max-width="600px">
+              <v-card width="800px" prepend-icon="mdi-pencil" title="Add an Event" color="#244d7b">
+                <v-card-text class="font-weight-light">
+                  Fill up details of important events below to receive personalised reminders!
+                  <v-container fluid>
+                    <br>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-row>
+                          <span><b>Event Details</b></span>
+                          <v-col cols="12">
+                            <v-text-field v-model="eventDetail" label="Enter details of event"></v-text-field>
+                          </v-col>
+                        </v-row>
+
+                        <v-row>
+                          <span><b>Event Date & Time</b></span>
+                        </v-row>
+
+                        <v-row>
+                          <v-col>
+                            <v-text-field v-model="eventStartDate" label="Start Date" type="date"></v-text-field>
+                            <v-text-field v-model="eventStartTime" label="Start Time" suffix="SGT" type="time"></v-text-field>
+                          </v-col>
+                          <v-col>
+                            <v-text-field v-model="eventEndDate" label="End Date" type="date"></v-text-field>
+                            <v-text-field v-model="eventEndTime" label="End Time" suffix="SGT" type="time"></v-text-field>
+                          </v-col>
+                        </v-row>
+
+                        <v-row>
+                          <span><b>Event Colour Tag</b></span>
+                          <v-col cols="12">
+                            <v-combobox v-model="eventColour" :items="colours" label="Choose the colour of event tag"></v-combobox>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn class="text-none" variant="tonal" text="Close" @click="dialogEvent = false"></v-btn>
+                  <v-btn class="text-none" variant="tonal" text="Save" @click="saveEvent"></v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+      </v-col>
+    
+    </v-row>
+    <Footer />
   </v-app>
-
-
 </template>
+
 
 <script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -83,6 +78,7 @@ import { db } from '@/firebase.js';
 import { getFirestore, doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
 import { PublicClientApplication } from '@azure/msal-browser';
+import CalendarCard from '@/components/CalendarCard.vue'
 
 export default {
   data() {
@@ -98,6 +94,7 @@ export default {
       hover: false,
       token: null,
       msalInstance: null,
+      colours: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'red']
     };
   },
   async created() {

@@ -132,11 +132,12 @@ async function checkAndSendReminders() {
     const now = new Date();
     const twentyFourHoursLater = new Date(now.getTime() + (24 * 60 * 60 * 1000));
     const target = Timestamp.fromDate(twentyFourHoursLater);
+    const today = Timestamp.fromDate(new Date(now.getTime()))
     const q = query(usersRef, where("credentials.teleChatId", "==", chatId));
     try {
         const querySnapshot = await getDocs(q)
         Object.entries(querySnapshot.docs[0].data()["events"]).forEach(([key, val]) => {
-            if (val.eventstartdatetime <= target && !reminded.includes(val.eventname)) {
+            if (val.eventstartdatetime <= target && val.eventstartdatetime >= today && !reminded.includes(val.eventname)) {
                 const formatter = new Intl.DateTimeFormat('en-US', {
                     day: '2-digit',
                     month: '2-digit',

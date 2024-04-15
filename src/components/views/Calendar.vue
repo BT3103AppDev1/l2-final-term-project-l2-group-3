@@ -17,6 +17,8 @@
               <span v-if="hover" class="button-text">Add Event</span>
             </v-btn>
 
+            <v-btn @click="gotosettings" variant="flat" color="#154c79" style="margin-top: 35px;"> Set Notifications </v-btn>
+
             <v-dialog v-model="dialogEvent" persistent max-width="600px">
               <v-card width="800px" prepend-icon="mdi-pencil" title="Add an Event" color="#244d7b">
                 <v-card-text class="font-weight-light">
@@ -114,6 +116,10 @@ export default {
     await this.initializeMsal();
   },
   methods: {
+    gotosettings() {
+      this.$router.push("/settings")
+    },
+
     async initializeMsal() {
       const msalConfig = {
         auth: {

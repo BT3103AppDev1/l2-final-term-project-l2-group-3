@@ -239,7 +239,11 @@ export default {
             }
           };
 
-          this.save_to_outlook(newEventData[id])
+          if (docSnap.data()['settings']['reminder_settings']['outlook']) {
+            this.save_to_outlook(newEventData[id])
+          }
+
+          
 
           await setDoc(userDocRef, { events: newEventData }, { merge: true });
 

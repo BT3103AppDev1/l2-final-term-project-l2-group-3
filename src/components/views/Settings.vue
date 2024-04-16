@@ -397,10 +397,6 @@ export default {
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
-    /*syncLinkedin: true,
-    syncIndeed: false,
-    syncGlassdoor: false,
-    syncOthers: false,*/
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -742,6 +738,7 @@ export default {
             this.userFirstName = userData.firstname;
             this.userLastName = userData.lastname;
             this.userEmail = userData.email;
+            this.profileImageUrl = userData.profilephoto;
           } else {
             console.log("No user document found.");
           }

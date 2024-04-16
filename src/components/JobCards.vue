@@ -3,20 +3,20 @@
     <v-container style="margin-top: 15px;">
         <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="420px" width="420px">
                     <v-row>
-                        <v-col cols="5">
+                        <v-col cols="7">
                             <h2 class="title"> Find Jobs ({{ findcount }})</h2>
                         </v-col>
 
-                        <v-col cols="7">
+                        <v-col cols="5">
                             <v-row>
-                                <v-col cols="3">
+                                <v-col cols="4">
                                     <v-btn variant="text" @click="refresh"> <v-icon size="x-large">mdi-refresh</v-icon> </v-btn>
                                 </v-col>
 
-                                <v-col cols="9">
-                                    <v-btn variant="tonal" rounded color="#244d7b" @click="editpreferences"> Edit preferences</v-btn>
+                                <v-col cols="8">
+                                    <v-btn variant="flat" rounded color="#6381a3" @click="editpreferences"> Edit</v-btn>
                                 </v-col>
 
                             </v-row>
@@ -168,7 +168,7 @@
             </v-dialog>
 
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="420px" width="420px">
                     <h2 class="title">Applied ({{ appliedcount }})</h2>
                     <v-sheet
                         class="scrollable-sheet"
@@ -292,13 +292,13 @@
 
         <v-row>
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="420px" width="420px">
                     <v-row>
-                        <v-col cols="4">
+                        <v-col cols="5">
                             <h2 class="title">Saved ({{ savedcount }})</h2>
                         </v-col>
-                        <v-col cols="8">
-                            <v-btn class="expandablebutton" color= #6381a3 style="margin-top: 2px; margin-left: -30px;" @click="showSaveJob = true" @mouseover="hover = true" @mouseleave="hover = false">
+                        <v-col cols="7">
+                            <v-btn class="expandablebutton" height="32px" color= #6381a3 style="margin-top: 2px; margin-left: -55px;" @click="showSaveJob = true" @mouseover="hover = true" @mouseleave="hover = false">
                                 <v-icon>mdi-plus</v-icon>
                                 <span v-if="hover" class="button-text">Save a new job</span>
                             </v-btn>
@@ -372,7 +372,7 @@
             </v-col>
 
             <v-col>
-                <v-card variant="elevated" color="#ffffff" class="pa-3" height="400px" width="470px">
+                <v-card variant="elevated" color="#ffffff" class="pa-3" height="420px" width="420px">
                     <h2 class="title">Interviewed ({{ interviewedcount }})</h2>
                     <v-sheet
                         class="scrollable-sheet"

@@ -12,7 +12,7 @@
                             </v-col>
 
                             <v-col>
-                                <v-btn variant="tonal" size="small" @click = "gotosettings"> Edit Target</v-btn>
+                                <v-btn style="margin-left: 10px;" variant="tonal" size="small" @click = "gotosettings"> Edit Target</v-btn>
                             </v-col>
                         </v-row>
 
@@ -20,10 +20,10 @@
                     </v-card-title>
 
                     <v-row style="padding: 10px">
-                        <v-col cols="4">
+                        <v-col cols="5">
                             <h3 style="color: #fff;"> Jobs Applied</h3>
                         </v-col>
-                        <v-col cols="6" style="margin-left: -20px; margin-top: 8px;">
+                        <v-col cols="5" style="margin-left: -20px; margin-top: 8px;">
                             <v-progress-linear
                                 rounded=""
                                 v-model="appliedcounttoday"
@@ -39,10 +39,10 @@
                     </v-row>
 
                     <v-row style="padding: 10px">
-                        <v-col cols="4">
+                        <v-col cols="5">
                             <h3 style="color: #fff;"> Jobs Saved</h3>
                         </v-col>
-                        <v-col cols="6" style="margin-left: -20px; margin-top: 8px;">
+                        <v-col cols="5" style="margin-left: -20px; margin-top: 8px;">
                             <v-progress-linear
                                 rounded=""
                                 v-model="savedcounttoday"
@@ -79,9 +79,9 @@
                                     Upcoming Event 
                                 </v-col>
 
-                                <v-col>
+                                <v-col cols="10">
                                     <v-btn 
-                                    style="margin-left: 275px; border-radius: 11px;" 
+                                    style="margin-left: 235px; border-radius: 11px;" 
                                     color="#cf5555" 
                                     size="x-small" 
                                     icon="mdi-close"

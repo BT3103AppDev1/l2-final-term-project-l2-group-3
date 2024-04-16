@@ -221,7 +221,7 @@
 
             <v-window-item value="two">
               <v-container>
-                <v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
+                <!--<v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
                   <v-row style="width: 100%;">
                       <v-col>
                         <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
@@ -282,7 +282,7 @@
                     </v-col>
                   </v-row>
 
-                </v-card><br>
+                </v-card><br>-->
 
                 <v-card style="border-radius: 30px; width: 1000px;" color="ffffff" height="175px">
                   <v-row>
@@ -384,6 +384,7 @@ import { waitForPendingWrites } from "firebase/firestore";
 import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
 import { getFirestore, collection, query, where, getDocs, getDoc, deleteDoc, doc, setDoc  } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
+import { PublicClientApplication } from '@azure/msal-browser';
 
 
 export default {
@@ -396,10 +397,10 @@ export default {
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
-    syncLinkedin: true,
+    /*syncLinkedin: true,
     syncIndeed: false,
     syncGlassdoor: false,
-    syncOthers: false,
+    syncOthers: false,*/
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -417,6 +418,9 @@ export default {
     showPassword: false,
     showDeleteConfirmation: false,
     profileImageUrl: "https://randomuser.me/api/portraits/women/85.jpg", // Placeholder image
+    msalInstance: null,
+    msalReady: false,
+    token: null,
   }),
 
   computed: {
@@ -424,6 +428,10 @@ export default {
       console.log(this.dailyGoal);
       return this.customGoal ? `Custom: ${this.customGoal}` : "Custom: N/A";
     }
+  },
+
+  async created() {
+    await this.initializeMsal();
   },
 
   methods: {
@@ -540,82 +548,112 @@ export default {
       console.log('Progress setting in firebase updated to:', goalValue);
     },
 
-    
-    //sync settings methods
-    async handleSyncLinkedin() { 
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
+    async initializeMsal() {
+      const msalConfig = {
+        auth: {
+          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
+          authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
+          redirectUri: 'http://localhost:3005/settings/' // Assuming you handle redirects at the root
+        },
+        cache: {
+          cacheLocation: "localStorage", // Enables cache to be stored in localStorage
+          storeAuthStateInCookie: true, // Recommended for browsers
+        }
+      };
 
-      if (!auth.currentUser) {
-        console.error("No user is currently signed in.");
-      }
-
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        await setDoc(userDocRef, {settings: {sync_settings: {linkedin: this.syncLinkedin}}}, {merge:true});
-        console.log('syncLinkedin setting updated in Firestore to:', this.syncLinkedin);
-      } catch (error) {
-        console.error('Error updating syncLinkedin setting:', error);
-      }
-    },
-
-    async handleSyncIndeed() {
-      //console.log('syncIndeed changed:', this.syncIndeed);
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-
-      if (!auth.currentUser) {
-        console.error("No user is currently signed in.");
-      }
-
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        await setDoc(userDocRef, {settings: {sync_settings: {indeed: this.syncIndeed}}}, {merge:true});
-        console.log('syncIndeed setting updated in Firestore to:', this.syncIndeed);
-      } catch (error) {
-        console.error('Error updating syncIndeed setting:', error);
-      }
-    },
- 
-    async handleSyncGlassdoor() {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-
-      if (!auth.currentUser) {
-        console.error("No user is currently signed in.");
-      }
-
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        await setDoc(userDocRef, {settings: {sync_settings: {glassdoor: this.syncGlassdoor}}}, {merge:true});
-        console.log('syncGlassdoor setting updated in Firestore to:', this.syncGlassdoor);
-      } catch (error) {
-        console.error('Error updating syncGlassdoor setting:', error);
-      }
-    },
-
-    async handleSyncOthers() {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-
-      if (!auth.currentUser) {
-        console.error("No user is currently signed in.");
-      }
-
-      const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
-
-      try {
-        await setDoc(userDocRef, {settings: {sync_settings: {others: this.syncOthers}}}, {merge:true});
-        console.log('syncOthers setting updated in Firestore to:', this.syncOthers);
-      } catch (error) {
-        console.error('Error updating syncOthers setting:', error);
-      }
+      this.msalInstance = await PublicClientApplication.createPublicClientApplication(msalConfig);
     },
     
     //reminder settings methods
+    async signIn() {
+      this.msalReady = true;
+
+      const loginRequest = {
+        scopes: ['openid', 'profile', 'User.Read', 'Calendars.ReadWrite'],
+      };
+
+      try {
+        // Try to get all accounts from the cache
+        const accounts = this.msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          // If there are accounts in the cache, set the first one as the active account
+          this.msalInstance.setActiveAccount(accounts[0]);
+        }
+
+        const silentResult = await this.msalInstance.acquireTokenSilent(loginRequest);
+        console.log('Token acquired silently', silentResult.accessToken);
+        this.token = silentResult.accessToken
+      } catch (error) {
+        // If silent token acquisition fails, fallback to interactive method
+        console.log('Silent token acquisition failed, acquiring token using popup');
+        try {
+          const popupResult = await this.msalInstance.loginPopup(loginRequest);
+          console.log('Token acquired via popup', popupResult.accessToken);
+          this.token = popupResult.accessToken;
+          // Set the account from the popupResult as the active account
+          this.msalInstance.setActiveAccount(popupResult.account);
+          // Continue with your logic here...
+        } catch (popupError) {
+          console.error('Error acquiring token via popup', popupError);
+        }
+      } finally {
+        const db = getFirestore(firebaseApp);
+          const auth = getAuth();
+
+          const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
+
+          for (const event in docref.data()['events']) {
+            //console.log(docref.data()['events'][event])
+            console.log(event)
+            this.addEventToOutlookCalendar(this.token, docref.data()['events'][event])
+          }
+
+          console.log("event added")
+      }
+    },
+
+    convert_timestamp(seconds) {
+      const utc = new Date(seconds * 1000)
+      const sgt = new Date(utc.getTime() + 8 * 3600 * 1000)
+      const sgtDateString = sgt.toISOString().replace('.000Z', '');
+
+      return sgtDateString;
+    },
+
+    addEventToOutlookCalendar(token, event) {
+      const headers = new Headers();
+      const bearer = `Bearer ${token}`;
+
+      headers.append('Authorization', bearer);
+      headers.append('Content-Type', 'application/json');
+
+      console.log(this.convert_timestamp(event.eventstartdatetime.seconds))
+
+      const options = {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          subject: event.eventname,
+          start: {
+              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), // Set the start time
+              timeZone: 'Singapore Standard Time'
+          },
+          end: {
+              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), // Set the end time
+              timeZone: 'Singapore Standard Time'
+          },
+        })
+      };
+
+      fetch('https://graph.microsoft.com/v1.0/me/events', options)
+        .then(response => response.json())
+        .then(response => {
+          console.log(response);
+        }).catch(error => {
+          console.error(error);
+        });
+    },
+
     async handleRemindOutlook() {
       const db = getFirestore(firebaseApp);
       const auth = getAuth();
@@ -625,6 +663,10 @@ export default {
       }
 
       const userDocRef = doc(db, 'Users', String(auth.currentUser.email));
+
+      if (this.remindOutlook) {
+        await this.signIn()
+      }
 
       try {
         await setDoc(userDocRef, {settings: {reminder_settings: {outlook: this.remindOutlook}}}, {merge:true});
@@ -640,6 +682,11 @@ export default {
 
       if (!auth.currentUser) {
         console.error("No user is currently signed in.");
+      }
+
+      if (this.remindTelegram) {
+        const url = 'https://t.me/KiasuCareersBot?start=' + auth.currentUser.uid; 
+        window.open(url, '_blank');
       }
 
       const userDocRef = doc(db, 'Users', String(auth.currentUser.email));

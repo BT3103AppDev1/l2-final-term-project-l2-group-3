@@ -65,10 +65,31 @@
             <v-col cols="12">
                 <v-card variant="elevated" color="#6381a3" class="pa-3" height="500px">
                     <v-card-title style="text-align: center;">Reminders</v-card-title>
-                    
-                    <main v-for="reminder in reminders" style="margin-top: 10px; border-radius: 20px;">
+                    <v-sheet
+                        class="scrollable-sheet"
+                        elevation="0"
+                        max-height="400px"
+                    >
+                    <main v-for="reminder in reminders" :key="reminder.id" style="margin-top: 10px; border-radius: 20px;">
                         <v-card variant="flat" hover style="margin-left: 15px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.dialog = true;" opacity="0.9" >
-                            <v-card-title style="font-size: large; font-weight: 800;"> Upcoming Event </v-card-title>
+                            <v-card-title style="font-size: large; font-weight: 800;"> 
+                                
+                            <v-row>                            
+                                <v-col cols="2">
+                                    Upcoming Event 
+                                </v-col>
+
+                                <v-col>
+                                    <v-btn 
+                                    style="margin-left: 275px; border-radius: 11px;" 
+                                    color="#cf5555" 
+                                    size="x-small" 
+                                    icon="mdi-close"
+                                    @click="clearreminder(reminder)">
+                                </v-btn>
+                                </v-col>
+                            </v-row>
+                            </v-card-title>
                             <h4 style="margin-left: 17px; margin-right: 17px;"> <span style="color: rgb(75, 114, 255); font-weight: 800;">{{ reminder["eventname"] }}</span> is happening in less than 24 hours.</h4> <br>
                             <h4 style="margin-left: 17px; margin-right: 17px;"> <span style="color: rgb(75, 114, 255); font-weight: 800;"> Start Date:</span> {{ String(reminder["eventstartdatetime"].toDate()).slice(0, String(reminder["eventstartdatetime"].toDate()).length - 38) }}</h4>
                             <h4 style="margin-left: 17px; margin-right: 17px;"> <span style="color: rgb(75, 114, 255); font-weight: 800;"> End Date:</span> {{ String(reminder["eventenddatetime"].toDate()).slice(0, String(reminder["eventstartdatetime"].toDate()).length - 38) }}</h4>
@@ -77,6 +98,7 @@
                             </v-card-item>
                         </v-card>
                     </main>
+                    </v-sheet>
                 </v-card>
                 
             </v-col>
@@ -88,7 +110,7 @@
 </template>
 
 <script>
-import { getFirestore, doc, getDoc, onSnapshot, Timestamp, setDoc} from "firebase/firestore";
+import { getFirestore, doc, getDoc, onSnapshot, Timestamp, setDoc, updateDoc, deleteField} from "firebase/firestore";
 import firebaseApp from "@/firebase";
 import {getAuth} from 'firebase/auth';
 
@@ -188,6 +210,22 @@ export default {
             return formatter.format(date.datetime.toDate())
         },
 
+        async clearreminder(reminder) {
+            const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
+            const remindersref = docref.data()["reminders"]
+            console.log(remindersref)
+            let id = null
+
+            for (const r in remindersref) {
+                if (remindersref[r]["eventname"] == reminder.eventname && remindersref[r]["eventstartdatetime"].isEqual(reminder.eventstartdatetime) && remindersref[r]["eventenddatetime"].isEqual(reminder.eventenddatetime)) {
+                    id = r
+                }
+            }
+            console.log(id)
+            await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`reminders.${id}`] : deleteField()})
+            await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`events.${id}`] : deleteField()})
+        }
+
     },
     beforeDestroy() {
         if (this.worker) {
@@ -210,6 +248,12 @@ export default {
     box-shadow: none;
     color: #6381a3;
     
+}
+
+.scrollable-sheet {
+  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+  background-color: #6381a3;
 }
 
 </style>

@@ -653,6 +653,7 @@ export default {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
             const id = job["job_title"] + job["company"]
             await setDoc(docref, {applications : {interviewed : {[id] : job}}}, {merge: true})
+            await setDoc(docref, {applications : {interviewed : {[id] : {job_interviewed_date : currdate}}}}, {merge: true})
             await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
         }, 
 

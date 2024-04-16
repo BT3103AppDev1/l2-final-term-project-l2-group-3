@@ -7,7 +7,7 @@
 
         <v-row class="view" style="margin-left: 50px; height: 100%; margin-top: 50px;">
             <v-card height="100%" width="95%" style="margin-top: 12px; margin-left: 12px; background-color: #eff1f7;" variant="flat">
-                <h1 style="color:rgb(39, 37, 37); font-weight: 500; padding: 50px; margin-left: -20px;"> Performance </h1>
+                <h1 style="color:rgb(39, 37, 37); font-weight: 500; padding: 30px; margin-left: -20px;"> </h1>
             
                 <v-row>
 

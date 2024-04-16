@@ -45,8 +45,9 @@
                     
                       <v-col xl="11" lg="10" md="9">
                           <h2 style="margin-bottom: 20px; margin-top: 20px; color: rgb(80, 76, 76);"> {{ userFirstName }} {{ userLastName }} </h2>
-                          <v-btn class="text-none" style="margin-right: 10px; color: #5da8ff;" variant="tonal">Upload Profile Photo</v-btn>
-                          <v-btn variant="outlined" class="text-none" color="red">Delete</v-btn>
+                          <v-btn class="text-none" style="margin-right: 10px; color: #5da8ff;" @click="triggerFileInput" variant="tonal">Upload Profile Photo</v-btn>
+                          <input type="file" ref="fileInput" @change="onFileSelected" hidden />
+                          <v-btn variant="outlined" class="text-none" color="red" @click="deleteProfileImage">Delete</v-btn>
                       </v-col>                    
 
                       <v-spacer></v-spacer>
@@ -376,15 +377,17 @@
 </template>
 
 <script>
-import IndeedLogo from "@/components/IndeedLogo.vue";
-import TelegramLogo from "@/components/TelegramLogo.vue";
+//import IndeedLogo from "@/components/IndeedLogo.vue";
+//import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
 import { waitForPendingWrites } from "firebase/firestore";
-import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
+//import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
 import { getFirestore, collection, query, where, getDocs, getDoc, deleteDoc, doc, setDoc  } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
 import { PublicClientApplication } from '@azure/msal-browser';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from "@/firebase";
 
 
 export default {
@@ -397,10 +400,6 @@ export default {
     resetEmail: "",
     tab: null,
     userEmail: 'user@example.com',
-    /*syncLinkedin: true,
-    syncIndeed: false,
-    syncGlassdoor: false,
-    syncOthers: false,*/
     dailyGoal: '20',
     showCustomDialog: false,
     customGoal: '',
@@ -417,7 +416,7 @@ export default {
     confirmNewPassword: '',
     showPassword: false,
     showDeleteConfirmation: false,
-    profileImageUrl: "https://randomuser.me/api/portraits/women/85.jpg", // Placeholder image
+    profileImageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Placeholder image
     msalInstance: null,
     msalReady: false,
     token: null,
@@ -435,6 +434,66 @@ export default {
   },
 
   methods: {
+    //for profile pic
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    
+    onFileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.uploadProfileImage(file);
+      }
+    },
+
+    async uploadProfileImage(file) {
+      try {
+        const auth = getAuth();
+        const storageRef = ref(storage, 'profilePictures/' + auth.currentUser.email);
+        const snapshot = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        
+        this.profileImageUrl = url;
+        await this.updateUserProfileImage(url);
+      } catch (error) {
+        console.error("Error uploading image: ", error);
+      }
+    },
+    
+    async updateUserProfileImage(imageUrl) {
+      const db = getFirestore(firebaseApp);
+      const auth = getAuth();
+      const userDocRef = doc(db, 'Users', auth.currentUser.email);
+      try {
+        await setDoc(userDocRef, {credentials: { profilephoto: imageUrl }}, { merge: true });
+        console.log("successfully updated user profile image in firebase")
+      } catch (error) {
+        console.error("Error updating user profile image:", error);
+      }
+    },
+
+    async deleteProfileImage() {
+      const auth = getAuth();
+      const db = getFirestore(firebaseApp);
+      const userDocRef = doc(db, 'Users', auth.currentUser.email);
+      const storageRef = ref(storage, 'profilePictures/' + auth.currentUser.email);
+
+      try {
+        // Delete the image from Firebase Storage
+        await deleteObject(storageRef);
+        console.log("Profile image deleted from storage.");
+
+        // Update Firestore document to remove the image URL
+        await setDoc(userDocRef, {credentials: { profilephoto: "https://cdn-icons-png.flaticon.com/512/149/149071.png" }}, { merge: true });
+        console.log("Profile image reference removed from Firestore.");
+
+        // Update local state
+        this.profileImageUrl = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+      } catch (error) {
+        console.error("Error deleting the profile image: ", error);
+      }
+    },
+
     async sendEmail() {
         const auth = getAuth()
         let errorMessage =''
@@ -742,6 +801,7 @@ export default {
             this.userFirstName = userData.firstname;
             this.userLastName = userData.lastname;
             this.userEmail = userData.email;
+            this.profileImageUrl = userData.profilephoto;
           } else {
             console.log("No user document found.");
           }

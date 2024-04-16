@@ -6,6 +6,7 @@
       </transition>
     </router-view>
   </div>
+
 </template>
 
 <script>
@@ -25,6 +26,40 @@ export default {
       this.isLoggedIn = !!user; 
     });
   },
+
+  mounted() {
+    this.initializeChatbot();
+  },
+  methods: {
+    initializeChatbot() {
+      // First, create and append the configuration script
+      const configScript = document.createElement('script');
+      configScript.text = `
+        window.embeddedChatbotConfig = {
+          chatbotId: "yIkGQ4CSlvBYYvJSzPejw",
+          domain: "www.chatbase.co"
+        }
+      `;
+      document.head.appendChild(configScript);
+
+      // Then, create and append the external script
+      const chatbotScript = document.createElement('script');
+      chatbotScript.src = "https://www.chatbase.co/embed.min.js";
+      chatbotScript.setAttribute("chatbotId", "yIkGQ4CSlvBYYvJSzPejw");
+      chatbotScript.setAttribute("domain", "www.chatbase.co");
+      chatbotScript.defer = true;
+      document.body.appendChild(chatbotScript);
+
+      chatbotScript.onload = () => {
+        console.log('Chatbot script loaded successfully');
+        // Additional actions after the chatbot loads can be placed here
+      };
+
+      chatbotScript.onerror = (e) => {
+        console.error('Failed to load the chatbot script:', e);
+      };
+    }
+  }
 }
 </script>
 

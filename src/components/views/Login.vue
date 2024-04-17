@@ -106,13 +106,10 @@
                 </h4>
                 <br />
                 <div
-                  class="d-flex justify-space-between align-center mx-10 mb-16"
+                  class="d-flex justify-space-around align-center mx-16 mb-16"
                 >
                   <v-btn depressed outlined color="white" @click="googleSignIn">
                     <v-icon class="fab fa-google" color="red"></v-icon>
-                  </v-btn>
-                  <v-btn depressed outlined color="white" @click="githubSignIn">
-                    <v-icon class="fab fa-github" color="black"></v-icon>
                   </v-btn>
                   <v-btn
                     depressed
@@ -329,23 +326,16 @@
                     </h4>
                     <br />
                     <div
-                      class="d-flex justify-space-between align-center mx-10 mb-16"
+                      class="d-flex justify-space-around align-center mx-16 mb-16"
                     >
                       <v-btn
                         depressed
                         outlined
                         color="white"
                         @click="googleSignIn"
+                        style="margin-right: -130px;"
                       >
                         <v-icon class="fab fa-google" color="red"></v-icon>
-                      </v-btn>
-                      <v-btn
-                        depressed
-                        outlined
-                        color="white"
-                        @click="githubSignIn"
-                      >
-                        <v-icon class="fab fa-github" color="black"></v-icon>
                       </v-btn>
                       <v-btn
                         depressed

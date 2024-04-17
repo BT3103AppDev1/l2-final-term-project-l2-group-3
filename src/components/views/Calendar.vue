@@ -129,7 +129,7 @@ export default {
         auth: {
           clientId: '609540be-0088-4b46-8a90-e3e070280d8e', // Replace with your Azure application client ID
           authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'http://localhost:3005/settings/' // Assuming you handle redirects at the root
+          redirectUri: 'http://localhost:3000/settings/' // Assuming you handle redirects at the root
         },
         cache: {
           cacheLocation: "localStorage", // Enables cache to be stored in localStorage

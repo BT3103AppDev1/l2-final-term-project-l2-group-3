@@ -222,69 +222,6 @@
 
             <v-window-item value="two">
               <v-container>
-                <!--<v-card style="border-radius: 30px; width: 1000px;" color="#ffffff" height="410px" >
-                  <v-row style="width: 100%;">
-                      <v-col>
-                        <h2 style="padding: 10px; color:rgb(80, 77, 77); margin-top: 10px; margin-left: 10px;">Sync Job Listings</h2>
-                        <h3 style="padding: 10px; color: rgb(80, 77, 77); font-weight: 400; margin-left: 10px;"> Enable to automatically import job listings from each platform </h3>
-                        <hr>
-                      </v-col>
-                  </v-row>
-                  
-
-                  <v-row align="center" class="mt-n0 mb-n10">
-
-                    <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <v-icon style="margin-left: 20px;" color=rgb(10,102,194)>mdi-linkedin</v-icon>
-                      <h3 class="switch-label" style="margin-left: 5px;"><b>Linkedin</b></h3>
-                    </v-col>
-
-                    <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncLinkedin" @change="handleSyncLinkedin" style="margin-right: 20px;"></v-switch>
-                    </v-col>
-                  </v-row>
-
-                  <v-row class="mt-n0 mb-n10">
-                    <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <v-list-item-icon style="margin-left: 20px;">
-                        <indeed-logo />
-                      </v-list-item-icon>
-                      <h3 class="switch-label" style="margin-left: 5px;"><b>Indeed</b></h3>
-                    </v-col>
-                  
-                    <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncIndeed" @change="handleSyncIndeed" style="margin-right: 20px;"></v-switch>
-                    </v-col>
-                  </v-row>
-
-                  <v-row class="mt-n0 mb-n10">
-                    <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <v-list-item-icon style="margin-left: 20px;">
-                        <glassdoor-logo />
-                      </v-list-item-icon>
-                      <h3 class="switch-label" style="margin-left: 5px;"><b>Glassdoor</b></h3>
-                    </v-col>
-                  
-                    <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncGlassdoor" @change="handleSyncGlassdoor" style="margin-right: 20px;"></v-switch>
-                    </v-col>
-                  </v-row>
-
-                  <v-row class="mt-n0 mb-n10">
-                    <v-col cols="6" class="d-flex align-self-center justify-start">
-                      <v-list-item-icon style="margin-left: 20px;">
-                        <v-icon style="color:#244d7b;">mdi-dots-vertical</v-icon>
-                      </v-list-item-icon>
-                      <h3 class="switch-label" style="margin-left: 5px;"><b>Others</b></h3>
-                    </v-col>
-                  
-                    <v-col cols="6" class="d-flex align-self-center justify-end">
-                      <v-switch inset color="success" v-model="syncOthers" @change="handleSyncOthers" style="margin-right: 20px;"></v-switch>
-                    </v-col>
-                  </v-row>
-
-                </v-card><br>-->
-
                 <v-card style="border-radius: 30px; width: 1000px;" color="ffffff" height="175px">
                   <v-row>
                       <v-col>
@@ -349,6 +286,10 @@
                       </v-list-item-icon>
                       <h3 class="switch-label" style="margin-left: 10px;"><b>Microsoft Outlook</b></h3>
                     </v-col>
+
+                    <v-snackbar location="top" color="green" v-model="syncsuccess" :timeout="2000" elevation="24" width="500px">
+                        You have successfully synced your events to your Outlook Calendar.
+                      </v-snackbar>
                     
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
                       <v-switch inset color="success" v-model="remindOutlook" @change="handleRemindOutlook" style="margin-right: 20px;"></v-switch>
@@ -420,6 +361,7 @@ export default {
     msalInstance: null,
     msalReady: false,
     token: null,
+    syncsuccess: null,
   }),
 
   computed: {
@@ -612,7 +554,7 @@ export default {
         auth: {
           clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
           authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'http://localhost:3005/settings/' // Assuming you handle redirects at the root
+          redirectUri: 'http://localhost:3000/settings/' // Assuming you handle redirects at the root
         },
         cache: {
           cacheLocation: "localStorage", // Enables cache to be stored in localStorage
@@ -725,6 +667,7 @@ export default {
 
       if (this.remindOutlook) {
         await this.signIn()
+        this.syncsuccess = true
       }
 
       try {

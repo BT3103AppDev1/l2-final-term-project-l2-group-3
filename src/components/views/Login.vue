@@ -544,8 +544,10 @@ export default {
         const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
 
         if (!users.data()) {
-          await this.saveUserData();
+          await this.saveUserData(); 
+          await setDoc(doc(db, "Users", String(auth.currentUser.email)), {credentials: {otherlogin: true}}, {merge: true})
         }
+        
         this.$router.push("/dashboard");
       } catch (err) {
         console.log(err);
@@ -575,20 +577,28 @@ export default {
       }
     },
 
-    microsoftSignIn() {
+    async microsoftSignIn() {
       const provider = new OAuthProvider("microsoft.com");
       const auth = getAuth();
-      signInWithPopup(auth, provider)
-        .then((result) => {
+      const db = getFirestore(firebaseApp);
+      try {
+          const result = await signInWithPopup(auth, provider);
           const credential = OAuthProvider.credentialFromResult(result);
           const accessToken = credential.accessToken;
           const idToken = credential.idToken;
+          // Ensure saveUserData is defined as an async function and returns a promise.
           console.log("Successfully logged in!", result.user);
+          
+          const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
+  
+          if (!users.data()) {
+            await this.saveUserData();
+            await setDoc(doc(db, "Users", String(auth.currentUser.email)), {credentials: {otherlogin: true}}, {merge: true})
+          }
           this.$router.push("/dashboard");
-        })
-        .catch((err) => {
+        } catch (err) {
           console.log(err);
-        });
+        }
     },
   },
 };

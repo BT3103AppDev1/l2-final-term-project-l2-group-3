@@ -46,7 +46,34 @@
                             <v-btn class="text-none" variant="tonal" text="Cancel" @click="closedialogwithoutquery"></v-btn>
                     </v-card-actions>
                 </v-card>
-            </v-dialog>        
+            </v-dialog> 
+            
+            <v-dialog v-model="otherfirstlogin" opacity="0.9" width="auto">
+                <v-card width="800px" prepend-icon="mdi-account-edit" title="Welcome to KiasuCareers." color="#244d7b">
+                    <v-card-text class="font-weight-light">
+                        Fill up your details
+                        <v-container fluid> <br>
+                                <v-row>
+                                    <span> <b>First Name</b> </span>
+                                    <v-col cols="12">
+                                        <v-text-field v-model="firstname" label="Enter your first name"></v-text-field>
+                                    </v-col>
+                                </v-row>
+
+                                <v-row>
+                                    <span> <b>Last Name</b> </span>
+                                    <v-col cols="12">
+                                        <v-text-field v-model="lastname" label="Enter your last name"></v-text-field>
+                                    </v-col>
+                                </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn @click = "savename"> Save </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </div>
 
             
@@ -83,8 +110,10 @@ import {getAuth} from 'firebase/auth';
 export default {
     data() {
         return {
+            otherfirstlogin: false,
             welcome: false,
             firstname: "",
+            lastname: "",
             findjobs: null,
             title: "",
             portalchoices: null,
@@ -112,6 +141,18 @@ export default {
     },
 
     methods: {
+        async savename() {
+            const db = getFirestore(firebaseApp);
+            const auth = getAuth();
+            await setDoc(doc(db, "Users", String(auth.currentUser.email)), {credentials: {firstname: this.firstname, lastname: this.lastname, otherlogin: false}}, {merge: true})
+            this.otherfirstlogin = false
+        },
+
+
+        openedfirstdialog() {
+            return this.dialog
+        },
+
         childcall(x) {
             this.dialog = x
         },
@@ -164,6 +205,11 @@ export default {
         const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
         if (docRef.data()['credentials']['firstlogin']) {
             this.dialog = true
+            console.log(this.dialog)
+        }
+        if (docRef.data()['credentials']['otherlogin']) {
+            this.otherfirstlogin = true
+
         }
         this.firstname = docRef.data()['credentials']['firstname']
     }

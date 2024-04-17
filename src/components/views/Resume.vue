@@ -10,12 +10,12 @@
       style="margin-left: 55px; height: 100%; margin-top: 100px"
     >
       <v-col cols="6">
-        <v-card style="border-radius: 20px">
+        <v-card style="border-radius: 20px;" >
           <v-card-title>Select Your Application Category:</v-card-title>
           <div class="mt-3"></div>
           <v-carousel height="320" hide-delimiters>
             <v-carousel-item>
-              <v-row class="d-flex justify-space-around">
+              <v-row class="d-flex justify-space-around" style="margin-left: 20px; margin-right: 20px;">
                 <v-col cols="4">
                   <v-card
                     class="brand"
@@ -33,7 +33,7 @@
                     <v-icon
                       class="fas fa-palette"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >UI/UX Design</v-card-text
@@ -58,7 +58,7 @@
                     <v-icon
                       class="fas fa-desktop"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Backend Engineering</v-card-text
@@ -83,7 +83,7 @@
                     <v-icon
                       class="fas fa-database"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >System Administrator</v-card-text
@@ -92,7 +92,7 @@
                 </v-col>
               </v-row>
 
-              <v-row class="d-flex justify-space-around">
+              <v-row class="d-flex justify-space-around" style="margin-left: 20px; margin-right: 20px;">
                 <v-col cols="4">
                   <v-card
                     class="brand"
@@ -110,7 +110,7 @@
                     <v-icon
                       class="fas fa-business-time"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Business Development</v-card-text
@@ -135,7 +135,7 @@
                     <v-icon
                       class="fas fa-chart-line"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Business Intelligence</v-card-text
@@ -160,7 +160,7 @@
                     <v-icon
                       class="fas fa-shopping-cart"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Marketing</v-card-text
@@ -171,7 +171,7 @@
             </v-carousel-item>
 
             <v-carousel-item>
-              <v-row class="d-flex justify-space-around">
+              <v-row class="d-flex justify-space-around" style="margin-left: 20px; margin-right: 20px;">
                 <v-col cols="4">
                   <v-card
                     class="brand"
@@ -189,7 +189,7 @@
                     <v-icon
                       class="fas fa-flask"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Applied Data Science</v-card-text
@@ -214,7 +214,7 @@
                     <v-icon
                       class="fas fa-wrench"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Data Engineering</v-card-text
@@ -239,7 +239,7 @@
                     <v-icon
                       class="fas fa-robot"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >AI and ML Deployment</v-card-text
@@ -248,7 +248,7 @@
                 </v-col>
               </v-row>
 
-              <v-row class="d-flex justify-space-around">
+              <v-row class="d-flex justify-space-around" style="margin-left: 20px; margin-right: 20px;">
                 <v-col cols="4">
                   <v-card
                     class="brand"
@@ -266,7 +266,7 @@
                     <v-icon
                       class="fas fa-cloud"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Cloud Infrastructure</v-card-text
@@ -291,7 +291,7 @@
                     <v-icon
                       class="fas fa-laptop-code"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Web Development</v-card-text
@@ -316,7 +316,7 @@
                     <v-icon
                       class="fas fa-money-bill-transfer"
                       color="blue"
-                      size="72"
+                      size="60"
                     ></v-icon>
                     <v-card-text class="icon_names text-center"
                       >Finance</v-card-text
@@ -331,11 +331,11 @@
         <div class="mt-3"></div>
 
         <v-card class="upload-resume">
-          <v-card-title>Parse Your Resume:</v-card-title>
+          <v-card-title style="margin-top: 20px;">Parse Your Resume:</v-card-title>
           <v-card-text>
             Upload your resume to see your information in My Profile!
           </v-card-text>
-          <v-card-text>
+          <v-card-text style="margin-bottom: 15px;">
             <v-file-input
               accept="application/pdf"
               label="Upload PDF"
@@ -343,6 +343,7 @@
               @change="handleFileUpload"
               :multiple="false"
             >
+            
             </v-file-input>
           </v-card-text>
         </v-card>
@@ -350,9 +351,10 @@
 
       <v-col cols="6">
         <v-card class="fixed-card">
+          <v-progress-linear v-if="progress" color="primary" indeterminate></v-progress-linear>
           <v-card-title>My Profile</v-card-title>
           <v-card-text>
-            <div v-if="userData">
+            <div v-if="resume">
               <div class="section">
                 <h3><v-icon>mdi-account</v-icon> Personal Information</h3>
                 <p>
@@ -488,6 +490,9 @@
         </v-card>
       </v-col>
     </v-row>
+        <v-snackbar location="top" color="green" v-model="showuploaded" :timeout="2000" elevation="24" width="400px">
+            You have successfully uploaded your resume.
+        </v-snackbar>
   </v-app>
 </template>
 
@@ -499,6 +504,7 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+onSnapshot,
 } from "firebase/firestore";
 import firebaseApp from "@/firebase";
 import { getAuth } from "firebase/auth";
@@ -507,6 +513,9 @@ export default {
   data() {
     return {
       userData: null,
+      progress: false,
+      resume: null,
+      showuploaded: null,
     };
   },
 
@@ -514,63 +523,65 @@ export default {
     async handleFileUpload(event) {
       try {
         const file = event.target.files[0];
-        console.log(file);
         const reader = new FileReader();
+        console.log(file)
+        this.showuploaded = true
 
-        // Set up the onload event handler to handle when the file is loaded
-        reader.onload = async function (event) {
-          // Extract the base64 string from the result
+        // Start the progress
+        this.progress = true;
+        this.uploadProgress = 0;
+        const intervalId = setInterval(() => {
+          this.uploadProgress += 100 / 25; // Increment progress to reach 100% in 15 seconds
+          if (this.uploadProgress >= 100) {
+            clearInterval(intervalId);
+            this.progress = false; // Hide progress bar after completion
+          }
+        }, 1000); // Update every second
+
+        reader.onload = async (event) => {
+          // Handle the file data processing here
           const base64String = event.target.result.split(",")[1];
-          console.log(base64String);
-
+          console.log(base64String)
           const resumeInfo = await parsePdfInfo(base64String);
-          console.log(resumeInfo);
           const db = getFirestore(firebaseApp);
           const auth = getAuth();
           const docref = doc(db, "Users", String(auth.currentUser.email));
-
           const resumeData = {
-            resume: {
-              work_experience: resumeInfo.work_experience,
-              skills: resumeInfo.skills,
-              personal_info: resumeInfo.personal_info,
-              languages: resumeInfo.languages,
-              certificates: resumeInfo.certificates,
-              education: resumeInfo.education,
-            },
-          };
+              resume: {
+                work_experience: resumeInfo.work_experience,
+                skills: resumeInfo.skills,
+                personal_info: resumeInfo.personal_info,
+                languages: resumeInfo.languages,
+                certificates: resumeInfo.certificates,
+                education: resumeInfo.education,
+              },
+            };
 
-          // Save the data to Firestore
           await setDoc(docref, resumeData, { merge: true });
-          console.log("Saved to firebase!");
+          clearInterval(intervalId); // Ensure to clear interval on completion
+          this.uploadProgress = 100; // Ensure progress is set to 100% at the end
+          this.progress = false; // Hide the progress bar
         };
 
-        // Read the contents of the file as a data URL (base64-encoded)
         reader.readAsDataURL(file);
       } catch (error) {
         console.error("Failed to parse resume:", error);
+        clearInterval(intervalId); // Ensure to clear interval on error
+        this.progress = false; // Hide progress bar on error
       }
     },
   },
 
   async mounted() {
-    try {
-      const db = getFirestore(firebaseApp);
-      const auth = getAuth();
-      const user_info = await getDoc(
-        doc(db, "Users", String(auth.currentUser.email))
-      );
-      if (user_info.exists()) {
-        console.log(user_info.data());
-        this.userData = user_info.data();
-      } else {
-        console.log("No such document!");
-        return null;
+
+    const db = getFirestore(firebaseApp);
+    const auth = getAuth();
+    onSnapshot(doc(db, "Users", String(auth.currentUser.email)), doc => {
+      this.userData = doc.data()
+      if (this.userData.resume) {
+        this.resume = true
       }
-    } catch (error) {
-      console.error("Error reading user data:", error);
-      return null;
-    }
+    });
   },
 };
 </script>
@@ -580,23 +591,26 @@ export default {
   background-color: #eff1f7;
 }
 .upload-resume {
-  height: 200px;
+  height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-radius: 20px;
 }
 
 .fixed-card {
-  max-height: 600px;
+  max-height: 645px;
   overflow-y: auto;
+  border-radius: 20px;
 }
 
 .alt-card {
-  height: 600px;
+  height: 645px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 20px;
 }
 
 .section {

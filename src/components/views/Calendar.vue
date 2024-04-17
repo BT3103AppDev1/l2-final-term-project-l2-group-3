@@ -70,6 +70,9 @@
     
     </v-row>
     <Footer />
+    <v-snackbar location="top" color="green" v-model="showaddedevent" :timeout="2000" elevation="24" width="400px">
+      You have successfully created an event in your calendar.
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -85,6 +88,7 @@ import CalendarCard from '@/components/CalendarCard.vue'
 export default {
   data() {
     return {
+      showaddedevent: false,
       dialogEvent: false,
       eventDetail: '',
       eventStartDate: '',
@@ -123,7 +127,7 @@ export default {
     async initializeMsal() {
       const msalConfig = {
         auth: {
-          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
+          clientId: '609540be-0088-4b46-8a90-e3e070280d8e', // Replace with your Azure application client ID
           authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
           redirectUri: 'http://localhost:3005/settings/' // Assuming you handle redirects at the root
         },
@@ -150,6 +154,7 @@ export default {
           // If there are accounts in the cache, set the first one as the active account
           this.msalInstance.setActiveAccount(accounts[0]);
         }
+        console.log(accounts)
 
         const silentResult = await this.msalInstance.acquireTokenSilent(loginRequest);
         console.log('Token acquired silently', silentResult.accessToken);
@@ -251,6 +256,7 @@ export default {
           await setDoc(userDocRef, { events: newEventData }, { merge: true });
 
           this.resetFormFields();
+          this.showaddedevent = true
         } catch (error) {
           console.error('Error saving event:', error);
         }

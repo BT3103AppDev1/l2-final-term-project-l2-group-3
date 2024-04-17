@@ -23,14 +23,14 @@ try {
 	const response = await axios.request(options);
 	response.data['data'].forEach(job => { 
         if (emptype.includes(job["job_employment_type"])) {
-            const id = job["job_title"] + job["employer_name"] 
+            const id = job["job_id"] 
 
             if ((jobportals.includes("Others")) && !["Indeed", "LinkedIn", "Glassdoor"].includes(job["job_publisher"])) {
 
                 dic[id] = {job_title: job["job_title"], job_publisher: job["job_publisher"], company: job["employer_name"],
                     employer_logo: job["employer_logo"], job_description: job["job_description"], job_apply_link: job["job_apply_link"],
                     job_google_link: job["job_google_link"], job_posted_date: job["job_posted_at_datetime_utc"], job_city: job["job_city"],
-                    job_industry: job["employer_company_type"], job_emptype: job["job_employment_type"], job_expiry: job["job_posted_at_datetime_utc"]
+                    job_industry: job["employer_company_type"], job_emptype: job["job_employment_type"], job_expiry: job["job_posted_at_datetime_utc"], job_id: job["job_id"]
                 }
             }
 

@@ -75,6 +75,7 @@ bot.on('message', async (msg) => {
             const eventsdata = querySnapshot.docs[0].data()["events"]
 
             let counter = 1
+            let empty = true
             for (const e in eventsdata) {
                 const formatter = new Intl.DateTimeFormat('en-US', {
                     day: '2-digit',
@@ -82,16 +83,23 @@ bot.on('message', async (msg) => {
                     year: '2-digit',
                     hour: '2-digit',
                     minute: '2-digit'
+                    
                 })
+                empty = false
 
                 const ename = eventsdata[e].eventname
                 const edatestamp = "<b><u>" + formatter.format(eventsdata[e].eventstartdatetime.toDate()) + "</u></b>"
+
+
                 output += counter++ + ") " + ename + " " + edatestamp+ "\n\n"
+            }
+            if (empty) {
+                output = "You do not have any upcoming key events in your KiasuCareers calendar."
             }
             
             bot.sendMessage(chatId, output, {parse_mode: "HTML"})
         } catch (error) {
-            bot.sendMessage(chatId, "You do not have any upcoming key events in your KiasuCareers calendar")
+            bot.sendMessage(chatId, "You do not have any upcoming key events in your KiasuCareers calendar.")
         }
     }
 
@@ -115,7 +123,7 @@ bot.on('message', async (msg) => {
 
             const userid = querySnapshot.docs[0].id
 
-            const key = eventdetails[0] + start
+            const key = eventdetails[0] + start.toMillis()
             
             await setDoc(doc(db, "Users", userid), { events: {[key]: {eventname: eventdetails[0], eventstartdatetime: start, eventenddatetime: end}}}, { merge: true})
             bot.sendMessage(chatId, "Your event has been captured into our database, you can check all of your events by clicking \"View upcoming events\" using our command \/viewevents.");
@@ -153,7 +161,6 @@ async function checkAndSendReminders() {
         })
     } catch(error) {
         console.log(error)
-        bot.sendMessage(chatId,"Error occurred, failed to send reminders")
     }
 }
 

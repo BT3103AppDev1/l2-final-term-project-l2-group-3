@@ -6,7 +6,7 @@ export async function parsePdfInfo(fileUrl) {
         url: 'https://resume-parsing-api2.p.rapidapi.com/processDocument',
         headers: {
             'content-type': 'application/json',
-            'X-RapidAPI-Key': '1ed1b51465msh32e309b0fc9227fp1ab7d7jsn0793e849a447',
+            'X-RapidAPI-Key': 'b51a00baf5msh2260d58cfd435b0p19c7a3jsn5dbbb9b15baa',
             'X-RapidAPI-Host': 'resume-parsing-api2.p.rapidapi.com'
         },
         data: {

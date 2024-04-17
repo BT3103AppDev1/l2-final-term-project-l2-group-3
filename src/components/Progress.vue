@@ -81,7 +81,7 @@
 
                                 <v-col cols="10">
                                     <v-btn 
-                                    style="margin-left: 235px; border-radius: 11px;" 
+                                    style="margin-left: 225px; border-radius: 11px;" 
                                     color="#cf5555" 
                                     size="x-small" 
                                     icon="mdi-close"
@@ -103,6 +103,11 @@
                 
             </v-col>
         </v-row>
+
+        <v-snackbar location="top" color="red" v-model="showremovedreminder" :timeout="2000" elevation="24" width="400px">
+            You have successfully removed the reminder for this event.
+        </v-snackbar>
+
     </v-container>
 
     
@@ -120,6 +125,7 @@ const auth = getAuth();
 export default {
     data() {
         return {
+            showremovedreminder: null,
             appliedcounttoday: null,
             savedcounttoday: null,
             applicationgoal: null,
@@ -185,10 +191,11 @@ export default {
             const now = new Date();
             const twentyFourHoursLater = new Date(now.getTime() + (24 * 60 * 60 * 1000));
             const target = Timestamp.fromDate(twentyFourHoursLater);
+            const today = Timestamp.fromDate(new Date(now.getTime()))
             const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
             const eventdocref = docref.data()['events']
             for (const event in eventdocref) {
-                if (eventdocref[event]["eventstartdatetime"] <= target && !(event in docref.data()["reminders"])) {
+                if (eventdocref[event]["eventstartdatetime"] <= target && eventdocref[event]["eventstartdatetime"] >= today && !(event in docref.data()["reminders"])) {
                         await setDoc(doc(db, 'Users', String(auth.currentUser.email)), {reminders: {[event] : eventdocref[event]}}, {merge: true})
                 }
             }
@@ -224,6 +231,8 @@ export default {
             console.log(id)
             await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`reminders.${id}`] : deleteField()})
             await updateDoc(doc(db, 'Users', String(auth.currentUser.email)), {[`events.${id}`] : deleteField()})
+
+            this.showremovedreminder = true
         }
 
     },

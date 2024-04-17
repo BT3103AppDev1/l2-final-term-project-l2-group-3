@@ -7,7 +7,7 @@
         >
         <v-list>
             <v-list-item
-            prepend-avatar="@/assets/user.png"
+            :prepend-avatar= "avatar"
             >
             <v-list-item-subtitle> {{ email }}</v-list-item-subtitle>
             <v-list-item-title> {{ name }}</v-list-item-title>
@@ -47,6 +47,7 @@
           menu_pressed:false,
           name: "",
           email: "",
+          avatar: ""
         }
       },
       async mounted() {
@@ -63,6 +64,7 @@
           const userdata = docSnap.data()
           this.name = userdata['credentials']['firstname'] + " " + userdata['credentials']['lastname']
           this.email = String(auth.currentUser.email)
+          this.avatar = userdata.credentials.profilephoto
           console.log("Document data:", docSnap.data());
         } else {
           // docSnap.data() will be undefined in this case

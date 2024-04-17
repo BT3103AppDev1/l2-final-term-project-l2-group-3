@@ -489,6 +489,30 @@
 
         </v-row> 
 
+        <v-snackbar location="top" color="green" v-model="showsaved" :timeout="2000" elevation="24" width="400px">
+            You have successfully saved this job listing.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="green" v-model="showapplied" :timeout="2000" elevation="24" width="400px">
+            You have successfully applied for this job.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="green" v-model="showinterviewed" :timeout="2000" elevation="24" width="400px">
+            You have successfully interviewed for this job.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="red" v-model="showunsaved" :timeout="2000" elevation="24" width="400px">
+            You have successfully unsaved this job listing.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="red" v-model="showunapplied" :timeout="2000" elevation="24" width="400px">
+            You have successfully unapplied for this job.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="red" v-model="showremovedinterview" :timeout="2000" elevation="24" width="400px">
+            You have successfully removed the interview for this job.
+        </v-snackbar>
+
     </v-container>
     
 </template>
@@ -514,6 +538,12 @@ let currdate = `${day}-${month}-${year}`;
 export default {
     data() {
         return {
+            showsaved: null,
+            showapplied: null,
+            showinterviewed: null,
+            showunsaved: null,
+            showunapplied: null,
+            showremovedinterview: null,
             progress: false,
             findcount: null,
             appliedcount: null,
@@ -553,7 +583,7 @@ export default {
             const findjobs_object = {}
 
             for (const job in applications.FindJobs) {
-                const id = applications.FindJobs[job]["job_title"] + applications.FindJobs[job]["company"]
+                const id = applications.FindJobs[job]["job_id"]
                 if (id in applications.applied || id in applications.saved || id in applications.interviewed) {
                     continue
                 }
@@ -624,7 +654,7 @@ export default {
         async applyapplication(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
 
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
 
             await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
             await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
@@ -632,53 +662,60 @@ export default {
 
             await setDoc(docref, {applications : {applied : {[id] : job}}}, {merge: true})
             await setDoc(docref, {applications : {applied : {[id] : {job_applied_date : currdate}}}}, {merge: true})
+            this.showapplied = true
         },
 
         async saveapplication(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
             await setDoc(docref, {applications : {saved : {[id] : {job_saved_date : currdate}}}}, {merge: true})
             await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
+            this.showsaved = true
         },
         
         async manualsave(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+            this.showsaved = true
 
         },
         
         async confirminterview(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await setDoc(docref, {applications : {interviewed : {[id] : job}}}, {merge: true})
             await setDoc(docref, {applications : {interviewed : {[id] : {job_interviewed_date : currdate}}}}, {merge: true})
             await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
+            this.showinterviewed = true
         }, 
 
         async unsave(job) {
             this.dialog = false
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
             await setDoc(docref, {applications : {FindJobs : {[id] : job}}}, {merge: true})
+            this.showunsaved = true
             
 
         },
 
         async unapply(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
             await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+            this.showunapplied = true
         },
 
         async cancelinterview(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_title"] + job["company"]
+            const id = job["job_id"]
             await updateDoc(docref, {[`applications.interviewed.${id}`] : deleteField()})
             await setDoc(docref, {applications : {applied : {[id] : job}}}, {merge: true})
+            this.showremovedinterview = true
         },
 
         async editpreferences() {

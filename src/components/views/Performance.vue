@@ -98,22 +98,6 @@
                                             </v-card-text>
                                         </v-col>
 
-                                        <!---<v-col cols="6" style="margin-top:15px;">
-                                            <v-row style="margin-left: 10px;">
-                                                <div style="display: flex; align-items: center; font-size:medium;">
-                                                    <v-icon small :color="progressionToNextStage.trend >= 0 ? 'green' : 'red'">
-                                                        {{ progressionToNextStage.trend >= 0 ? 'mdi-arrow-up' : 'mdi-arrow-down' }}
-                                                    </v-icon>
-                                                    <span :class="progressionToNextStage.trend >= 0 ? 'green--text' : 'red--text'">
-                                                        {{ progressionToNextStage.trend }}%
-                                                    </span>
-                                                </div>
-                                            </v-row>
-
-                                            <v-row>
-                                                <div class="card-text"> <h5> since last week</h5></div>
-                                            </v-row>
-                                        </v-col>-->
                                     </v-row>
                                 </v-card>
                             </v-col>
@@ -122,9 +106,9 @@
 
                         <v-row style="margin-top: 12px; margin-left: 30px;">
                             <v-col cols="12">
-                                <v-card variant="elevated" color=#ffffff class="pa-3" height="350px" style="border-radius: 10px;">
+                                <v-card variant="elevated" color=#ffffff class="pa-3" height="575px" style="border-radius: 10px;">
                                     <h5 class="card-title"> Weekly Application Progress </h5>
-                                    <line-chart :data="lineChartData" :min="0" :library="{ backgroundColor: 'transparent', elements: { line: { tension: 0, borderWidth: 4}}}"> </line-chart>
+                                    <line-chart :data="lineChartData" :min="0" :library="{ backgroundColor: 'transparent', elements: { line: { tension: 0, borderWidth: 4}}}" style="height: 500px;"> </line-chart>
 
                                 </v-card>
                             </v-col>

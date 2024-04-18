@@ -385,7 +385,7 @@
         font-style: normal;
         min-height: 100vh;        
         background-color: #19375a;
-        height: 3200px;
+        height: 3400px;
     }
         
     p {

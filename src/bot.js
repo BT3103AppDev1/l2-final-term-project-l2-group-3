@@ -17,7 +17,7 @@ const db = getFirestore(firebaseApp);
 const usersRef = collection(db, "Users")
 
 bot.onText(/\/start (.+)/, async (msg, match) => {
-    const chatId = msg.chat.id;
+    chatId = msg.chat.id;
     const token = match[1]; // The unique token from the deep link
     console.log(token)
 

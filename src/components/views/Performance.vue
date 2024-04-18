@@ -502,6 +502,7 @@ export default {
                     if (userDocSnapshot.exists()) {
                         const appliedJobs = userDocSnapshot.data().applications.applied;
                         let applicationsPerDay = {};
+                        let savedJobsPerDay = {};
 
                         // Initialize count for each day of the past week
                         let d = new Date();
@@ -511,37 +512,62 @@ export default {
                             date.setDate(date.getDate() - i);
                             let dateString = date.toISOString().split('T')[0]; // Format as 'YYYY-MM-DD'
                             applicationsPerDay[dateString] = 0;
+                            savedJobsPerDay[dateString] = 0;
                         }
 
                         // Count applications per day
                         Object.values(appliedJobs).forEach((application) => {
-                            let [day, month, year] = application.job_applied_date.split('-');
+                            if (application.job_applied_date) {
+                                let [day, month, year] = application.job_applied_date.split('-');
 
-                            // Create a date object at noon UTC to avoid timezone issues
-                            let appliedDate = new Date(Date.UTC(year, month - 1, day, 12)); // Month is zero-indexed, so subtract 1
-                            let appliedDateString = appliedDate.toISOString().split('T')[0];
+                                // Create a date object at noon UTC to avoid timezone issues
+                                let appliedDate = new Date(Date.UTC(year, month - 1, day, 12)); // Month is zero-indexed, so subtract 1
+                                let appliedDateString = appliedDate.toISOString().split('T')[0];
 
 
-                            if (appliedDateString in applicationsPerDay) {
-                                applicationsPerDay[appliedDateString]++;
+                                if (appliedDateString in applicationsPerDay) {
+                                    applicationsPerDay[appliedDateString]++;
+                                }
                             }
                         });
 
                         // Count applications per day but from interviewed as well
                         const interviewedJobs = userDocSnapshot.data().applications.interviewed;
                         Object.values(interviewedJobs).forEach((application) => {
-                            let [day, month, year] = application.job_applied_date.split('-');
+                            if (application.job_applied_date) {
+                                let [day, month, year] = application.job_applied_date.split('-');
 
-                            let appliedDate = new Date(Date.UTC(year, month - 1, day, 12));
-                            let appliedDateString = appliedDate.toISOString().split('T')[0];
+                                let appliedDate = new Date(Date.UTC(year, month - 1, day, 12));
+                                let appliedDateString = appliedDate.toISOString().split('T')[0];
 
 
-                            if (appliedDateString in applicationsPerDay) {
-                                applicationsPerDay[appliedDateString]++;
+                                if (appliedDateString in applicationsPerDay) {
+                                    applicationsPerDay[appliedDateString]++;
+                                }
                             }
                         });
 
-                        let chartDataArray = Object.entries(applicationsPerDay).map(([date, count]) => [date, count]);
+                        //count saved jobs
+                        const savedJobs = userDocSnapshot.data().applications.saved;
+                        Object.values(savedJobs).forEach((application) => {
+                            if (application.job_saved_date) {
+                                let [day, month, year] = application.job_saved_date.split('-');
+
+                                let savedDate = new Date(Date.UTC(year, month - 1, day, 12));
+                                let savedDateString = savedDate.toISOString().split('T')[0];
+
+                                if (savedDateString in savedJobsPerDay) {
+                                    savedJobsPerDay[savedDateString]++;
+                                }
+                            }
+                        });
+
+    
+                        let chartDataArray = [
+                            { name: 'Applications', data: applicationsPerDay },
+                            { name: 'Saved Jobs', data: savedJobsPerDay }
+                        ];
+
                         this.lineChartData = chartDataArray;
                     }
                 } else {

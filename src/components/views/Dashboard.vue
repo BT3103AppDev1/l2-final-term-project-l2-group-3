@@ -6,6 +6,14 @@
             <Header />
             <SideBar />
         </v-row>
+
+        <v-snackbar location="top" color="green" v-model="showquerysuccess" :timeout="4000" elevation="24" width="500px">
+            We have recorded your job preferences, please hold on for a moment while we search for job listings.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="red" v-model="showqueryfailure" :timeout="4000" elevation="24" width="500px">
+            Invalid input. Are you sure you have filled up every field?
+        </v-snackbar>
         
         <div class="text-center">
             <v-snackbar location="top" v-model="welcome" :timeout="5000" color="#6381a3" rounded="pill" style="display: flex; justify-content: center; align-items: center;">
@@ -110,6 +118,8 @@ import {getAuth} from 'firebase/auth';
 export default {
     data() {
         return {
+            showquerysuccess: null,
+            showqueryfailure: null,
             otherfirstlogin: false,
             welcome: false,
             firstname: "",
@@ -162,25 +172,35 @@ export default {
         },
 
         async closedialog() {
-            this.dialog = false;
+            
             //this.jobs = await RetrieveJobs(this.title);
             //console.log("this is the job object")
             //console.log(this.jobs);
-            const job_title = this.title
-            const job_portals = []
-            this.portalchoices.forEach(x => job_portals.push(x))
-            const employment_types = this.jtypeschoices.toUpperCase()
-            this.findjobs = await RetrieveJobs(job_title, employment_types, job_portals)
-            console.log(this.findjobs)
 
-            this.GetUserData();
-            const db = getFirestore(firebaseApp);
-            const auth = getAuth();
-            const docref = doc(db, 'Users', String(auth.currentUser.email))
+            try {
+                const job_title = this.title
+                const job_portals = []
+                this.portalchoices.forEach(x => job_portals.push(x))
+                const employment_types = this.jtypeschoices.toUpperCase()
+                this.dialog = false;
+                this.showquerysuccess = true
+                this.findjobs = await RetrieveJobs(job_title, employment_types, job_portals)
+                this.GetUserData();
+                const db = getFirestore(firebaseApp);
+                const auth = getAuth();
+                const docref = doc(db, 'Users', String(auth.currentUser.email))
 
-            await setDoc(docref, {credentials: {firstlogin: false}}, {merge: true})
-            await updateDoc(docref, {'applications.FindJobs' : this.findjobs})
-            await setDoc(docref, {jobpreferences: {jobtitle : job_title, jobportals: String(job_portals), emptypes: employment_types}}, {merge: true})
+                await setDoc(docref, {credentials: {firstlogin: false}}, {merge: true})
+                await updateDoc(docref, {'applications.FindJobs' : this.findjobs})
+                await setDoc(docref, {jobpreferences: {jobtitle : job_title, jobportals: String(job_portals), emptypes: employment_types}}, {merge: true})
+                
+            }
+            
+            catch (error) {
+                this.showqueryfailure = true
+            }
+
+            
             
             
         },

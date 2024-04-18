@@ -171,6 +171,18 @@
                               <v-btn color="green darken-1" text @click="showEditPasswordModal = false">Cancel</v-btn>
                               <v-btn color="green darken-1" text @click="validatePasswordChange">Change</v-btn>
                             </v-card-actions>
+                            <v-snackbar location="top" color="green" v-model="showchangedpwsuccess" :timeout="4000" elevation="24" width="500px">
+                              Your password has been successfully changed.
+                            </v-snackbar>
+
+                            <v-snackbar location="top" color="red" v-model="showchangedpwfail" :timeout="4000" elevation="24" width="500px">
+                              Incorrect current password. Please try again.
+                            </v-snackbar>
+
+                            <v-snackbar location="top" color="red" v-model="showchangedpwinvalid" :timeout="4000" elevation="24" width="500px">
+                              Invalid password, please make sure that your password is at least 6 characters long.
+                            </v-snackbar>
+                            
                           </v-card>
                         </v-dialog>
                       
@@ -333,6 +345,9 @@ import { storage } from "@/firebase";
 
 export default {
   data: () => ({
+    showchangedpwinvalid: null,
+    showchangedpwfail: null,
+    showchangedpwsuccess: null,
     userFirstName: '',
     userLastName: '',
     userEmail: '',
@@ -474,15 +489,17 @@ export default {
         await reauthenticateWithCredential(user, credential);
         //user re-authenticated, proceed with password change
         await updatePassword(user, this.newPassword);
-        alert("Password changed successfully!");
         this.showEditPasswordModal = false;
+        this.showchangedpwsuccess = true
       } catch (error) {
         console.error("Error changing password:", error);
         if (error.code === 'auth/invalid-credential') {
-          alert("Incorrect current password. Please try again.");
+          this.showchangedpwfail = true
+          //alert("Incorrect current password. Please try again.");
         } else {
           //requires recent login
-          alert("Failed to change password. Please log out and sign in again.")
+          this.showchangedpwinvalid = true
+          
         }
       }
     },

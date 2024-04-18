@@ -316,13 +316,13 @@
                                                 <span> <b>Company</b> </span>
                                                 <v-text-field label="Enter the company's name" v-model="job.company"></v-text-field>
                                                 <span> <b>Industry</b> </span>
-                                                <v-text-field label="Enter the job listing's industry" v-model="job_industry"></v-text-field>
+                                                <v-text-field label="Enter the job listing's industry" v-model="job.job_industry"></v-text-field>
                                                 <span> <b>Job Link</b> </span>
                                                 <v-text-field label="Enter the job listing link" v-model="job.job_apply_link"></v-text-field>
                                             </div>
                                             <v-card-actions class="justify-end" style="margin-right: -20px;">
                                                 <v-btn variant="tonal" @click="showSaveJob = false">Cancel</v-btn>
-                                                <v-btn variant="tonal" @click="manualsave(job); showSaveJob = false">Save</v-btn>
+                                                <v-btn variant="tonal" @click="manualsave(job);">Save</v-btn>
                                             </v-card-actions>
                                             
                                         
@@ -513,6 +513,14 @@
             You have successfully removed the interview for this job.
         </v-snackbar>
 
+        <v-snackbar location="top" color="green" v-model="manualsuccess" :timeout="2000" elevation="24" width="400px">
+            You have successfully saved this job listing.
+        </v-snackbar>
+
+        <v-snackbar location="top" color="red" v-model="manualfailure" :timeout="2000" elevation="24" width="400px">
+            Invalid job listing. Please make sure all required text fields are completed
+        </v-snackbar>
+
     </v-container>
     
 </template>
@@ -538,6 +546,8 @@ let currdate = `${day}-${month}-${year}`;
 export default {
     data() {
         return {
+            manualsuccess: null,
+            manualfailure: null,
             showsaved: null,
             showapplied: null,
             showinterviewed: null,
@@ -653,8 +663,11 @@ export default {
 
         async applyapplication(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
+            let id = job["job_id"]
 
-            const id = job["job_id"]
+            if (!id) {
+                id = job.job_title + job.company
+            }
 
             await updateDoc(docref, {[`applications.FindJobs.${id}`] : deleteField()})
             await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
@@ -676,9 +689,18 @@ export default {
         
         async manualsave(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_id"]
-            await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
-            this.showsaved = true
+            const id = job["job_title"] + job["company"]
+            job.job_publisher = "Manual"
+            if (job.job_title && job.company && job.job_industry && job.job_apply_link) {
+                await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
+                await setDoc(docref, {applications : {saved : {[id] : {job_saved_date : currdate}}}}, {merge: true})
+                this.showSaveJob = false
+                this.manualsuccess = true
+            }
+            else {
+                this.manualfailure = true
+            }
+            
 
         },
         
@@ -729,8 +751,8 @@ export default {
             this.currentviewedjob = job
             this.currentjobindustry = this.currentviewedjob["job_industry"]
             this.currentjoblink = this.currentviewedjob["job_apply_link"]
-            this.currentgooglelink = this.currentviewedjob["job_google_link"]
-            this.currentjobdescription = this.currentviewedjob["job_description"].split("\n").map(paragraph => `<p>${paragraph.replace(/\n/, '<br>')}</p>`).join('<br>');
+            this.currentjobdescription = this.currentviewedjob["job_description"] ? this.currentviewedjob["job_description"].split("\n").map(paragraph => `<p>${paragraph.replace(/\n/, '<br>')}</p>`).join('<br>')
+                                            : ""
 
         },
     }

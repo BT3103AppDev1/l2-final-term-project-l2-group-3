@@ -299,9 +299,13 @@
                       <h3 class="switch-label" style="margin-left: 10px;"><b>Microsoft Outlook</b></h3>
                     </v-col>
 
-                    <v-snackbar location="top" color="green" v-model="syncsuccess" :timeout="2000" elevation="24" width="500px">
-                        You have successfully synced your events to your Outlook Calendar.
-                      </v-snackbar>
+                    <v-snackbar location="top" color="green" v-model="syncsuccess" :timeout="4000" elevation="24" width="500px">
+                      You have successfully synced your events to your Outlook Calendar.
+                    </v-snackbar>
+
+                    <v-snackbar location="top" color="red" v-model="syncfailure" :timeout="4000" elevation="24" width="500px">
+                      You have failed to sync your Outlook Calendar, please try again.
+                    </v-snackbar>
                     
                     <v-col cols="12" sm="9" class="d-flex align-center justify-end">
                       <v-switch inset color="success" v-model="remindOutlook" @change="handleRemindOutlook" style="margin-right: 20px;"></v-switch>
@@ -377,6 +381,7 @@ export default {
     msalReady: false,
     token: null,
     syncsuccess: null,
+    syncfailure: null,
   }),
 
   computed: {
@@ -613,6 +618,7 @@ export default {
           // Continue with your logic here...
         } catch (popupError) {
           console.error('Error acquiring token via popup', popupError);
+          this.syncfailure = true
         }
       } finally {
         const db = getFirestore(firebaseApp);
@@ -627,6 +633,7 @@ export default {
           }
 
           console.log("event added")
+          this.syncsuccess = true
       }
     },
 
@@ -684,7 +691,6 @@ export default {
 
       if (this.remindOutlook) {
         await this.signIn()
-        this.syncsuccess = true
       }
 
       try {

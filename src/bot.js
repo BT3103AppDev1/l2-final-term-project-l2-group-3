@@ -125,7 +125,7 @@ bot.on('message', async (msg) => {
 
             const key = eventdetails[0] + start.toMillis()
             
-            await setDoc(doc(db, "Users", userid), { events: {[key]: {eventname: eventdetails[0], eventstartdatetime: start, eventenddatetime: end}}}, { merge: true})
+            await setDoc(doc(db, "Users", userid), { events: {[key]: {eventname: eventdetails[0], eventstartdatetime: start, eventenddatetime: end, eventcolour: "blue"}}}, { merge: true})
             bot.sendMessage(chatId, "Your event has been captured into our database, you can check all of your events by clicking \"View upcoming events\" using our command \/viewevents.");
 
         }

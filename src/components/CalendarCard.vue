@@ -20,7 +20,7 @@
         v-model="weekday"
         :items="weekdays"
         class="ma-2"
-        label="weekdays"
+        label="Weekdays Order"
         variant="solo"
         bg-color="#a0bbdb"
         dense
@@ -34,7 +34,9 @@
         :events="events"
         :view-mode="type"
         :weekdays="weekday"
-      ></v-calendar>
+        @click:date = "handeclick"
+      >
+      </v-calendar>
     </v-sheet>
   </div>
 </template>
@@ -65,6 +67,9 @@
       this.getEvents()
     },
     methods: {
+      handeclick(date) {
+        console.log(date)
+      },
       getEvents () {
         const auth = getAuth();
         onSnapshot(doc(db, "Users", auth.currentUser.email), (docSnapshot) => {

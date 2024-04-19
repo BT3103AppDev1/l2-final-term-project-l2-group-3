@@ -73,6 +73,10 @@
     <v-snackbar location="top" color="green" v-model="showaddedevent" :timeout="2000" elevation="24" width="400px">
       You have successfully created an event in your calendar.
     </v-snackbar>
+
+    <v-snackbar location="top" color="red" v-model="addeventfailure" :timeout="2000" elevation="24" width="400px">
+      Invalid input. Make sure all required fields are completed.
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -88,6 +92,7 @@ import CalendarCard from '@/components/CalendarCard.vue'
 export default {
   data() {
     return {
+      addeventfailure: false,
       showaddedevent: false,
       dialogEvent: false,
       eventDetail: '',
@@ -259,6 +264,7 @@ export default {
           this.showaddedevent = true
         } catch (error) {
           console.error('Error saving event:', error);
+          this.addeventfailure = true
         }
       } else {
         console.error('User is not authenticated');

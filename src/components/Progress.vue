@@ -20,10 +20,10 @@
                     </v-card-title>
 
                     <v-row style="padding: 10px">
-                        <v-col cols="5">
-                            <h3 style="color: #fff;"> Jobs Applied</h3>
+                        <v-col cols="3">
+                            <h3 style="color: #fff;"> Applied</h3>
                         </v-col>
-                        <v-col cols="5" style="margin-left: -20px; margin-top: 8px;">
+                        <v-col cols="6" style="margin-left: -20px; margin-top: 8px;">
                             <v-progress-linear
                                 rounded=""
                                 v-model="appliedcounttoday"
@@ -32,17 +32,17 @@
                             ></v-progress-linear>
                         </v-col>
 
-                        <v-col cols="2">
+                        <v-col cols="3">
                             <h3 style="color: #fff; margin-right: -10px"> {{ appliedcounter + "/" + applicationgoal }}</h3>
                         </v-col>
                         
                     </v-row>
 
                     <v-row style="padding: 10px">
-                        <v-col cols="5">
-                            <h3 style="color: #fff;"> Jobs Saved</h3>
+                        <v-col cols="3">
+                            <h3 style="color: #fff;"> Saved</h3>
                         </v-col>
-                        <v-col cols="5" style="margin-left: -20px; margin-top: 8px;">
+                        <v-col cols="6" style="margin-left: -20px; margin-top: 8px;">
                             <v-progress-linear
                                 rounded=""
                                 v-model="savedcounttoday"
@@ -51,8 +51,8 @@
                             ></v-progress-linear>
                         </v-col>
 
-                        <v-col cols="2">
-                            <h3 style="color: #fff; margin-right: -10px;"> {{ savedcounter + "/" + applicationgoal }}</h3>
+                        <v-col cols="3">
+                            <h3 style="color: #fff; margin-right: 0px;"> {{ savedcounter + "/" + applicationgoal }}</h3>
                         </v-col>
                         
                     </v-row>
@@ -171,22 +171,35 @@ export default {
         })
 
 
-        if (window.Worker) {
-        // Assuming 'eventCheckerWorker.js' is at the root of your 'public' directory
-            this.worker = new Worker('../src/EventChecker.js');
-            this.worker.onmessage = (message) => {
-                if (message.data.action === 'checkEvents') {
-                this.checkEventsAndSetReminders();
-                }
-            };
-            // Start the worker's activity
-            this.worker.postMessage('start');
-        }
-
-
+        this.initializeWorker();
     },
 
     methods: {
+        initializeWorker() {
+            const workerCode = `
+                self.onmessage = (e) => {
+                    if (e.data === 'start') {
+                        setInterval(() => {
+                            self.postMessage({ action: 'checkEvents' });
+                        }, 10000); // 10 seconds
+                    }
+                };
+            `;
+
+            const blob = new Blob([workerCode], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            this.worker = new Worker(url);
+
+            this.worker.onmessage = (event) => {
+                if (event.data.action === 'checkEvents') {
+                    this.checkEventsAndSetReminders();
+                }
+            };
+
+            // Start the worker
+            this.worker.postMessage('start');
+        },
+        
         async checkEventsAndSetReminders() {
             const now = new Date();
             const twentyFourHoursLater = new Date(now.getTime() + (24 * 60 * 60 * 1000));

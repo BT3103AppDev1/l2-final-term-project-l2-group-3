@@ -204,7 +204,8 @@
                 name: "",
                 senderemail: "",
                 message: "",
-                hover: false
+                hover: false,
+                lenis: null,
             }
         },
         methods: {
@@ -240,26 +241,10 @@
             }
         },
 
-        mounted() {
-
-            /*
-            //smooth scroll
-            const lenis = new Lenis()
-
-            lenis.on('scroll', (e) => {
-            console.log(e)
-            })
-
-            function raf(time) {
-            lenis.raf(time)
-            requestAnimationFrame(raf)
-            }
-
-            requestAnimationFrame(raf)
-
-            */
+        mounted() {            
             //animations 
             gsap.registerPlugin(ScrollTrigger);
+
 
             let t1 = gsap.timeline({
                 scrollTrigger : {
@@ -369,6 +354,10 @@
             );
 
             
+        },
+
+        beforeDestroy() {
+            this.lenis = null
         }
     }
 

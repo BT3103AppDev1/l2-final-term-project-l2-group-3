@@ -9,6 +9,7 @@ import VueChartkick from 'vue-chartkick'
 import 'chartkick/chart.js'
 
 
+
 const app = createApp(App)
 
 

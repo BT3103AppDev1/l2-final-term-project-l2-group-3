@@ -91,14 +91,14 @@
                                 </v-col>
 
                                 <v-col>
-                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob)"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob); dialog = false"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
                                 </v-col>
 
                             </v-row>
 
                             <v-row v-else class="d-flex justify-space-between">
                                 <v-col cols="2">
-                                    <v-btn style="margin-left: -10px;" color="#5D78AD" @click="saveapplication(currentviewedjob)"> Save </v-btn>
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" @click="saveapplication(currentviewedjob); dialog = false"> Save </v-btn>
                                 </v-col>
 
                                 <v-col v-if="check_applied(currentviewedjob)" style="margin-left: -35px;" cols ="2">
@@ -106,7 +106,7 @@
                                 </v-col>
 
                                 <v-col>
-                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob)"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
+                                    <v-btn style="margin-left: -10px;" color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob); dialog = false"> {{ check_applied(currentviewedjob) ? 'Go to job link' : 'Apply' }} </v-btn>
                                 </v-col>
 
                                 
@@ -337,7 +337,7 @@
                         max-height="320px"
                     >
                         <main v-for="job in savedjobs" :key="job.id" style="margin-top: 10px; border-radius: 20px;">
-                            <v-card class="jobcard" variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.dialog=true" opacity="0.9" >
+                            <v-card class="jobcard" variant="flat" hover style="margin-left: 5px; margin-right: 15px; border-radius: 10px; background-color:rgb(236, 238, 243);" @click="recordjobdetails(job); this.savedialog=true" opacity="0.9" >
                                 <v-card-item style="height: max-content; margin-top: 5px;">
                                     <v-row>
                                         <v-col class="d-flex align-center" cols="2">
@@ -368,6 +368,84 @@
                                 
                         </main>
                     </v-sheet>
+
+                    <v-dialog v-model="savedialog" width="900px">
+                        <v-card style="border-radius: 25px; background-color: rgba(213,222,238,255);" >
+                            <v-row style="padding: 40px;">
+                                <v-col cols = "2" class="d-flex align-center">
+                                    <img v-if="currentviewedjob.employer_logo" :src="currentviewedjob.employer_logo" style="width: 100px;">
+                                    <img v-else src="@/assets/notavailable.png" alt="@/assets/notavailable.png" style="width: 100px; border-radius: 10%;">
+                                </v-col>
+                                <v-col cols = "10">
+                                    <v-row>
+                                        <h2 style="color: #5D78AD"> {{currentviewedjob["job_title"]}}</h2>
+                                    </v-row>
+                                    <v-row>
+                                        <h2> {{ currentviewedjob["company"] }}</h2>
+                                    </v-row>
+                                    <v-row class="d-flex justify-space-between">
+                                        <v-col style="margin-right: -15px;" cols="2">
+                                            <v-btn style="margin-left: -10px;" color="red" variant="tonal"  @click="savedialog = false" > Unsave </v-btn>
+                                        </v-col>
+
+                                        <v-col>
+                                            <v-btn color="#5D78AD" :href="currentviewedjob.job_apply_link" target="_blank" @click="applyapplication(currentviewedjob); savedialog = false"> Apply</v-btn>
+                                        </v-col>
+
+                                    </v-row>
+
+                                </v-col>
+                            </v-row>
+                            <v-card-text class="font-weight-light" style="margin-top: -80px;">
+                                <v-container fluid> <br>
+                                    <v-sheet
+                                        width="820px"
+                                        color="#c8d3eb"
+                                        elevation="0"
+                                        max-height="320px"
+                                        style="border-radius: 25px; margin-left: -10px;"
+                                    >
+                                        <div style="padding: 20px;">
+                                            <v-row style="margin-bottom: -40px;">
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job Publisher: </b>{{currentviewedjob["job_publisher"]}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Location: </b> {{ currentviewedjob["job_city"] ? currentviewedjob["job_city"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Job employment type: </b> {{ currentviewedjob["job_emptype"] ? currentviewedjob["job_emptype"][0] + currentviewedjob["job_emptype"].slice(1,).toLowerCase() : "Not Available"}} </h3> <br>
+                                                </v-col>
+
+                                                <v-col>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Industry: </b> {{ currentviewedjob["job_industry"] ? currentviewedjob["job_industry"] : "Not Available"}} </h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Posted On: </b> {{currentviewedjob["job_posted_date"] ? currentviewedjob["job_posted_date"].slice(0, 10) : "Not Available"}}</h3> <br>
+                                                    <h3> <b style="color: rgb(86, 86, 86);">Application Deadline: </b> {{currentviewedjob["job_expiry"] ? currentviewedjob["job_expiry"].slice(0,10) : "Not Available"}}</h3>
+                                                </v-col>
+                                            </v-row>
+                                            
+                                            
+                                        </div>
+
+                                    </v-sheet>
+                                    
+                                    <v-row>
+                                        <br>
+                                        <v-sheet
+                                            color="#c8d3eb"
+                                            class="scrollable-sheet"
+                                            elevation="0"
+                                            max-height="290px"
+                                            style="border-radius: 25px;"
+                                        >
+                                            <div style="padding: 15px;" v-html="currentjobdescription"></div>
+                                        </v-sheet>
+                                    </v-row>
+                                </v-container>
+                            </v-card-text>
+
+                            <v-card-actions style="padding: 15px;">
+                                <v-spacer></v-spacer>
+                                    <v-btn variant="tonal" color="blue" text="Close" @click="savedialog = false"></v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </v-card>
             </v-col>
 
@@ -566,6 +644,7 @@ export default {
             dialog: false,
             applieddialog: false,
             interviewdialog: false,
+            savedialog: false,
             currentviewedjob: null,
             currentjobindustry: null,
             currentjoblink: null,
@@ -586,21 +665,23 @@ export default {
         onSnapshot(doc(db, 'Users', String(auth.currentUser.email)), doc => {
             let applications = doc.data().applications;
 
+            this.findjobs = this.sortJobsByTitle(applications.FindJobs);
+
             this.appliedjobs = this.sortJobsByTitle(applications.applied);
             this.savedjobs = this.sortJobsByTitle(applications.saved);
             this.interviewedjobs = this.sortJobsByTitle(applications.interviewed);
 
             const findjobs_object = {}
 
-            for (const job in applications.FindJobs) {
-                const id = applications.FindJobs[job]["job_id"]
-                if (id in applications.applied || id in applications.saved || id in applications.interviewed) {
-                    continue
-                }
-                findjobs_object[id] = applications.FindJobs[job]
-            }
+            // for (const job in applications.FindJobs) {
+            //     console.log(job)
+            //     const id = applications.FindJobs[job]["job_id"] 
+            //     findjobs_object[id] = applications.FindJobs[job]
+            // }
 
-            this.findjobs = this.sortJobsByTitle(findjobs_object)
+            // console.log("dic", findjobs_object)
+
+            // this.findjobs = this.sortJobsByTitle(findjobs_object)
 
             
             this.findcount = this.findjobs.length;
@@ -643,9 +724,6 @@ export default {
             for (const portal in preferences["jobportals"].split(",")) {
                 list.push(preferences["jobportals"].split(",")[portal])
             }
-            console.log(preferences["jobtitle"])
-            console.log(list)
-            console.log(preferences["emptypes"])
 
             const updatedfindjobs = await RetrieveJobs(preferences["jobtitle"], preferences["emptypes"], list)
             await updateDoc(docref, {'applications.FindJobs' : updatedfindjobs})
@@ -665,7 +743,7 @@ export default {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
             let id = job["job_id"]
 
-            if (!id) {
+            if (id == null) {
                 id = job.job_title + job.company
             }
 
@@ -716,7 +794,10 @@ export default {
         async unsave(job) {
             this.dialog = false
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_id"]
+            let id = job["job_id"]
+            if (id == null) {
+                id = job.job_title + job.company
+            }
             await updateDoc(docref, {[`applications.saved.${id}`] : deleteField()})
             await setDoc(docref, {applications : {FindJobs : {[id] : job}}}, {merge: true})
             this.showunsaved = true
@@ -726,7 +807,11 @@ export default {
 
         async unapply(job) {
             const docref = doc(db, 'Users', String(auth.currentUser.email));
-            const id = job["job_id"]
+            let id = job["job_id"]
+
+            if (id == null) {
+                id = job.job_title + job.company
+            }
             await updateDoc(docref, {[`applications.applied.${id}`] : deleteField()})
             await setDoc(docref, {applications : {saved : {[id] : job}}}, {merge: true})
             this.showunapplied = true

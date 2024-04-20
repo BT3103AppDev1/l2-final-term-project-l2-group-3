@@ -191,7 +191,7 @@ export default {
                 const docref = doc(db, 'Users', String(auth.currentUser.email))
 
                 await setDoc(docref, {credentials: {firstlogin: false}}, {merge: true})
-                await updateDoc(docref, {'applications.FindJobs' : this.findjobs})
+                await setDoc(docref, {applications: {FindJobs: this.findjobs}}, {merge: true})
                 await setDoc(docref, {jobpreferences: {jobtitle : job_title, jobportals: String(job_portals), emptypes: employment_types}}, {merge: true})
                 
             }

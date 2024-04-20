@@ -132,9 +132,9 @@ export default {
     async initializeMsal() {
       const msalConfig = {
         auth: {
-          clientId: '609540be-0088-4b46-8a90-e3e070280d8e', // Replace with your Azure application client ID
+          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
           authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'http://localhost:3000/settings/' // Assuming you handle redirects at the root
+          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' // Assuming you handle redirects at the root
         },
         cache: {
           cacheLocation: "localStorage", // Enables cache to be stored in localStorage

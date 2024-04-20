@@ -11,7 +11,7 @@ export async function RetrieveJobs(title, emptype, jobportals) {
             employment_types: emptype,
         },
     headers: {
-        'X-RapidAPI-Key': '361b6a67f3mshe1af78b249dcbdep1e2160jsn4e9949b9898f',
+        'X-RapidAPI-Key': '1ed1b51465msh32e309b0fc9227fp1ab7d7jsn0793e849a447',
         'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
     }
 };
@@ -39,7 +39,7 @@ try {
                     dic[id] = {job_title: job["job_title"], job_publisher: job["job_publisher"], company: job["employer_name"],
                         employer_logo: job["employer_logo"], job_description: job["job_description"], job_apply_link: job["job_apply_link"],
                         job_google_link: job["job_google_link"], job_posted_date: job["job_posted_at_datetime_utc"], job_city: job["job_city"],
-                        job_industry: job["employer_company_type"], job_emptype: job["job_employment_type"], job_expiry: job["job_offer_expiration_datetime_utc"]
+                        job_industry: job["employer_company_type"], job_emptype: job["job_employment_type"], job_expiry: job["job_offer_expiration_datetime_utc"], job_id: job["job_id"]
                     }
                     counter ++
                 }

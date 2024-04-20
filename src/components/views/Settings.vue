@@ -576,7 +576,7 @@ export default {
         auth: {
           clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
           authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'http://localhost:3000/settings/' // Assuming you handle redirects at the root
+          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' // Assuming you handle redirects at the root
         },
         cache: {
           cacheLocation: "localStorage", // Enables cache to be stored in localStorage
@@ -595,33 +595,11 @@ export default {
         scopes: ['openid', 'profile', 'User.Read', 'Calendars.ReadWrite'],
       };
 
-      try {
-        // Try to get all accounts from the cache
-        const accounts = this.msalInstance.getAllAccounts();
-        if (accounts.length > 0) {
-          // If there are accounts in the cache, set the first one as the active account
-          this.msalInstance.setActiveAccount(accounts[0]);
-        }
-
-        const silentResult = await this.msalInstance.acquireTokenSilent(loginRequest);
-        console.log('Token acquired silently', silentResult.accessToken);
-        this.token = silentResult.accessToken
-      } catch (error) {
-        // If silent token acquisition fails, fallback to interactive method
-        console.log('Silent token acquisition failed, acquiring token using popup');
         try {
           const popupResult = await this.msalInstance.loginPopup(loginRequest);
           console.log('Token acquired via popup', popupResult.accessToken);
           this.token = popupResult.accessToken;
-          // Set the account from the popupResult as the active account
-          this.msalInstance.setActiveAccount(popupResult.account);
-          // Continue with your logic here...
-        } catch (popupError) {
-          console.error('Error acquiring token via popup', popupError);
-          this.syncfailure = true
-        }
-      } finally {
-        const db = getFirestore(firebaseApp);
+          const db = getFirestore(firebaseApp);
           const auth = getAuth();
 
           const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
@@ -631,10 +609,13 @@ export default {
             console.log(event)
             this.addEventToOutlookCalendar(this.token, docref.data()['events'][event])
           }
-
           console.log("event added")
           this.syncsuccess = true
-      }
+          this.msalInstance.setActiveAccount(popupResult.account);
+        } catch (popupError) {
+          console.error('Error acquiring token via popup', popupError);
+          this.syncfailure = true
+        }
     },
 
     convert_timestamp(seconds) {

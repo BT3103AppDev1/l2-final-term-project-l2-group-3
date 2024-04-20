@@ -32,7 +32,6 @@ export default {
   },
   methods: {
     initializeChatbot() {
-      // First, create and append the configuration script
       const configScript = document.createElement('script');
       configScript.text = `
         window.embeddedChatbotConfig = {
@@ -42,7 +41,6 @@ export default {
       `;
       document.head.appendChild(configScript);
 
-      // Then, create and append the external script
       const chatbotScript = document.createElement('script');
       chatbotScript.src = "https://www.chatbase.co/embed.min.js";
       chatbotScript.setAttribute("chatbotId", "yIkGQ4CSlvBYYvJSzPejw");
@@ -52,7 +50,6 @@ export default {
 
       chatbotScript.onload = () => {
         console.log('Chatbot script loaded successfully');
-        // Additional actions after the chatbot loads can be placed here
       };
 
       chatbotScript.onerror = (e) => {

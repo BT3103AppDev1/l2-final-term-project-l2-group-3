@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import firebaseApp from '/Users/Shawn/Desktop/y2s2/bt3103/l2-final-term-project-l2-group-3/src/firebase.js';
+import firebaseApp from '../src/firebase.js';
 import { getFirestore, query, where, collection, getDocs, Timestamp, setDoc, doc } from 'firebase/firestore';
 
 

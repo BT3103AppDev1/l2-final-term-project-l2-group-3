@@ -547,7 +547,7 @@ export default {
                             }
                         });
 
-                        //count saved jobs
+                        //count saved jobs from saved
                         const savedJobs = userDocSnapshot.data().applications.saved;
                         Object.values(savedJobs).forEach((application) => {
                             if (application.job_saved_date) {
@@ -561,6 +561,35 @@ export default {
                                 }
                             }
                         });
+
+                        //count saved jobs from applied
+                        Object.values(appliedJobs).forEach((application) => {
+                            if (application.job_saved_date) {
+                                let [day, month, year] = application.job_saved_date.split('-');
+
+                                let savedDate = new Date(Date.UTC(year, month - 1, day, 12));
+                                let savedDateString = savedDate.toISOString().split('T')[0];
+
+                                if (savedDateString in savedJobsPerDay) {
+                                    savedJobsPerDay[savedDateString]++;
+                                }
+                            }
+                        });
+
+                        //count save jobs from interviewed
+                        Object.values(interviewedJobs).forEach((application) => {
+                            if (application.job_saved_date) {
+                                let [day, month, year] = application.job_saved_date.split('-');
+
+                                let savedDate = new Date(Date.UTC(year, month - 1, day, 12));
+                                let savedDateString = savedDate.toISOString().split('T')[0];
+
+                                if (savedDateString in savedJobsPerDay) {
+                                    savedJobsPerDay[savedDateString]++;
+                                }
+                            }
+                        });
+
 
     
                         let chartDataArray = [

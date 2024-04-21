@@ -151,10 +151,14 @@ export default {
             this.reminders = doc.data()["reminders"]
             const applieddocref = doc.data()['applications']['applied']
             const saveddocref = doc.data()['applications']['saved']
+            const intervieweddocref = doc.data()['applications']['interviewed']
             this.applicationgoal = doc.data()['settings']['progress_settings']
             this.appliedcounter = 0
             this.savedcounter = 0
             for (const job in applieddocref) {
+                if (applieddocref[job]["job_saved_date"] == currdate) {
+                    this.savedcounter += 1
+                }
                 if (applieddocref[job]["job_applied_date"] == currdate) {
                     this.appliedcounter += 1
                 }
@@ -162,6 +166,19 @@ export default {
 
             for (const job in saveddocref) {
                 if (saveddocref[job]["job_saved_date"] == currdate) {
+                    this.savedcounter += 1
+                }
+                if (saveddocref[job]["job_applied_date"] == currdate) {
+                    this.appliedcounter += 1
+                }
+            }
+
+            for (const job in intervieweddocref) {
+                if (intervieweddocref[job]["job_applied_date"] == currdate) {
+                    this.appliedcounter += 1
+                }
+
+                if (intervieweddocref[job]["job_saved_date"] == currdate) {
                     this.savedcounter += 1
                 }
             }
@@ -273,8 +290,8 @@ export default {
 }
 
 .scrollable-sheet {
-  overflow-y: auto; /* Enables vertical scrolling */
-  overflow-x: hidden; /* Prevents horizontal scrolling */
+  overflow-y: auto; 
+  overflow-x: hidden;
   background-color: #6381a3;
 }
 

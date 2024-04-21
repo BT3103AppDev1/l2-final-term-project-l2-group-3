@@ -334,12 +334,9 @@
 </template>
 
 <script>
-//import IndeedLogo from "@/components/IndeedLogo.vue";
-//import TelegramLogo from "@/components/TelegramLogo.vue";
 import OutlookLogo from "@/components/OutlookLogo.vue";
 import { getAuth, reauthenticateWithCredential, EmailAuthProvider, updatePassword, deleteUser, sendPasswordResetEmail } from 'firebase/auth';
 import { waitForPendingWrites } from "firebase/firestore";
-//import GlassdoorLogo from "@/components/GlassdoorLogo.vue";
 import { getFirestore, collection, query, where, getDocs, getDoc, deleteDoc, doc, setDoc  } from 'firebase/firestore';
 import firebaseApp from "@/firebase";
 import { PublicClientApplication } from '@azure/msal-browser';
@@ -492,7 +489,6 @@ export default {
 
       try {
         await reauthenticateWithCredential(user, credential);
-        //user re-authenticated, proceed with password change
         await updatePassword(user, this.newPassword);
         this.showEditPasswordModal = false;
         this.showchangedpwsuccess = true
@@ -500,9 +496,7 @@ export default {
         console.error("Error changing password:", error);
         if (error.code === 'auth/invalid-credential') {
           this.showchangedpwfail = true
-          //alert("Incorrect current password. Please try again.");
         } else {
-          //requires recent login
           this.showchangedpwinvalid = true
           
         }
@@ -554,8 +548,8 @@ export default {
 
     submitCustomGoal() {
       if (this.inputCustomGoal && !isNaN(this.inputCustomGoal)) {
-        this.customGoal = this.inputCustomGoal; //updates the stored custom value
-        this.dailyGoal = 'custom'; //keeps the custom radio button selected
+        this.customGoal = this.inputCustomGoal; 
+        this.dailyGoal = 'custom'; 
         console.log("Daily goal updated to custom value:", this.dailyGoal)
         this.updateDailyGoal(this.customGoal);
       }
@@ -574,13 +568,13 @@ export default {
     async initializeMsal() {
       const msalConfig = {
         auth: {
-          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
-          authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' // Assuming you handle redirects at the root
+          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', 
+          authority: 'https://login.microsoftonline.com/common', 
+          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' 
         },
         cache: {
-          cacheLocation: "localStorage", // Enables cache to be stored in localStorage
-          storeAuthStateInCookie: true, // Recommended for browsers
+          cacheLocation: "localStorage", 
+          storeAuthStateInCookie: true, 
         }
       };
 
@@ -605,7 +599,6 @@ export default {
           const docref = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
 
           for (const event in docref.data()['events']) {
-            //console.log(docref.data()['events'][event])
             console.log(event)
             this.addEventToOutlookCalendar(this.token, docref.data()['events'][event])
           }
@@ -641,11 +634,11 @@ export default {
         body: JSON.stringify({
           subject: event.eventname,
           start: {
-              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), // Set the start time
+              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), 
               timeZone: 'Singapore Standard Time'
           },
           end: {
-              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), // Set the end time
+              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), 
               timeZone: 'Singapore Standard Time'
           },
         })
@@ -716,7 +709,7 @@ export default {
           const settings = docSnapshot.data().settings;
           if (settings) {
 
-            this.syncLinkedin = settings.sync_settings?.linkedin ?? false; // fallback to false if not set
+            this.syncLinkedin = settings.sync_settings?.linkedin ?? false; 
             this.syncIndeed = settings.sync_settings?.indeed ?? false;
             this.syncGlassdoor = settings.sync_settings?.glassdoor ?? false;
             this.syncOthers = settings.sync_settings?.others ?? false;

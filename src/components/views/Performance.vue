@@ -367,7 +367,7 @@ export default {
                         
                         Object.values(applications).forEach(application => {
                             const [day, month, year] = application.job_interviewed_date.split('-').map(Number);
-                            const appliedDate = new Date(year, month - 1, day); // months are 0-indexed
+                            const appliedDate = new Date(year, month - 1, day); 
                     
                             if (appliedDate >= sevenDaysAgo) {
                                 recentCount++;
@@ -425,7 +425,7 @@ export default {
 
                         if (interviewed && typeof interviewed === 'object') {
                             Object.values(interviewed).forEach((job) => {
-                                const industry = job.job_industry || 'Others'; //if job_industry is Not Available, reflected as Others in bar chart
+                                const industry = job.job_industry || 'Others'; 
                                 if (industry) {
                                     industryCounts[industry] = (industryCounts[industry] || 0) + 1;
                                 }
@@ -504,9 +504,9 @@ export default {
                         let applicationsPerDay = {};
                         let savedJobsPerDay = {};
 
-                        // Initialize count for each day of the past week
+                        
                         let d = new Date();
-                        //console.log("date:", d)
+                        
                         for (let i = 6; i >= 0; i--) {
                             let date = new Date();
                             date.setDate(date.getDate() - i);
@@ -520,8 +520,7 @@ export default {
                             if (application.job_applied_date) {
                                 let [day, month, year] = application.job_applied_date.split('-');
 
-                                // Create a date object at noon UTC to avoid timezone issues
-                                let appliedDate = new Date(Date.UTC(year, month - 1, day, 12)); // Month is zero-indexed, so subtract 1
+                                let appliedDate = new Date(Date.UTC(year, month - 1, day, 12)); 
                                 let appliedDateString = appliedDate.toISOString().split('T')[0];
 
 

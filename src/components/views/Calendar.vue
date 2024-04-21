@@ -132,13 +132,13 @@ export default {
     async initializeMsal() {
       const msalConfig = {
         auth: {
-          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', // Replace with your Azure application client ID
-          authority: 'https://login.microsoftonline.com/common', // Replace 'your-tenant-id' with your Azure AD tenant ID
-          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' // Assuming you handle redirects at the root
+          clientId: 'c1f19158-7cc2-4107-b2e8-37082fa9d5bd', 
+          authority: 'https://login.microsoftonline.com/common', 
+          redirectUri: 'https://kiasucareers.firebaseapp.com/settings/' 
         },
         cache: {
-          cacheLocation: "localStorage", // Enables cache to be stored in localStorage
-          storeAuthStateInCookie: true, // Recommended for browsers
+          cacheLocation: "localStorage", 
+          storeAuthStateInCookie: true, 
         }
       };
 
@@ -153,10 +153,8 @@ export default {
       };
 
       try {
-        // Try to get all accounts from the cache
         const accounts = this.msalInstance.getAllAccounts();
         if (accounts.length > 0) {
-          // If there are accounts in the cache, set the first one as the active account
           this.msalInstance.setActiveAccount(accounts[0]);
         }
         console.log(accounts)
@@ -165,15 +163,15 @@ export default {
         console.log('Token acquired silently', silentResult.accessToken);
         this.token = silentResult.accessToken
       } catch (error) {
-        // If silent token acquisition fails, fallback to interactive method
+        
         console.log('Silent token acquisition failed, acquiring token using popup');
         try {
           const popupResult = await this.msalInstance.loginPopup(loginRequest);
           console.log('Token acquired via popup', popupResult.accessToken);
           this.token = popupResult.accessToken;
-          // Set the account from the popupResult as the active account
+          
           this.msalInstance.setActiveAccount(popupResult.account);
-          // Continue with your logic here...
+          
         } catch (popupError) {
           console.error('Error acquiring token via popup', popupError);
         }
@@ -212,11 +210,11 @@ export default {
         body: JSON.stringify({
           subject: event.eventname,
           start: {
-              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), // Set the start time
+              dateTime: this.convert_timestamp(event.eventstartdatetime.seconds), 
               timeZone: 'Singapore Standard Time'
           },
           end: {
-              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), // Set the end time
+              dateTime: this.convert_timestamp(event.eventenddatetime.seconds), 
               timeZone: 'Singapore Standard Time'
           },
         })

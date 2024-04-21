@@ -52,7 +52,7 @@
       },
       async mounted() {
         gsap.fromTo('.logo', 
-                  { opacity: 0, y: 10 }, // From
+                  { opacity: 0, y: 10 }, 
                   { opacity: 1, y: 0, duration: 1, delay: 1 } // To
         );
         const db = getFirestore(firebaseApp);
@@ -67,7 +67,6 @@
           this.avatar = userdata.credentials.profilephoto
           console.log("Document data:", docSnap.data());
         } else {
-          // docSnap.data() will be undefined in this case
           console.log("No such document!");
         }
       },

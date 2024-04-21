@@ -529,7 +529,6 @@ export default {
       try {
         const result = await signInWithPopup(auth, provider);
         console.log("Successfully logged in!", result.user);
-        // Ensure saveUserData is defined as an async function and returns a promise.
         
         const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
 
@@ -554,7 +553,6 @@ export default {
         const result = await signInWithPopup(auth, provider);
         const credential = GithubAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
-        // Ensure saveUserData is defined as an async function and returns a promise.
         
         const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))
 
@@ -576,7 +574,6 @@ export default {
           const credential = OAuthProvider.credentialFromResult(result);
           const accessToken = credential.accessToken;
           const idToken = credential.idToken;
-          // Ensure saveUserData is defined as an async function and returns a promise.
           console.log("Successfully logged in!", result.user);
           
           const users = await getDoc(doc(db, "Users", String(auth.currentUser.email)))

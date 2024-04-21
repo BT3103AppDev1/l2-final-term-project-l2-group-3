@@ -672,17 +672,6 @@ export default {
             this.interviewedjobs = this.sortJobsByTitle(applications.interviewed);
 
             const findjobs_object = {}
-
-            // for (const job in applications.FindJobs) {
-            //     console.log(job)
-            //     const id = applications.FindJobs[job]["job_id"] 
-            //     findjobs_object[id] = applications.FindJobs[job]
-            // }
-
-            // console.log("dic", findjobs_object)
-
-            // this.findjobs = this.sortJobsByTitle(findjobs_object)
-
             
             this.findcount = this.findjobs.length;
             this.appliedcount = this.appliedjobs.length;
@@ -836,8 +825,7 @@ export default {
             this.currentviewedjob = job
             this.currentjobindustry = this.currentviewedjob["job_industry"]
             this.currentjoblink = this.currentviewedjob["job_apply_link"]
-            this.currentjobdescription = this.currentviewedjob["job_description"] ? this.currentviewedjob["job_description"].split("\n").map(paragraph => `<p>${paragraph.replace(/\n/, '<br>')}</p>`).join('<br>')
-                                            : ""
+            this.currentjobdescription = this.currentviewedjob["job_description"] ? this.currentviewedjob["job_description"].split("\n").map(paragraph => `<p>${paragraph.replace(/\n/, '<br>')}</p>`).join('<br>') : ""
 
         },
     }
@@ -851,8 +839,8 @@ export default {
 }
 
 .scrollable-sheet {
-  overflow-y: auto; /* Enables vertical scrolling */
-  overflow-x: hidden; /* Prevents horizontal scrolling */
+  overflow-y: auto; 
+  overflow-x: hidden;
 }
 
 .subheading{
@@ -868,21 +856,20 @@ export default {
 
 .expandablebutton {
     transition: width 0.3s ease, background-color 0.3s ease;
-    width: 50px; /* Initial width */
+    width: 50px; 
     overflow: hidden;
     margin-top: 20px;
     border-radius: 20px;
-/* Center items horizontally */
 }
 
 .expandablebutton:hover {
-  width: 200px; /* Expanded width to fit the phrase */
-  background-color: #f5f5f5; /* Optional: change background color on hover */
+  width: 200px; 
+  background-color: #f5f5f5; 
 }
 
 .button-text {
-  margin-left: 8px; /* Adjust spacing between icon and text */
-  white-space: nowrap; /* Ensure the text does not wrap */
+  margin-left: 8px; 
+  white-space: nowrap; 
 }
 
 .title {

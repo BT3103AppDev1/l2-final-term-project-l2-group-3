@@ -11,7 +11,7 @@
     </template>
     
   <script>
-  import { db } from '@/firebase.js'; // Import your Firebase config
+  import { db } from '@/firebase.js'; 
   
   export default {
     data() {
@@ -29,7 +29,7 @@
         try {
           await db.collection('savedJobs').add(this.job);
           this.$emit('job-saved');
-          this.job = { title: '', company: '', location: '', link: '' }; // Reset form
+          this.job = { title: '', company: '', location: '', link: '' }; 
           alert('Job saved successfully!');
         } catch (error) {
           console.error("Error saving job: ", error);

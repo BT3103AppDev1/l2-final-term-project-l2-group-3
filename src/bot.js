@@ -18,7 +18,7 @@ const usersRef = collection(db, "Users")
 
 bot.onText(/\/start (.+)/, async (msg, match) => {
     chatId = msg.chat.id;
-    const token = match[1]; // The unique token from the deep link
+    const token = match[1]; 
     console.log(token)
 
     const q = query(usersRef, where("credentials.userid", "==", String(token)));
@@ -164,8 +164,6 @@ async function checkAndSendReminders() {
     }
 }
 
-
-// Replace this with your actual cron schedule
 cron.schedule('* * * * *', async () => {
     console.log('Checking for events happening in the next 24 hours...');
     checkAndSendReminders();

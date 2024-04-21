@@ -172,10 +172,6 @@ export default {
         },
 
         async closedialog() {
-            
-            //this.jobs = await RetrieveJobs(this.title);
-            //console.log("this is the job object")
-            //console.log(this.jobs);
 
             try {
                 const job_title = this.title
@@ -210,8 +206,6 @@ export default {
                 const db = getFirestore(firebaseApp);
                 const auth = getAuth();
                 const docRef = await getDoc(doc(db, 'Users', String(auth.currentUser.email)))
-                //console.log(docRef.data())
-                //console.log("printed user data")
             } catch (error) {
                 console.error('Error reading user data:', error);
             }

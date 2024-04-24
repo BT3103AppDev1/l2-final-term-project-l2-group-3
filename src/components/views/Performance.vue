@@ -259,7 +259,7 @@ export default {
                         const appliedJobsDict = userDocSnapshot.data().applications.applied;
                         const appliedJobsCount = Object.keys(appliedJobsDict).length;
 
-                        console.log(appliedInterviewCount, appliedJobsCount)
+                        //console.log(appliedInterviewCount, appliedJobsCount)
 
                         this.progressionToNextStage.count = Math.round(appliedInterviewCount / (appliedJobsCount + appliedInterviewCount) * 100);
                     }
@@ -305,7 +305,7 @@ export default {
                             
                         Object.values(interviews).forEach(application => {
                             if (application.job_interviewed_date) {
-                                const [day, month, year] = application.job_interviewed_date.split('-').map(Number);
+                                const [day, month, year] = application.job_applied_date.split('-').map(Number);
                                 const appliedDate = new Date(year, month - 1, day); // months are 0-indexed
                     
                                 if (appliedDate >= sevenDaysAgo) {
@@ -316,6 +316,8 @@ export default {
                             }
                             
                         });
+
+                        //console.log("past:", pastCount, "recent:", recentCount)
                     
                         if (pastCount === 0) {
                             const trend = recentCount > 0 ? 100 : "N/A";

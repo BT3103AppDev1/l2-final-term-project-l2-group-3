@@ -11,7 +11,7 @@ export async function RetrieveJobs(title, emptype, jobportals) {
             employment_types: emptype,
         },
     headers: {
-        'X-RapidAPI-Key': '1ed1b51465msh32e309b0fc9227fp1ab7d7jsn0793e849a447',
+        'X-RapidAPI-Key': '21fc1a264dmsh107991b3ba3b41ep1916e5jsnf7bd91d50a7d',
         'X-RapidAPI-Host': 'jsearch.p.rapidapi.com'
     }
 };

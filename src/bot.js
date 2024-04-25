@@ -106,6 +106,10 @@ bot.on('message', async (msg) => {
     else if (msg.text == "Add new event" || msg.text == "/addevent") {
         bot.sendMessage(chatId, "Enter your event details in this format (event, start, end). \n\n{event name/description}, {yyyy-mm-dd HH:MM}, {yyyy-mm-dd HH:MM}");
     }
+
+    else if (msg.text == "/visitwebsite" || msg.text == "Visit website") {
+        bot.sendMessage(chatId, "https://kiasucareers.firebaseapp.com/")
+    }
     else if (msg.text.includes(",")) {
         const eventdetails = msg.text.split(",")
         const q = query(usersRef, where("credentials.teleChatId", "==", chatId));

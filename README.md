@@ -3,8 +3,8 @@
 Welcome to the official repository of KiasuCareers, a comprehensive web application designed to streamline and enhance the job application process for students and job seekers. By consolidating job application management, tracking, interview preparation, and resume building, KiasuCareers provides a single, streamlined interface that improves organization and efficiency.
 
 ## Official Links
-https://kiasucareers.firebaseapp.com/
-https://t.me/KiasuCareersBot
+- https://kiasucareers.firebaseapp.com/
+- https://t.me/KiasuCareersBot
 
 ## Features
 

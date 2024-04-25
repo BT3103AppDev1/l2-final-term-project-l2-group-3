@@ -259,6 +259,10 @@
                     </v-col>
                   </v-row>
 
+                  <v-snackbar location="top" color="green" v-model="progresssuccess" :timeout="4000" elevation="24" width="500px">
+                    You have successfully updated your application goal settings.
+                  </v-snackbar>
+
                   <!-- Dialog for custom goal input -->
                   <v-dialog v-model="showCustomDialog" persistent max-width="290">
                     <v-card>
@@ -379,6 +383,7 @@ export default {
     token: null,
     syncsuccess: null,
     syncfailure: null,
+    progresssuccess: null,
   }),
 
   computed: {
@@ -563,6 +568,7 @@ export default {
 
       setDoc(userDocRef, {settings: {progress_settings: goalValue}}, {merge:true});
       console.log('Progress setting in firebase updated to:', goalValue);
+      this.progresssuccess = true
     },
 
     async initializeMsal() {

@@ -2,6 +2,10 @@
 
 Welcome to the official repository of KiasuCareers, a comprehensive web application designed to streamline and enhance the job application process for students and job seekers. By consolidating job application management, tracking, interview preparation, and resume building, KiasuCareers provides a single, streamlined interface that improves organization and efficiency.
 
+## Official Links
+https://kiasucareers.firebaseapp.com/
+https://t.me/KiasuCareersBot
+
 ## Features
 
 - **Consolidated Job Listings**: Aggregates listings from multiple platforms like LinkedIn and GlassDoor, providing curated opportunities based on user preferences.
@@ -11,6 +15,7 @@ Welcome to the official repository of KiasuCareers, a comprehensive web applicat
 - **Automated Reminders**: Utilizes the Node Telegram Bot API and Microsoft Graph to send reminders for important dates and tasks.
 - **Performance Dashboard**: Tracks personal application success and provides insights to help users focus on promising opportunities.
 - **Gamification and Goal Setting**: Encourages a structured approach to job applications with progress tracking and goal-setting features.
+- **Telegram Bot**: Link your account to KiasuCareers' telegram bot and get automated reminders.
 
 ## Technology Stack
 
